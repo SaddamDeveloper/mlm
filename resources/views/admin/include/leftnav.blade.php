@@ -50,19 +50,14 @@
                 <a href="{{route('admin.important_notice')}}">
                   <i class="fa fa-bell"></i> Important Notice
                 </a>
-            </li>
+            </li>--}}
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_epin')}}">Generate EPIN</a></li>
-                <li><a href="{{route('admin.mem_matching_income')}}">Member Matching Income</a></li>
-                <li><a href="{{route('admin.mem_pair_timing')}}">Common Pair timing</a></li>
-                <li><a href="{{route('admin.mem_pair_cutoff')}}">Common Pair CutOFF</a></li>
                 <li><a href="{{route('admin.mem_commission')}}">Admin Commission</a></li>
                 <li><a href="{{route('admin.mem_tds')}}">TDS</a></li>
               </ul>
             </li>
-            <li><a href="{{route('admin.feedback')}}"><i class="fa fa-comments"></i> All Complaints/ Feedbacks</a>
-            </li> --}}
           </ul>
         </div>
       </div>
