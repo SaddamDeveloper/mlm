@@ -8,11 +8,23 @@ use DB;
 use Carbon\Carbon;
 use App\AdminCommission;
 use App\AdminTds;
+use App\AdminWallet;
+use App\AdminTdses;
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        $total_members = DB::table('members')->count();
+        $total_member_wallet_balance = DB::table('wallets')->sum('amount');
+
+        $latest_members = DB::table('members')
+            ->orderBy('id','desc')
+            ->limit(10)
+            ->get();
+
+        $admin_wallet_bal = AdminWallet::value('amount');
+        $admin_tds = AdminTdses::value('tds');
+        return view('admin.dashboard', compact('total_members', 'total_member_wallet_balance', 'latest_members', 'admin_wallet_bal', 'admin_tds'));
     }
 
     // EPIN CONTROLL
