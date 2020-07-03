@@ -4941,15 +4941,12 @@
                 "object",
                 "object graph"
             ],
-<<<<<<< HEAD
             "funding": [
                 {
                     "url": "https://tidelift.com/funding/github/packagist/myclabs/deep-copy",
                     "type": "tidelift"
                 }
             ],
-=======
->>>>>>> Tree Member Functionality
             "time": "2020-06-28T07:02:41+00:00"
         },
         {
