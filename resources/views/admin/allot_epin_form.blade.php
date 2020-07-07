@@ -10,7 +10,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>Allot EPIN</h2>
+                            <h2>Allocate Fund</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -46,7 +46,7 @@
                                     </div>
 
                                 <div class="form-group">    	            	
-                                    {{ Form::submit('Allot Epin', array('class'=>'btn btn-success pull-right')) }}  
+                                    {{ Form::submit('Allocate Fund', array('class'=>'btn btn-success pull-right')) }}  
                                 </div>
                                 {{ Form::close() }}
                             </div>

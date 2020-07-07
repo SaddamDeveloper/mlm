@@ -5,7 +5,6 @@
     <!-- page content -->
     <div class="right_col" role="main">
         <div class="row">
-            {{-- <div class="col-md-2"></div> --}}
             <div class="col-md-12" style="margin-top:50px;">
                 <div class="x_panel">
     
@@ -28,23 +27,31 @@
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                    </div>
-                                    <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="search_sponsor_id">Sponsor ID</label>
                                         <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="Sponsor ID">
                                         @if($errors->has('search_sponsor_id'))
-                                            <span class="invalid-feedback" role="alert" style="color:red">
+                                            <span class="invalid-feedback" role="alert" style="color:rgb(29, 11, 11)">
                                                 <strong>{{ $errors->first('search_sponsor_id') }}</strong>
                                             </span>
                                         @enderror
                                         <div id="myDiv">
-                                            <img id="loading-image" src="{{asset('member/production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                            <img id="loading-image" src="{{asset('admin/production/images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
                                         <div id="member_data"></div><br>
                                     </div> 
                                     
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                        
+                                        <label class="control-label ">Select Leg*</label>
+                                            <select name="leg" id="leg" class="form-control">
+                                                <option value="" disabled selected>--SELECT Leg--</option>
+                                                <option value="1" {{old('leg') == '1'?'selected':''}}>Left</option>
+                                                <option value="2" {{old('leg') == '2'?'selected':''}}>Right</option>
+                                            </select>
+                                            @if($errors->has('leg'))
+                                            <span class="invalid-feedback" role="alert" style="color:rgb(3, 0, 0)">
+                                                <strong>{{ $errors->first('leg') }}</strong>
+                                            </span>
+                                            @enderror
                                     </div>
                                 </div>
                                 <div class="form-row mb-10 mb-2">
@@ -104,7 +111,7 @@
                                     </div> 
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                         <label for="dob">DOB</label>
-                                        <input type="date" name="dob" value="{{old('dob')}}" class="form-control"/>
+                                        <input type="text" name="dob" value="{{old('dob')}}" class="form-control"/>
                                         @if($errors->has('dob'))
                                             <span class="invalid-feedback" role="alert" style="color:red">
                                                 <strong>{{ $errors->first('dob') }}</strong>
@@ -362,11 +369,7 @@
                         $("#loading-image").show();
                     },
                     success: function(data){
-                        if(data == 5){
-                            $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
-                            $('#sponsorVal').val(data);
-                            $("#loading-image").hide();
-                        }else if(data == 1){
+                        if(data == 1){
                             $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
                             $('#sponsorVal').val(data);
@@ -378,6 +381,12 @@
                     }
                 });
             }
+            $(document).on('blur', '#search_sponsor_id', function(){
+                var query = $(this).val();
+                if(query){
+                    fetch_member_data(query);
+                }
+            });
             function check_login(query){
                 $.ajaxSetup({
 	                headers: {

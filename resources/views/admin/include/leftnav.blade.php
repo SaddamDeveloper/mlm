@@ -53,7 +53,7 @@
             </li>--}}
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
-                <li><a href="{{route('admin.mem_epin')}}">Generate EPIN</a></li>
+                <li><a href="{{route('admin.mem_epin')}}">Fund Allocate</a></li>
                 <li><a href="{{route('admin.mem_commission')}}">Admin Commission</a></li>
                 <li><a href="{{route('admin.mem_tds')}}">TDS</a></li>
               </ul>

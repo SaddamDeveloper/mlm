@@ -43,7 +43,6 @@
                         <strong>{{ $message }}</strong>
                     </span>
                 @enderror
-                {{-- <input type="text" class="form-control" placeholder="Username" required="" /> --}}
               </div>
               <div>
                 {{ Form::password('password',array('class' => 'form-control','placeholder'=>'Enter Password')) }}
@@ -56,7 +55,6 @@
               </div>
               <div>
                 {{ Form::submit('Log In', array('class'=>'btn btn-warning btn-block')) }}
-                {{-- <a class="btn btn-default submit" type="submit">Log in</a> --}}
               </div>
 
               <div class="clearfix"></div>
@@ -67,3 +65,12 @@
     </div>
   </body>
 </html>
+
+
+@section('style')
+    <style>
+      .login {
+        background: red !important;
+      }
+    </style>
+@endsection

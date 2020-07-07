@@ -10,7 +10,7 @@
                     <div class="x_panel">
     
                         <div class="x_title">
-                            <h2>My EPIN</h2>
+                            <h2>My FUND</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -27,10 +27,10 @@
                                 <thead>
                                 <tr>
                                     <th>Sl. No1</th>
-                                    <th>EPIN</th>
-                                    <th>Status</th>
+                                    <th>Fund</th>
                                     <th>Alloted To</th>
                                     <th>Used By</th>
+                                    <th>Available Fund</th>
                                 </tr>
                                 </thead>
                                 <tbody>                       
@@ -54,14 +54,7 @@
             ajax: "{{ route('member.ajax.my_epin_list') }}",
             columns: [
                 {data: 'id', name: 'id',searchable: true},
-                {data: 'epin', name: 'epin',searchable: true},
-                {data: 'status', name: 'status', render:function(data, type, row){
-                  if (row.status == '1') {
-                    return "<button class='btn btn-info'>Used</a>"
-                  }else{
-                    return "<button class='btn btn-danger'>Not Used</a>"
-                  }                        
-                }},
+                {data: 'fund', name: 'fund',searchable: true},
                 {data: 'name', name: 'name' ,searchable: true}, 
                 {data: 'used_by', name: 'used_by' ,searchable: true},                 
                 // {data: 'action', name: 'action', orderable: false, searchable: false},

@@ -9,7 +9,7 @@
                 <div class="col-md-12" style="margin-top:50px;">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Add New EPIN</h2>
+                            <h2>Allocate Fund</h2>
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -23,8 +23,7 @@
                     </div>
                         <div>
                             <div class="x_content">
-                                <a href="{{route('admin.mem_add_epin_form')}}" class="btn btn-primary">Add New EPIN</a>
-                                <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allot EPIN</a>
+                                <a href="{{route('admin.mem_allot_epin_form')}}" class="btn btn-primary">Allocate Fund</a>
                             </div>
                         </div>
                         <div>
@@ -33,11 +32,10 @@
                                   <thead>
                                     <tr>
                                       <th>Sl. No</th>
-                                      <th>EPIN</th>
-                                      <th>Status</th>
+                                      <th>Fund</th>
                                       <th>Alloted To</th>
-                                      <th>Used By</th>
-                                      {{-- <th>Action</th> --}}
+                                      <th>Fund Available</th>
+                                      <th>Transfered At</th>
                                     </tr>
                                   </thead>
                                   <tbody>                       
@@ -60,19 +58,13 @@
                 processing: true,
                 serverSide: true,
                 iDisplayLength: 50,
-                ajax: "{{ route('admin.ajax.get_epin_list') }}",
+                ajax: "{{ route('admin.ajax.get_funds_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
-                    {data: 'epin', name: 'epin',searchable: true},
-                    {data: 'status', name: 'status', render:function(data, type, row){
-                      if (row.status == '1') {
-                        return "<button class='btn btn-info'>Used</a>"
-                      }else{
-                        return "<button class='btn btn-danger'>Not Used</a>"
-                      }                        
-                    }},
+                    {data: 'fund', name: 'fund',searchable: true},
                     {data: 'alloted_to', name: 'alloted_to' ,searchable: true}, 
-                    {data: 'used_by', name: 'used_by' ,searchable: true},                 
+                    {data: 'available_fund', name: 'available_fund' ,searchable: true},  
+                    {data: 'created_at', name: 'created_at' ,searchable: true},  
                 ]
             });
             

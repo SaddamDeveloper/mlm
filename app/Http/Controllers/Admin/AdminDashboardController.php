@@ -60,27 +60,16 @@ class AdminDashboardController extends Controller
         return redirect()->back()->with('message','Epin Generated Successfully');
     }
 
-    public function ajaxGetEpinList()
+    public function ajaxGetFundList()
     {    
-        $query = DB::table('epins')
-                ->leftjoin('members', 'epins.alloted_to', '=', 'members.id')
+        $query = DB::table('funds')
+                ->leftjoin('members', 'funds.alloted_to', '=', 'members.id')
                 // ->leftjoin('members', 'epin.used_by', '=', 'members.id')
-                ->select('epins.*', 'members.full_name as alloted_to');
+                ->select('funds.*', 'members.full_name as alloted_to');
                 // ->select('epin.*', 'members.name AS used_by');
                 // return $query;
             return datatables()->of($query->get())
             ->addIndexColumn()
-            ->addColumn('used_by', function($row){
-                $used_by = DB::table('members')
-                    ->select('epins.*', 'members.full_name as used_by')
-                    ->join('epins','members.id', '=', 'epins.used_by')
-                    ->where('members.id', $row->used_by)
-                    ->first();
-                if($used_by){
-                    return $used_by->used_by;
-                }
-            })
-            ->rawColumns(['used_by'])
             ->make(true);
     }
 
@@ -126,8 +115,8 @@ class AdminDashboardController extends Controller
                     <input type="text" value="'.$member_data->mobile.'" class="form-control" readonly placeholder="Mobile">
                     <label for="gender">DOB</label>
                     <input type="text" value="'.$member_data->dob.'" class="form-control" readonly placeholder="DOB"><br>
-                    <label for="name">How many EPIN you will be alloted?</label>
-                    <input type="text" class="form-control" name="epin"  placeholder="How many EPIN you will be alloted?"><br>
+                    <label for="name">How much fund you are allocating?</label>
+                    <input type="text" class="form-control" name="fund"  placeholder="How much fund you are allocating?"><br>
                     ';
                     echo $html;
                 }
@@ -146,29 +135,22 @@ class AdminDashboardController extends Controller
 
     public function memAllotEpin(Request $request){
         $validatedData = $request->validate([
-            'epin' => 'required',
+            'fund' => 'required',
         ]);
         
-        $epin_total = $request->input('epin');
+        $fund = $request->input('fund');
         $member_id = $request->input('searchMember');
         $member_data_fetch = DB::table('members')->where('sponsorID', $member_id)->first();
 
-        //Check used EPIN
-        $epin_count = DB::table('epins')->whereNull('alloted_to')->where('status', 2)->count();
-        if($epin_count < $epin_total){
-            return redirect()->back()->with('error', ''.$epin_total.' EPIN is not available. Please generate more EPIN to allot.');
-        }
-        $epin_fetch = DB::table('epins')->whereNull('alloted_to')->where('status', 2)->limit($epin_total)->orderBy('id', 'ASC')->get();
-        foreach ($epin_fetch as $epin) {
-            $epin_alloted_to = DB::table('epins')
-                ->where('id', $epin->id)
-                ->update([
-                    'alloted_to' => $member_data_fetch->id,
-                    'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+            $epin_alloted_to = DB::table('funds')
+                ->insert([
+                    'fund'              =>  $fund,
+                    'available_fund'    => $fund,
+                    'alloted_to'        => $member_data_fetch->id,
+                    'alloted_date'      => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                    'created_at'        => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 ]);
-        }
-        return redirect()->back()->with('message', ''.$epin_total.' EPIN is alloted successfully to '.$member_data_fetch->full_name.'');
+        return redirect()->back()->with('message', ''.$fund.' Fund is transfered successfully to '.$member_data_fetch->full_name.'');
     }
 
     public function epinRequestsLists()

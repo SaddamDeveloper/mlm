@@ -8,26 +8,25 @@ use DB;
 use App\Member;
 use App\Tree;
 use App\CommissionHistory;
-use App\Epin;
 use App\Wallet;
 use Hash;
 use Auth;
 use Carbon\Carbon;
 use Session;
-
+use App\Rewards;
 class MemberDashboardController extends Controller
 {
     public function index()
     {
         $my_commission = CommissionHistory::where('user_id', Auth::user()->id)->sum('amount');
         $total_pair_completed = Tree::where('user_id', Auth::user()->id)->value('total_pair');
-        $epin_available = Epin::where('status', 2)->where('alloted_to', Auth::user()->id)->count();
-        $epin_used = Epin::where('status', 1)->where('alloted_to', Auth::user()->id)->count();
+        // $epin_available = Epin::where('status', 2)->where('alloted_to', Auth::user()->id)->count();
+        // $epin_used = Epin::where('status', 1)->where('alloted_to', Auth::user()->id)->count();
         $my_wallet = Wallet::where('user_id', Auth::user()->id)->value('amount');
 
-        $epin_list = Epin::with('member')->where('alloted_to', Auth::user()->id)->paginate(10);
+        // $epin_list = Epin::with('member')->where('alloted_to', Auth::user()->id)->paginate(10);
 
-        return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'epin_available', 'epin_used', 'my_wallet', 'epin_list'));
+        return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'my_wallet'));
     }
 
     public function addNewMemberForm()
@@ -41,17 +40,18 @@ class MemberDashboardController extends Controller
             'search_sponsor_id'     => 'required',
             'f_name'                => 'required',
             'l_name'                => 'required',
-            'email'                 => 'unique:members|required|email',
-            'mobile'                => 'unique:members|required|numeric|min:10',
-            'dob'                   => 'required',
-            'pan'                   => 'unique:members|required',
-            'aadhar'                => 'unique:members|required',
-            'bank'                  => 'required',
-            'ifsc'                  => 'required',
-            'confirm_ifsc'          => 'required|same:ifsc',
-            'account_no'            => 'required',
-            'confirm_account'       => 'required|same:account_no',
-            'confirm_ifsc'          => 'required|same:ifsc',
+            'leg'                   => 'required',
+            // 'email'                 => 'unique:members|required|email',
+            // 'mobile'                => 'unique:members|required|numeric|min:10',
+            // 'dob'                   => 'required',
+            // 'pan'                   => 'unique:members|required',
+            // 'aadhar'                => 'unique:members|required',
+            // 'bank'                  => 'required',
+            // 'ifsc'                  => 'required',
+            // 'confirm_ifsc'          => 'required|same:ifsc',
+            // 'account_no'            => 'required',
+            // 'confirm_account'       => 'required|same:account_no',
+            // 'confirm_ifsc'          => 'required|same:ifsc',
             'login_id'              => 'required|unique:members',
             'password'              => 'required|confirmed|min:6'
         ]);
@@ -84,15 +84,10 @@ class MemberDashboardController extends Controller
                     if($mobile_count < 1){
                         $tree_data = Tree::where('user_id', $member_data->id)->first();
                         if($tree_data){
-                            if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
+                            if($leg == 1){
                                 $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
-                            }
-                            else if(is_null($tree_data->left_id)){
+                            }else if($leg == 2){
                                 $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
-                            }else if(is_null($tree_data->right_id)){
-                                $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
-                            }else{
-                                return redirect()->back()->with('error', 'All lags are full! Try with another Sponsor ID!');
                             }
                         }else{
                             return back()->with('error', 'Inavlid SponsorID!');
@@ -119,63 +114,15 @@ class MemberDashboardController extends Controller
                 if($member_data) {
                     $tree_data = Tree::where('user_id', $member_data->id)->first();
                     if($tree_data){
-                        if(is_null($tree_data->left_id) && is_null($tree_data->right_id)){
                             $html = '
-                            <label>
-                                <font color="green">Yay! Both legs are empty</font>
-                            </label><br>
                             <label for="gender"> Name</label>
                             <input type="text" value="'.$member_data->full_name.'" class="form-control" readonly placeholder="Name">
                             <label for="gender">Mobile</label>
                             <input type="text" value="'.$member_data->mobile.'" class="form-control" readonly placeholder="Mobile">
                             <label for="gender">DOB</label>
-                            <input type="text" value="'.$member_data->dob.'" class="form-control" readonly placeholder="DOB"><br>
-                            <label class="control-label ">Select Leg*</label>
-                              <div id="leg">
-                                  <input type="radio" name="leg" value="1" id="left_lag" checked> Left &nbsp;
-                                  <input type="radio" name="leg" value="2" id="right_lag"> Right
-                              </div>';
+                            <input type="text" value="'.$member_data->dob.'" class="form-control" readonly placeholder="DOB"><br>';
                             echo $html;
-                        }
-                        else if(is_null($tree_data->left_id)){
-                            $html = '
-                            <label>
-                                <font color="green">Left leg is empty!</font>
-                            </label><br>
-                            <label for="gender"> Name</label>
-                            <input type="text" value="'.$member_data->full_name.'" class="form-control" readonly placeholder="Name">
-                            <label for="gender">Mobile</label>
-                            <input type="text" value="'.$member_data->mobile.'" class="form-control" readonly placeholder="Mobile">
-                            <label for="gender">DOB</label>
-                            <input type="text" value="'.$member_data->dob.'" class="form-control" readonly placeholder="DOB"><br>
-                            <label class="control-label ">Select Lag*</label>
-                              <div id="leg">
-                                  <input type="radio" name="leg" value="1" id="left_lag" checked> Left &nbsp;
-                                  <input type="radio" name="leg" value="2" id="right_lag" disabled> Right
-                              </div>';
-                            return $html;
-                        }
-                        else if(is_null($tree_data->right_id)){
-                            $html = '
-                            <label>
-                                <font color="green">Right leg is empty!</font>
-                            </label><br>
-                            <label for="gender"> Name</label>
-                            <input type="text" value="'.$member_data->full_name.'" class="form-control" readonly placeholder="Name">
-                            <label for="gender">Mobile</label>
-                            <input type="text" value="'.$member_data->mobile.'" class="form-control" readonly placeholder="Mobile">
-                            <label for="gender">DOB</label>
-                            <input type="text" value="'.$member_data->dob.'" class="form-control" readonly placeholder="DOB"><br>
-                            <label class="control-label ">Select Lag*</label>
-                              <div id="leg">
-                                  <input type="radio" name="leg" value="1" id="left_lag" disabled> Left &nbsp;
-                                  <input type="radio" name="leg" value="2" id="right_lag" checked> Right
-                              </div>';
-                            return $html;
                         }else{
-                            return 5;
-                        }
-                    }else{
                         return 1;
                     }
 
@@ -240,31 +187,137 @@ class MemberDashboardController extends Controller
                 $fetch_tree = DB::table('trees')
                     ->where('user_id', $fetch_member->id)
                     ->first();
-                $tree_insert = DB::table('trees')
-                ->insertGetId([
-                    'user_id' => $member_insert,
-                    'parent_id' => $fetch_tree->id,
-                    'registered_by' => Auth::user()->id,
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
-                if($leg == 1){
-                    $tree_update = DB::table('trees')
+                // Checking Direct Referral
+                if(is_null($fetch_tree->left_id)){
+                    // Direct Referaal
+                    $tree_insert = DB::table('trees')
+                        ->insertGetId([
+                            'user_id' => $member_insert,
+                            'parent_id' => $fetch_tree->id,
+                            'registered_by' => Auth::user()->id,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+                        if($leg == 1){
+                            $tree_update = DB::table('trees')
+                                ->where('id', $fetch_tree->id)
+                                ->update([
+                                    'left_id' => $member_insert,
+                                    'parent_leg' => 'L',
+                                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                                ]);
+                        }else{
+                            $tree_update = DB::table('trees')
+                            ->where('id', $fetch_tree->id)
+                            ->update([
+                                'right_id' => $member_insert,
+                                'parent_leg' => 'R',
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                                ]);
+                        
+                        }
+                }else if(is_null($fetch_tree->right_id)){
+                    // Direct Referaal
+                    $tree_insert = DB::table('trees')
+                    ->insertGetId([
+                        'user_id' => $member_insert,
+                        'parent_id' => $fetch_tree->id,
+                        'registered_by' => Auth::user()->id,
+                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                    ]);
+                    if($leg == 1){
+                        $tree_update = DB::table('trees')
+                            ->where('id', $fetch_tree->id)
+                            ->update([
+                                'left_id' => $member_insert,
+                                'parent_leg' => 'L',
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                            ]);
+                            
+                    }else{
+                        $tree_update = DB::table('trees')
                         ->where('id', $fetch_tree->id)
                         ->update([
-                            'left_id' => $tree_insert,
+                            'right_id' => $member_insert ,
+                            'parent_leg' => 'R',
+                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                            ]);
+                    
+                    }
+                }else{
+                    // Indirect Referal
+                    // Check Whether Branch is Left Or Right
+                    if($leg == 1){
+                        //    Left
+                        $left_iteration = DB::select( DB::raw("SELECT * FROM (
+                            SELECT @pv:=(
+                                SELECT left_id FROM trees WHERE id = @pv
+                                ) AS tv FROM trees
+                                JOIN
+                                (SELECT @pv:=:start_node) tmp
+                            ) a
+                            WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                            , array(
+                            'start_node' => Auth::user()->id,
+                            )
+                        );    
+                        $expected = [];
+                        foreach($left_iteration as $k=>$v){
+                            $expected[$k]=end($v);
+                        }
+                        $extreme_left = end($expected);
+
+                        $tree_insert = DB::table('trees')
+                        ->insertGetId([
+                            'user_id' => $member_insert,
+                            'parent_id' => $extreme_left,
+                            'registered_by' => Auth::user()->id,
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+
+                        $tree_update = DB::table('trees')
+                        ->where('user_id', $extreme_left)
+                        ->update([
+                            'left_id' => $member_insert,
                             'parent_leg' => 'L',
                             'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                         ]);
-                        
-                }else{
-                    $tree_update = DB::table('trees')
-                    ->where('id', $fetch_tree->id)
-                    ->update([
-                        'right_id' => $tree_insert ,
-                        'parent_leg' => 'R',
-                        'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                        ]);
+                    }else if($leg == 2){
+                        // Right
+                            $right_iteration = DB::select( DB::raw("SELECT * FROM (
+                                    SELECT @pv:=(
+                                        SELECT right_id FROM trees WHERE id = @pv
+                                        ) AS tv FROM trees
+                                        JOIN
+                                        (SELECT @pv:=:start_node) tmp
+                                    ) a
+                                    WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                                    , array(
+                                    'start_node' => Auth::user()->id
+                                    )
+                                );
+
+                            $expected = [];
+                            foreach($right_iteration as $k=>$v){
+                                $expected[$k]=end($v);
+                            }
+                            $extreme_right = end($expected);
+                            $tree_insert = DB::table('trees')
+                            ->insertGetId([
+                                'user_id' => $member_insert,
+                                'parent_id' => $extreme_right,
+                                'registered_by' => Auth::user()->id,
+                                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                            ]);
+                            $tree_update = DB::table('trees')
+                            ->where('id', $extreme_right)
+                            ->update([
+                                'right_id' => $member_insert ,
+                                'parent_leg' => 'R',
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                            ]);
+                    }
                 }
+
                 //Insert Data in the Wallet for the first Time
                 $wallet_insert = DB::table('wallets')
                     ->insertGetId([
@@ -331,12 +384,12 @@ class MemberDashboardController extends Controller
         $child = $member_insert;
         for($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 
-
             //**************Fetch parrent details***************************
             $fetch_parent = DB::table('trees')
                 ->select('left_id', 'right_id')
                 ->where('id',$parent)
                 ->first();
+
             //***************check child node is in left or right*******************
             if ($fetch_parent->left_id == $child){
                 //Check Left count already had previous value + 1
@@ -358,11 +411,7 @@ class MemberDashboardController extends Controller
                 ]);
             }   
             
-            //Pair checking
-            $total_pair_count =  DB::table('trees')
-                ->select('total_pair')
-                ->where('id',$parent)
-                ->first();
+           
             
             //Fetch Pair Match
             $pair_match = DB::table('trees')
@@ -377,6 +426,12 @@ class MemberDashboardController extends Controller
                 ->update([
                     'total_pair' => DB::raw("`total_pair`+".(1)),
                 ]);
+                 //Pair checking
+                $total_pair_count =  DB::table('trees')
+                ->select('total_pair')
+                ->where('id',$parent)
+                ->first();
+                $this->rewardsChecking($total_pair_count, $parent);
             }
             $child = $parent;
         }
@@ -511,7 +566,7 @@ class MemberDashboardController extends Controller
                     $lft_details =  DB::table('trees')
                    ->select('members.full_name as u_name','members.id as u_id', 'members.sponsorID as sponsorID')
                    ->join('members','members.id','=','trees.user_id')
-                   ->where('tree.id',$lft_members)
+                   ->where('trees.id',$lft_members)
                    ->first();
                     $lft_member = $lft_details->sponsorID;
                    if ($row->user_id == $lft_details->u_id) {
@@ -699,7 +754,7 @@ class MemberDashboardController extends Controller
                                         </a>';
                                     } else if($second->right_id == $third->id){
                                         $third_level_node = DB::table('trees')
-                                        ->select('trees.*', 'members.name', 'members.sposnorID')
+                                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
                                         ->join('members', 'trees.user_id', '=', 'members.id')
                                         ->where('trees.user_id', $third->id)
                                         ->first();
@@ -722,11 +777,11 @@ class MemberDashboardController extends Controller
                                             $html.="<li>";
                                             if ($third->left_id == $fourth->id) {
                                                 $fourth_level_node = DB::table('trees')
-                                                ->select('trees.*', 'members.name', 'members.sponsorID')
+                                                ->select('trees.*', 'members.full_name', 'members.sponsorID')
                                                 ->join('members', 'trees.user_id', '=', 'members.id')
                                                 ->where('trees.user_id', $fourth->id)
                                                 ->first();
-                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->name.'
+                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->full_name.'
                                                     <div class="info">
                                                         <h5>Name : '.$fourth_level_node->full_name.'</h5>
                                                         <h5>Id : '.$fourth_level_node->sponsorID.'</h5>
@@ -878,23 +933,21 @@ class MemberDashboardController extends Controller
     }
 
     public function memberGetEpinList(){
-        $query = DB::table('epins')
-                ->leftjoin('members', 'epins.alloted_to', '=', 'members.id')
-                ->select('epins.*', 'members.full_name as name')
+        $query = DB::table('funds')
+                ->leftjoin('members', 'funds.alloted_to', '=', 'members.id')
+                ->select('funds.*', 'members.full_name as name')
                 ->where('members.id', Auth::user()->id);
             return datatables()->of($query->get())
             ->addIndexColumn()
-            ->addColumn('used_by', function($row){
-                $used_by = DB::table('members')
-                    ->select('epins.*', 'members.full_name as used_by')
-                    ->join('epins','members.id', '=', 'epins.used_by')
-                    ->where('members.id', $row->used_by)
-                    ->first();
-                if($used_by){
-                    return $used_by->used_by;
-                }
-            })
-            ->rawColumns(['used_by'])
             ->make(true);
+    }
+
+    function rewardsChecking($total_pair_count, $parent){
+        if($total_pair_count->total_pair == 10){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of Casserol 2500 ml reward for 10 BV";
+                    $rewards->save();
+        }
     }
 }

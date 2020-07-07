@@ -30,7 +30,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/epin', 'AdminDashboardController@memEpinList')->name('admin.mem_epin');
     Route::get('/add/epin', 'AdminDashboardController@memAddEpinForm')->name('admin.mem_add_epin_form');
     Route::post('/add/new/epin', 'AdminDashboardController@memAddGenerateEpin')->name('admin.mem_add_generate_epin');
-    Route::get('/ajax/get/epin/','AdminDashboardController@ajaxGetEpinList')->name('admin.ajax.get_epin_list');
+    Route::get('/ajax/get/fund/','AdminDashboardController@ajaxGetFundList')->name('admin.ajax.get_funds_list');
 
         /***
      * Epin Allot Control
@@ -76,6 +76,12 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/ajax/get/wallet/history','MemberDashboardController@ajaxGetWalletHistory')->name('member.ajax.my_wallet_history');
     Route::get('/my/epin/', 'MemberDashboardController@memberEpinListForm')->name('member.mem_epin_list_form');
     Route::get('/my/epin/list', 'MemberDashboardController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    
+    // Rewardz
+
+    Route::get('/my/rewards', 'MemberDashboardController@memberGetRewardListForm')->name('member.my_rewards_list_form');
+    Route::get('/my/rewards/list', 'MemberDashboardController@memberGetRewardList')->name('member.ajax.my_rewards_list');
+    Route::get('/my/rewards/list/history', 'MemberDashboardController@memberGetRewardListHistory')->name('member.mem_rewards_history');
 
 
 });
