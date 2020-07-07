@@ -1648,6 +1648,10 @@ textarea:focus {
   padding-left: 15px;
 }
 
+.sticky.is-sticky .logo img {
+  width: 60%;
+}
+
 /*------ sticky menu style end ------*/
 /*------- Buttons Style here -------*/
 .btn {
