@@ -29,7 +29,6 @@
                                     <th>Sl. No1</th>
                                     <th>Fund</th>
                                     <th>Alloted To</th>
-                                    <th>Used By</th>
                                     <th>Available Fund</th>
                                 </tr>
                                 </thead>
@@ -56,7 +55,7 @@
                 {data: 'id', name: 'id',searchable: true},
                 {data: 'fund', name: 'fund',searchable: true},
                 {data: 'name', name: 'name' ,searchable: true}, 
-                {data: 'used_by', name: 'used_by' ,searchable: true},                 
+                {data: 'available_fund', name: 'available_fund' ,searchable: true},                 
                 // {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });

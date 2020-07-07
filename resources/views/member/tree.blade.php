@@ -23,7 +23,7 @@
                             @endif
                         </div>   
 
-                        <div class="tree" style="width:100%;left:40%;right:40%;text-align: -webkit-center;">
+                        {{-- <div class="tree" style="width:100%;left:40%;right:40%;text-align: -webkit-center;">
                             <ul>
                                 <li>        
                                     <a href="#"><img src="{{asset('admin/build/images/avatar.jpg')}}"> Member
@@ -89,7 +89,7 @@
                                     </ul>
                                 </li>
                             </ul>
-                        </div>
+                        </div> --}}
 
                     </div>
               </div>

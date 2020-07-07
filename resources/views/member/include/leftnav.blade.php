@@ -42,13 +42,13 @@
                 <li><a href="{{route('member.mem_epin_list_form')}}"> My Fund</a></li>
               </ul>
             </li>
-            <li><a><i class="fa fa-ticket"></i> Rewardz<span class="fa fa-chevron-down"></span></a>
+            {{-- <li><a><i class="fa fa-ticket"></i> Rewardz<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('member.my_rewards_list_form')}}"> My Rewards</a></li>
+                <li><a href="{{route('member.mem_rewards_history')}}">Rewards History</a>
+                </li>
               </ul>
-            </li>
-            <li><a href="{{route('member.mem_rewards_history')}}"><i class="fa fa-percent"></i> Rewards History</a>
-            </li>
+            </li> --}}
             {{--
             <li><a href="{{route('member.mem_order_list_form')}}"><i class="fa fa-database"></i> Orders</a>
             </li>

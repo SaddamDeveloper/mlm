@@ -85,9 +85,11 @@ class MemberDashboardController extends Controller
                         $tree_data = Tree::where('user_id', $member_data->id)->first();
                         if($tree_data){
                             if($leg == 1){
-                                $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                    return redirect()->route('member.thank_you');                
                             }else if($leg == 2){
-                                $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                    return redirect()->route('member.thank_you');                
                             }
                         }else{
                             return back()->with('error', 'Inavlid SponsorID!');
@@ -338,31 +340,16 @@ class MemberDashboardController extends Controller
                       'start_node' => $tree_insert,
                     )
                 );
-                $a = $this->treePair($parrents, $member_insert);
+                $this->treePair($parrents, $member_insert);                
             });
-            $token = rand(111111,999999);
-            Session::put('token', $token);
-            Session::save();
-            return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
             
         }catch (\Exception $e) {
                 return redirect()->back()->with('error','Something Went Wrong Please try Again');
         }
     }
-    public function thankYou($token){
-        try{
-            $token = decrypt($token);
-        }catch(DecryptException $e) {
-            abort(404);
-        }
-        
-        if($token){
-                $delete_previous_session = session()->forget('token');
-                $success = 'Registration Successfull';
-                return view('member.registration.finish_page', compact('success'));
-        }else{
-            abort(404);
-        }
+    public function thankYou(){
+        $success = 'Registration Successfull';
+        return view('member.registration.finish_page', compact('success'));
     }
 
     function memberIDGeneration($fullName, $id){
@@ -645,7 +632,7 @@ class MemberDashboardController extends Controller
         if($root){
             $html = '<ul>
             <li>        
-                <a href="#">'.$root->full_name.'
+                <a href="#"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$root->full_name.'
                     <div class="info">
                         <h5>Name : '.$root->full_name.'</h5>
                         <h5>Id : '.$root->sponsorID.'</h5>
@@ -657,7 +644,7 @@ class MemberDashboardController extends Controller
             if ($first_level) {
                 $html.="<ul>";
                 if(empty($root->left_id)){
-                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                 }
                 foreach ($first_level as $key => $first) {
                     $html.="<li>";
@@ -667,7 +654,7 @@ class MemberDashboardController extends Controller
                         ->join('members', 'trees.user_id', '=', 'members.id')
                         ->where('trees.user_id', $first->id)
                         ->first();
-                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'">'.$first_level_node->full_name.'
+                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->full_name.'
                             <div class="info">
                                 <h5>Name : '.$first_level_node->full_name.'</h5>
                                 <h5>Id : '.$first_level_node->sponsorID.'</h5>
@@ -680,7 +667,7 @@ class MemberDashboardController extends Controller
                         ->join('members', 'trees.user_id', '=', 'members.id')
                         ->where('trees.user_id', $first->id)
                         ->first();
-                        $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'">'.$first_level_node->full_name.'
+                        $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->full_name.'
                             <div class="info">
                                 <h5>Name : '.$first_level_node->full_name.'</h5>
                                 <h5>Id : '.$first_level_node->sponsorID.'</h5>
@@ -695,7 +682,7 @@ class MemberDashboardController extends Controller
                     if ($second_level) {
                         $html.="<ul>";
                         if(empty($first->left_id)){
-                            $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                            $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                         }
                         foreach ($second_level as $key => $second) {
                             $html.="<li>";
@@ -705,7 +692,7 @@ class MemberDashboardController extends Controller
                                 ->join('members', 'trees.user_id', '=', 'members.id')
                                 ->where('trees.user_id', $second->id)
                                 ->first();
-                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'">'.$second_level_node->full_name.'
+                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->full_name.'
                                             <div class="info">
                                                 <h5>Name : '.$second_level_node->full_name.'</h5>
                                                 <h5>Id : '.$second_level_node->sponsorID.'</h5>
@@ -718,7 +705,7 @@ class MemberDashboardController extends Controller
                                 ->join('members', 'trees.user_id', '=', 'members.id')
                                 ->where('trees.user_id', $second->id)
                                 ->first();
-                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'">'.$second_level_node->full_name.'
+                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->full_name.'
                                     <div class="info">
                                         <h5>Name : '.$second_level_node->full_name.'</h5>
                                         <h5>Id : '.$second_level_node->sponsorID.'</h5>
@@ -729,13 +716,11 @@ class MemberDashboardController extends Controller
 
                             //THIRD LEVEL STARTS
                             $third_level = DB::table('trees')->where('parent_id',$second->id)->orderBy('parent_leg', 'ASC')->get();
-
-                           
                             
                             if ($third_level) {
                                 $html.="<ul>";
                                 if(empty($second->left_id)){
-                                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                 }
                                 foreach ($third_level as $key => $third) {
                                     $html.="<li>";
@@ -745,7 +730,7 @@ class MemberDashboardController extends Controller
                                         ->join('members', 'trees.user_id', '=', 'members.id')
                                         ->where('trees.user_id', $third->id)
                                         ->first();
-                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'">'.$third_level_node->full_name.'
+                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->full_name.'
                                             <div class="info">
                                                 <h5>Name : '.$third_level_node->full_name.'</h5>
                                                 <h5>Id : '.$third_level_node->sponsorID.'</h5>
@@ -758,7 +743,7 @@ class MemberDashboardController extends Controller
                                         ->join('members', 'trees.user_id', '=', 'members.id')
                                         ->where('trees.user_id', $third->id)
                                         ->first();
-                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'">'.$third_level_node->full_name.'
+                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->full_name.'
                                             <div class="info">
                                                 <h5>Name : '.$third_level_node->full_name.'</h5>
                                                 <h5>Id : '.$third_level_node->sponsorID.'</h5>
@@ -771,7 +756,7 @@ class MemberDashboardController extends Controller
                                     if ($fourth_level) {
                                         $html.="<ul>";
                                         if(empty($third->left_id)){
-                                            $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                            $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                         }
                                         foreach ($fourth_level as $key => $fourth) {
                                             $html.="<li>";
@@ -781,7 +766,7 @@ class MemberDashboardController extends Controller
                                                 ->join('members', 'trees.user_id', '=', 'members.id')
                                                 ->where('trees.user_id', $fourth->id)
                                                 ->first();
-                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->full_name.'
+                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->full_name.'
                                                     <div class="info">
                                                         <h5>Name : '.$fourth_level_node->full_name.'</h5>
                                                         <h5>Id : '.$fourth_level_node->sponsorID.'</h5>
@@ -794,7 +779,7 @@ class MemberDashboardController extends Controller
                                                 ->join('members', 'trees.user_id', '=', 'members.id')
                                                 ->where('trees.user_id', $fourth->id)
                                                 ->first();
-                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'">'.$fourth_level_node->full_name.'
+                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->full_name.'
                                                 <div class="info">
                                                     <h5>Name : '.$fourth_level_node->full_name.'</h5>
                                                     <h5>Id : '.$fourth_level_node->sponsorID.'</h5>
@@ -808,7 +793,7 @@ class MemberDashboardController extends Controller
                                             if ($fifth_level) {
                                                 $html.="<ul>";
                                                 if(empty($fourth->left_id)){
-                                                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                                 }
                                                 foreach ($fifth_level as $key => $fifth) {
                                                     $html.="<li>";
@@ -818,7 +803,7 @@ class MemberDashboardController extends Controller
                                                         ->join('members', 'trees.user_id', '=', 'members.id')
                                                         ->where('trees.user_id', $fifth->id)
                                                         ->first();
-                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'">'.$fifth_level_node->full_name.'
+                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->full_name.'
                                                             <div class="info">
                                                                 <h5>Name : '.$fifth_level_node->full_name.'</h5>
                                                                 <h5>Id : '.$fifth_level_node->sponsorID.'</h5>
@@ -831,7 +816,7 @@ class MemberDashboardController extends Controller
                                                         ->join('members', 'trees.user_id', '=', 'members.id')
                                                         ->where('trees.user_id', $fifth->id)
                                                         ->first();
-                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'">'.$fifth_level_node->full_name.'
+                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->full_name.'
                                                         <div class="info">
                                                             <h5>Name : '.$fifth_level_node->full_name.'</h5>
                                                             <h5>Id : '.$fifth_level_node->sponsorID.'</h5>
@@ -841,21 +826,21 @@ class MemberDashboardController extends Controller
                                                     }
                                                 }
                                                 if(empty($fourth->right_id)){
-                                                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                                 }
                                                 $html.="</ul>";
                                             }
                                             $html.="</li>";
                                         }
                                         if(empty($third->right_id)){
-                                            $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                            $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                         }
                                         $html.="</ul>";
                                     }
                                     $html.="</li>";
                                 }
                                 if(empty($second->right_id)){
-                                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                                 }
                                 
                                 $html.="</ul>";
@@ -865,7 +850,7 @@ class MemberDashboardController extends Controller
                             $html.="</li>";
                         }
                         if(empty($first->right_id)){
-                            $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                            $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                         }
                         $html.="</ul>";
                     }
@@ -873,7 +858,7 @@ class MemberDashboardController extends Controller
                     $html.="</li>";
                 }
                 if(empty($root->right_id)){
-                    $html.='<li><a href="#" style="background-color: grey; color: white;">Empty</a></li>';
+                    $html.='<li><a href="#"><img src="'.asset('admin/build/images/none-avatar.jpg').'">Empty</a></li>';
                 }
                 $html.="</ul>";
             }
@@ -947,6 +932,55 @@ class MemberDashboardController extends Controller
                     $rewards = new Rewards;
                     $rewards->user_id = $parent;
                     $rewards->comment = "Congratulations! You are the winner of Casserol 2500 ml reward for 10 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 15){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of Pressure Cooker reward for 15 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 30){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of Home Theater reward for 30 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 70){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of Safari Suitcase reward for 70 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 120){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of 4G Tablet reward for 120 BV";
+                    $rewards->save();
+        }
+        
+        if($total_pair_count->total_pair == 200){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of 20'' LED TV reward for 200 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 300){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of 32'' LED TV reward for 300 BV";
+                    $rewards->save();
+        }
+
+        if($total_pair_count->total_pair == 500){
+                    $rewards = new Rewards;
+                    $rewards->user_id = $parent;
+                    $rewards->comment = "Congratulations! You are the winner of Voltas 1.5 ton AC reward for 500 BV";
                     $rewards->save();
         }
     }
