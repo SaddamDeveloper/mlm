@@ -14,6 +14,8 @@ use Auth;
 use Carbon\Carbon;
 use Session;
 use App\Rewards;
+use App\AdminWalletHistory;
+use App\AdminTdsesHistory;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -180,7 +182,7 @@ class MemberDashboardController extends Controller
                 ->update([
                     'sponsorID' =>  $generatedID,
                 ]);
-
+                $this->sendSms($fullName, $mobile, $login_id, $password);
                 //Fetch Member Data Using Sponsor ID
                 $fetch_member = DB::table('members')
                     ->where('sponsorID', $sponsorID)
@@ -196,6 +198,7 @@ class MemberDashboardController extends Controller
                         ->insertGetId([
                             'user_id' => $member_insert,
                             'parent_id' => $fetch_tree->id,
+                            'parent_leg' => 'L',
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
@@ -204,7 +207,6 @@ class MemberDashboardController extends Controller
                                 ->where('id', $fetch_tree->id)
                                 ->update([
                                     'left_id' => $member_insert,
-                                    'parent_leg' => 'L',
                                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                                 ]);
                         }else{
@@ -212,7 +214,6 @@ class MemberDashboardController extends Controller
                             ->where('id', $fetch_tree->id)
                             ->update([
                                 'right_id' => $member_insert,
-                                'parent_leg' => 'R',
                                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                                 ]);
                         
@@ -224,6 +225,7 @@ class MemberDashboardController extends Controller
                         'user_id' => $member_insert,
                         'parent_id' => $fetch_tree->id,
                         'registered_by' => Auth::user()->id,
+                        'parent_leg' => 'R',
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
                     if($leg == 1){
@@ -231,7 +233,6 @@ class MemberDashboardController extends Controller
                             ->where('id', $fetch_tree->id)
                             ->update([
                                 'left_id' => $member_insert,
-                                'parent_leg' => 'L',
                                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                             ]);
                             
@@ -240,7 +241,6 @@ class MemberDashboardController extends Controller
                         ->where('id', $fetch_tree->id)
                         ->update([
                             'right_id' => $member_insert ,
-                            'parent_leg' => 'R',
                             'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                             ]);
                     
@@ -272,6 +272,7 @@ class MemberDashboardController extends Controller
                         ->insertGetId([
                             'user_id' => $member_insert,
                             'parent_id' => $extreme_left,
+                            'parent_leg' => 'L',
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
@@ -280,7 +281,6 @@ class MemberDashboardController extends Controller
                         ->where('user_id', $extreme_left)
                         ->update([
                             'left_id' => $member_insert,
-                            'parent_leg' => 'L',
                             'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                         ]);
                     }else if($leg == 2){
@@ -307,6 +307,7 @@ class MemberDashboardController extends Controller
                             ->insertGetId([
                                 'user_id' => $member_insert,
                                 'parent_id' => $extreme_right,
+                                'parent_leg' => 'R',
                                 'registered_by' => Auth::user()->id,
                                 'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                             ]);
@@ -314,7 +315,6 @@ class MemberDashboardController extends Controller
                             ->where('id', $extreme_right)
                             ->update([
                                 'right_id' => $member_insert ,
-                                'parent_leg' => 'R',
                                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                             ]);
                     }
@@ -340,7 +340,7 @@ class MemberDashboardController extends Controller
                       'start_node' => $tree_insert,
                     )
                 );
-                $this->treePair($parrents, $member_insert);                
+                $this->treePair($parrents, $member_insert);
             });
             
         }catch (\Exception $e) {
@@ -444,13 +444,22 @@ class MemberDashboardController extends Controller
                 $adminCommission = (200 * $adminCommissionFetch->commission)/100;
                 $earning2 = 200 - $adminCommission;
                 
+                // Fetch Admin Wallet 
+                $fetch_admin_wallet =  DB::table('admin_wallets')->first();
                 // Admin Wallet Insert
                 $admin_wallet_insert = DB::table('admin_wallets') 
                     ->where('role', '1')
                     ->update([
                         'amount' => DB::raw("`amount`+".($adminCommission)),
                     ]);
-                
+                //Admin Wallet History
+                $admin_wallet_history_insert = new AdminWalletHistory;
+                $admin_wallet_history_insert->transaction_type = '1';
+                $admin_wallet_history_insert->amount = $adminCommission;
+                $admin_wallet_history_insert->total_amount = $fetch_admin_wallet->amount;
+                $admin_wallet_history_insert->comment = $adminCommission.' income is generated! ';
+                $admin_wallet_history_insert->save();
+
                 // TDS Commission Fetch
                 $tdsCommissionFetch = DB::table('admin_tds')->first();
                 $tdsCommission = ($earning2 * $tdsCommissionFetch->tds)/100;
@@ -461,6 +470,15 @@ class MemberDashboardController extends Controller
                 ->update([
                     'tds' => DB::raw("`tds`+".($tdsCommission)),
                 ]);
+                // Admin TDS History
+                //Admin Wallet History
+                $admin_tdses_history_insert = new AdminTdsesHistory;
+                $admin_tdses_history_insert->transaction_type = '1';
+                $admin_tdses_history_insert->amount = $tdsCommission;
+                $admin_tdses_history_insert->total_amount = $tdsCommissionFetch->tds;
+                $admin_tdses_history_insert->comment = $tdsCommission.' income is generated! ';
+                $admin_tdses_history_insert->save();
+
                 // Wallet Insert
                 $wallet_insert = DB::table('wallets') 
                     ->where('user_id', $fetch_tree->user_id)
@@ -983,5 +1001,49 @@ class MemberDashboardController extends Controller
                     $rewards->comment = "Congratulations! You are the winner of Voltas 1.5 ton AC reward for 500 BV";
                     $rewards->save();
         }
+    }
+
+    function sendSms($fullName, $mobile, $login_id, $password){
+        $sms = "Dear $fullName, 
+        Welcome to SSSDREAMLIFE. Your username is $login_id and password is $password .
+        
+        Team,
+        SSSDRREAMLIFE";   
+
+        $username="bibibobi";
+        $api_password="9aea6n725bb8uegi3";
+        $sender="BBBOBI";
+        $domain="http://sms.webinfotech.co";
+        $priority="11";// 11-Enterprise, 12- Scrub
+        $method="GET";
+        $message=$sms;
+
+        $username=urlencode($username);
+        $api_password=urlencode($api_password);
+        $sender=urlencode($sender);
+        $message=urlencode($message);
+
+        $sms = urlencode($sms);
+
+        $parameters="username=$username&api_password=$api_password&sender=$sender&to=$mobile&message=$message&priority=$priority";
+        $url="$domain/pushsms.php?".$parameters;
+        $ch = curl_init($url);
+
+        if($method=="POST")
+        {
+            curl_setopt($ch, CURLOPT_POST,1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,$parameters);
+        }
+        else
+        {
+            $get_url=$url."?".$parameters;
+
+            curl_setopt($ch, CURLOPT_POST,0);
+            curl_setopt($ch, CURLOPT_URL, $get_url);
+        }
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); 
+        curl_setopt($ch, CURLOPT_HEADER,0);  // DO NOT RETURN HTTP HEADERS 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  // RETURN THE CONTENTS OF THE CALL
+        $return_val = curl_exec($ch);
     }
 }
