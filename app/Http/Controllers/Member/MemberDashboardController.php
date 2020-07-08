@@ -1004,11 +1004,11 @@ class MemberDashboardController extends Controller
     }
 
     function sendSms($fullName, $mobile, $login_id, $password){
-        $sms = "Dear $fullName, 
-        Welcome to SSSDREAMLIFE. Your username is $login_id and password is $password .
-        
-        Team,
-        SSSDRREAMLIFE";   
+        $sms = "Congratulations $fullName!!!
+        You are successfully registered with SSSDREAM LIFE E-COMMERCE PVT LTD
+        Your User ID: $login_id
+        Password: $password
+        Website: http://sssdreamlife.net.in";   
 
         $username="bibibobi";
         $api_password="9aea6n725bb8uegi3";
