@@ -30,7 +30,7 @@
                                         <label for="search_sponsor_id">Sponsor ID</label>
                                         <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="Sponsor ID">
                                         @if($errors->has('search_sponsor_id'))
-                                            <span class="invalid-feedback" role="alert" style="color:rgb(29, 11, 11)">
+                                            <span class="invalid-feedback" role="alert" style="color:red;">
                                                 <strong>{{ $errors->first('search_sponsor_id') }}</strong>
                                             </span>
                                         @enderror
@@ -48,7 +48,7 @@
                                                 <option value="2" {{old('leg') == '2'?'selected':''}}>Right</option>
                                             </select>
                                             @if($errors->has('leg'))
-                                            <span class="invalid-feedback" role="alert" style="color:rgb(3, 0, 0)">
+                                            <span class="invalid-feedback" role="alert" style="color:red;">
                                                 <strong>{{ $errors->first('leg') }}</strong>
                                             </span>
                                             @enderror
