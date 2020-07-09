@@ -233,6 +233,7 @@ class MemberDashboardController extends Controller
                         'amount' => 0,
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
+
                 // Fetch All Parent of Current Registered node
                 $parrents = DB::select( DB::raw("SELECT * FROM (
                     SELECT @pv:=(
@@ -246,7 +247,6 @@ class MemberDashboardController extends Controller
                       'start_node' => $tree_insert,
                     )
                 );
-               
                 $this->treePair($parrents, $member_insert);
             });
             
@@ -387,6 +387,7 @@ class MemberDashboardController extends Controller
                 ->select('left_count', 'right_count')
                 ->where('id',$parent)
                 ->first();
+
             //Check 1:1 Check
             if($pair_match->right_count > 0 && $pair_match->left_count  > 0){
                 $this->creditCommisionOneIsToOne($parent,1, 1);
@@ -426,14 +427,15 @@ class MemberDashboardController extends Controller
                 $adminCommission = (200 * $adminCommissionFetch->commission)/100;
                 $earning2 = 200 - $adminCommission;
                 
-                // Fetch Admin Wallet 
-                $fetch_admin_wallet =  DB::table('admin_wallets')->first();
+
                 // Admin Wallet Insert
                 $admin_wallet_insert = DB::table('admin_wallets') 
                     ->where('role', '1')
                     ->update([
                         'amount' => DB::raw("`amount`+".($adminCommission)),
                     ]);
+                // Fetch Admin Wallet 
+                $fetch_admin_wallet =  DB::table('admin_wallets')->first();
                 //Admin Wallet History
                 $admin_wallet_history_insert = new AdminWalletHistory;
                 $admin_wallet_history_insert->transaction_type = '1';
@@ -453,11 +455,13 @@ class MemberDashboardController extends Controller
                     'tds' => DB::raw("`tds`+".($tdsCommission)),
                 ]);
                 // Admin TDS History
+                // Fetch Admin Wallet 
+                $fetch_admin_tdes =  DB::table('admin_tdses')->first();
                 //Admin Wallet History
                 $admin_tdses_history_insert = new AdminTdsesHistory;
                 $admin_tdses_history_insert->transaction_type = '1';
                 $admin_tdses_history_insert->amount = $tdsCommission;
-                $admin_tdses_history_insert->total_amount = $tdsCommissionFetch->tds;
+                $admin_tdses_history_insert->total_amount = $fetch_admin_tdes->tds;
                 $admin_tdses_history_insert->comment = $tdsCommission.' income is generated! ';
                 $admin_tdses_history_insert->save();
 
@@ -947,7 +951,7 @@ class MemberDashboardController extends Controller
         You are successfully registered with SSSDREAM LIFE E-COMMERCE PVT LTD
         Your User ID: $login_id
         Password: $password
-        Website: http://sssdreamlife.net.in";   
+        Website: http://sssdreamlife.net.in/member/login";   
 
         $username="bibibobi";
         $api_password="9aea6n725bb8uegi3";
