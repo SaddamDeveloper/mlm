@@ -43,8 +43,8 @@ class MemberDashboardController extends Controller
             'f_name'                => 'required',
             'l_name'                => 'required',
             'leg'                   => 'required',
+            'mobile'                => 'required|numeric|min:10',
             // 'email'                 => 'unique:members|required|email',
-            // 'mobile'                => 'unique:members|required|numeric|min:10',
             // 'dob'                   => 'required',
             // 'pan'                   => 'unique:members|required',
             // 'aadhar'                => 'unique:members|required',
@@ -637,7 +637,7 @@ class MemberDashboardController extends Controller
                     </div>
                 </a>';
             $rank++;
-            $first_level = Tree::where('parent_id',$root->id)->orderBy('created_at', 'DESC')->get();
+            $first_level = Tree::where('parent_id',$root->id)->get();
          
             if ($first_level) {
                 $html.="<ul>";
