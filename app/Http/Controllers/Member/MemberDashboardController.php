@@ -80,27 +80,19 @@ class MemberDashboardController extends Controller
         $member_data = Member::where('sponsorID', $sponsorID)->first();
         if(!empty($leg)){
             if($member_data){
-                $member = Member::where('login_id', $login_id)->count();
-                if($member < 1){
-                    $mobile_count = Member::where('mobile', $mobile)->count();
-                    if($mobile_count < 1){
-                        $tree_data = Tree::where('user_id', $member_data->id)->first();
-                        if($tree_data){
-                            if($leg == 1){
-                                $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
-                                    return redirect()->route('member.thank_you');                
-                            }else if($leg == 2){
-                                $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
-                                    return redirect()->route('member.thank_you');                
-                            }
-                        }else{
-                            return back()->with('error', 'Inavlid SponsorID!');
-                        }
-                    }else{
-                        return back()->with('error', 'Mobile No is already taken!');
+                $tree_data = Tree::where('user_id', $member_data->id)->first();
+                if($tree_data){
+                    if($leg == 1){
+                        $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $token = rand(111111,999999);
+                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                    }else if($leg == 2){
+                        $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $token = rand(111111,999999);
+                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                     }
                 }else{
-                    return back()->with('error', 'Username is already taken!');
+                    return back()->with('error', 'Inavlid SponsorID!');
                 }
             }else{
                 return back()->with('error', 'SponsorID is invalid');
@@ -175,7 +167,6 @@ class MemberDashboardController extends Controller
                 $member_registration->account_no = $account_no;
                 $member_registration->save();
                 $member_insert = $member_registration->id;
-
                 $generatedID = $this->memberIDGeneration($fullName, $member_insert);
                 $member_update = DB::table('members')
                 ->where('id', $member_insert)
@@ -183,140 +174,55 @@ class MemberDashboardController extends Controller
                     'sponsorID' =>  $generatedID,
                 ]);
                 $this->sendSms($fullName, $mobile, $login_id, $password);
-                //Fetch Member Data Using Sponsor ID
-                $fetch_member = DB::table('members')
-                    ->where('sponsorID', $sponsorID)
-                    ->first();
+                $sponsor = Member::where('sponsorID', $sponsorID)->first();
                 //Fetch Tree Data Using User ID
-                $fetch_tree = DB::table('trees')
-                    ->where('user_id', $fetch_member->id)
+                $sponsor_tree = DB::table('trees')
+                    ->where('user_id', $sponsor->id)
                     ->first();
+                $tree_insert = null;      
                 // Checking Direct Referral
-                if(is_null($fetch_tree->left_id)){
+                if($leg == 1){
                     // Direct Referaal
-                    $tree_insert = DB::table('trees')
-                        ->insertGetId([
-                            'user_id' => $member_insert,
-                            'parent_id' => $fetch_tree->id,
-                            'parent_leg' => 'L',
-                            'registered_by' => Auth::user()->id,
-                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                        ]);
-                        if($leg == 1){
-                            $tree_update = DB::table('trees')
-                                ->where('id', $fetch_tree->id)
-                                ->update([
-                                    'left_id' => $member_insert,
-                                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                                ]);
-                        }else{
-                            $tree_update = DB::table('trees')
-                            ->where('id', $fetch_tree->id)
-                            ->update([
-                                'right_id' => $member_insert,
-                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                                ]);
-                        
-                        }
-                }else if(is_null($fetch_tree->right_id)){
-                    // Direct Referaal
-                    $tree_insert = DB::table('trees')
-                    ->insertGetId([
-                        'user_id' => $member_insert,
-                        'parent_id' => $fetch_tree->id,
-                        'registered_by' => Auth::user()->id,
-                        'parent_leg' => 'R',
-                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                    ]);
-                    if($leg == 1){
-                        $tree_update = DB::table('trees')
-                            ->where('id', $fetch_tree->id)
-                            ->update([
-                                'left_id' => $member_insert,
-                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                            ]);
-                            
-                    }else{
-                        $tree_update = DB::table('trees')
-                        ->where('id', $fetch_tree->id)
-                        ->update([
-                            'right_id' => $member_insert ,
-                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                            ]);
-                    
-                    }
-                }else{
-                    // Indirect Referal
-                    // Check Whether Branch is Left Or Right
-                    if($leg == 1){
-                        //    Left
-                        $left_iteration = DB::select( DB::raw("SELECT * FROM (
-                            SELECT @pv:=(
-                                SELECT left_id FROM trees WHERE id = @pv
-                                ) AS tv FROM trees
-                                JOIN
-                                (SELECT @pv:=:start_node) tmp
-                            ) a
-                            WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
-                            , array(
-                            'start_node' => Auth::user()->id,
-                            )
-                        );    
-                        $expected = [];
-                        foreach($left_iteration as $k=>$v){
-                            $expected[$k]=end($v);
-                        }
-                        $extreme_left = end($expected);
-
+                    if (empty($sponsor_tree->left_id)) {
                         $tree_insert = DB::table('trees')
                         ->insertGetId([
                             'user_id' => $member_insert,
-                            'parent_id' => $extreme_left,
+                            'parent_id' => $sponsor_tree->id,
                             'parent_leg' => 'L',
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-
-                        $tree_update = DB::table('trees')
-                        ->where('user_id', $extreme_left)
-                        ->update([
-                            'left_id' => $member_insert,
-                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                        ]);
-                    }else if($leg == 2){
-                        // Right
-                            $right_iteration = DB::select( DB::raw("SELECT * FROM (
-                                    SELECT @pv:=(
-                                        SELECT right_id FROM trees WHERE id = @pv
-                                        ) AS tv FROM trees
-                                        JOIN
-                                        (SELECT @pv:=:start_node) tmp
-                                    ) a
-                                    WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
-                                    , array(
-                                    'start_node' => Auth::user()->id
-                                    )
-                                );
-
-                            $expected = [];
-                            foreach($right_iteration as $k=>$v){
-                                $expected[$k]=end($v);
-                            }
-                            $extreme_right = end($expected);
-                            $tree_insert = DB::table('trees')
-                            ->insertGetId([
-                                'user_id' => $member_insert,
-                                'parent_id' => $extreme_right,
-                                'parent_leg' => 'R',
-                                'registered_by' => Auth::user()->id,
-                                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                            ]);
-                            $tree_update = DB::table('trees')
-                            ->where('id', $extreme_right)
+                        $sponsor_tree_update = DB::table('trees')
+                            ->where('id', $sponsor_tree->id)
                             ->update([
-                                'right_id' => $member_insert ,
+                                'left_id' => $tree_insert,
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                        ]);
+                        // dd($sponsor_tree_update);
+                    }else{
+                        //Go to Extreme Left
+                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                    }
+                }else if($leg == 2){
+                    if (empty($sponsor_tree->right_id)) {
+                        // Direct Referaal
+                        $tree_insert = DB::table('trees')
+                        ->insertGetId([
+                            'user_id' => $member_insert,
+                            'parent_id' => $sponsor_tree->id,
+                            'registered_by' => Auth::user()->id,
+                            'parent_leg' => 'R',
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+                        $sponsor_tree_update = DB::table('trees')
+                            ->where('id', $sponsor_tree->id)
+                            ->update([
+                                'right_id' => $tree_insert,
                                 'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                             ]);
+                    }else{
+                        //Go to Extreme Right
+                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
                     }
                 }
 
@@ -326,7 +232,7 @@ class MemberDashboardController extends Controller
                         'user_id' => $member_insert,
                         'amount' => 0,
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                    ]);
+                ]);
                 // Fetch All Parent of Current Registered node
                 $parrents = DB::select( DB::raw("SELECT * FROM (
                     SELECT @pv:=(
@@ -340,6 +246,7 @@ class MemberDashboardController extends Controller
                       'start_node' => $tree_insert,
                     )
                 );
+               
                 $this->treePair($parrents, $member_insert);
             });
             
@@ -347,9 +254,88 @@ class MemberDashboardController extends Controller
                 return redirect()->back()->with('error','Something Went Wrong Please try Again');
         }
     }
-    public function thankYou(){
-        $success = 'Registration Successfull';
-        return view('member.registration.finish_page', compact('success'));
+    public function extremeLeg($leg, $member_insert, $sponsor_tree_ID, $registerdBY){
+        if($leg == 1){
+            //    Left
+            $left_iteration = DB::select( DB::raw("SELECT * FROM (
+                SELECT @pv:=(
+                    SELECT left_id FROM trees WHERE id = @pv
+                    ) AS tv FROM trees
+                    JOIN
+                    (SELECT @pv:=:start_node) tmp
+                ) a
+                WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                , array(
+                'start_node' => $sponsor_tree_ID,
+                )
+            );
+            $expected = [];
+            foreach($left_iteration as $k=>$v){
+                $expected[$k]=end($v);
+            }
+            $extreme_left = end($expected);
+            $tree_insert = DB::table('trees')
+            ->insertGetId([
+                'user_id' => $member_insert,
+                'parent_id' => $extreme_left,
+                'parent_leg' => 'L',
+                'registered_by' => $registerdBY,
+                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
+            $tree_update = DB::table('trees')
+            ->where('user_id', $extreme_left)
+            ->update([
+                'left_id' => $tree_insert,
+                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+            ]);
+            return $tree_insert;
+        }else if($leg == 2){
+            // Right
+                $right_iteration = DB::select( DB::raw("SELECT * FROM (
+                        SELECT @pv:=(
+                            SELECT right_id FROM trees WHERE id = @pv
+                            ) AS tv FROM trees
+                            JOIN
+                            (SELECT @pv:=:start_node) tmp
+                        ) a
+                        WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                        , array(
+                        'start_node' => $sponsor_tree_ID
+                        )
+                    );
+
+                $expected = [];
+                foreach($right_iteration as $k=>$v){
+                    $expected[$k]=end($v);
+                }
+                $extreme_right = end($expected);
+                $tree_insert = DB::table('trees')
+                ->insertGetId([
+                    'user_id' => $member_insert,
+                    'parent_id' => $extreme_right,
+                    'parent_leg' => 'R',
+                    'registered_by' => $registerdBY,
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+                $tree_update = DB::table('trees')
+                ->where('id', $extreme_right)
+                ->update([
+                    'right_id' => $tree_insert ,
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                ]);
+                return $tree_insert;
+        }
+    }
+    public function thankYou($token){
+        try {
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        if($token){
+            $success = 'Registration Successfull';
+            return view('member.registration.finish_page', compact('success'));
+        }
     }
 
     function memberIDGeneration($fullName, $id){
@@ -373,10 +359,8 @@ class MemberDashboardController extends Controller
             $parent = $parents[$i]->lv; 
             //**************Fetch parrent details***************************
             $fetch_parent = DB::table('trees')
-                ->select('left_id', 'right_id')
                 ->where('id',$parent)
                 ->first();
-
             //***************check child node is in left or right*******************
             if ($fetch_parent->left_id == $child){
                 //Check Left count already had previous value + 1
@@ -397,8 +381,6 @@ class MemberDashboardController extends Controller
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
             }   
-            
-           
             
             //Fetch Pair Match
             $pair_match = DB::table('trees')
@@ -642,23 +624,21 @@ class MemberDashboardController extends Controller
         }
 
         $html=null;
-        $root = DB::table('trees')
-            ->select('trees.*', 'members.full_name', 'members.sponsorID')
-            ->join('members', 'trees.user_id', '=', 'members.id')
-            ->where('user_id', $user_id)
-            ->first();
+        $root = Tree::where('user_id', $user_id)->first();
+       
         if($root){
             $html = '<ul>
             <li>        
-                <a href="#"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$root->full_name.'
-                    <div class="info">
-                        <h5>Name : '.$root->full_name.'</h5>
-                        <h5>Id : '.$root->sponsorID.'</h5>
+                <a href="#"><img src="'.asset('admin/build/images/avatar.jpg').'"><span class="text-success">'.$root->member->full_name.'
+                    </span><div class="info text-success">
+                        <h5>Name : '.$root->member->full_name.'</h5>
+                        <h5>Id : '.$root->member->sponsorID.'</h5>
                         <h5>Rank : '.$rank.'</h5>
                     </div>
                 </a>';
             $rank++;
-            $first_level = DB::table('trees')->where('parent_id',$root->id)->get();
+            $first_level = Tree::where('parent_id',$root->id)->orderBy('created_at', 'DESC')->get();
+         
             if ($first_level) {
                 $html.="<ul>";
                 if(empty($root->left_id)){
@@ -667,35 +647,26 @@ class MemberDashboardController extends Controller
                 foreach ($first_level as $key => $first) {
                     $html.="<li>";
                     if ($root->left_id == $first->id) {
-                        $first_level_node = DB::table('trees')
-                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                        ->join('members', 'trees.user_id', '=', 'members.id')
-                        ->where('trees.user_id', $first->id)
-                        ->first();
-                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->full_name.'
+                        $first_level_node = Tree::where('user_id', $first->user_id)->first();
+                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->member->full_name.'
                             <div class="info">
-                                <h5>Name : '.$first_level_node->full_name.'</h5>
-                                <h5>Id : '.$first_level_node->sponsorID.'</h5>
+                                <h5>Name : '.$first_level_node->member->full_name.'</h5>
+                                <h5>Id : '.$first_level_node->member->sponsorID.'</h5>
                                 <h5>Rank : '.$rank.'</h5>
                             </div>  
                         </a>';
                     } else if($root->right_id == $first->id){
-                        $first_level_node = DB::table('trees')
-                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                        ->join('members', 'trees.user_id', '=', 'members.id')
-                        ->where('trees.user_id', $first->id)
-                        ->first();
-                        $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->full_name.'
+                        $first_level_node = Tree::where('user_id', $first->user_id)->first();
+                        $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->member->full_name.'
                             <div class="info">
-                                <h5>Name : '.$first_level_node->full_name.'</h5>
-                                <h5>Id : '.$first_level_node->sponsorID.'</h5>
+                                <h5>Name : '.$first_level_node->member->full_name.'</h5>
+                                <h5>Id : '.$first_level_node->member->sponsorID.'</h5>
                                 <h5>Rank : '.$rank.'</h5>
                             </div>  
                         </a>';
                     }
 
-                    $second_level = DB::table('trees')->where('parent_id',$first->id)->orderBy('parent_leg', 'ASC')->get();
-
+                    $second_level = Tree::where('parent_id',$first->id)->orderBy('parent_leg', 'ASC')->get();
 
                     if ($second_level) {
                         $html.="<ul>";
@@ -705,35 +676,27 @@ class MemberDashboardController extends Controller
                         foreach ($second_level as $key => $second) {
                             $html.="<li>";
                             if ($first->left_id == $second->id) {
-                                $second_level_node = DB::table('trees')
-                                ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                ->join('members', 'trees.user_id', '=', 'members.id')
-                                ->where('trees.user_id', $second->id)
-                                ->first();
-                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->full_name.'
+                                $second_level_node = Tree::where('user_id', $second->id)->first();
+                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->member->full_name.'
                                             <div class="info">
-                                                <h5>Name : '.$second_level_node->full_name.'</h5>
-                                                <h5>Id : '.$second_level_node->sponsorID.'</h5>
+                                                <h5>Name : '.$second_level_node->member->full_name.'</h5>
+                                                <h5>Id : '.$second_level_node->member->sponsorID.'</h5>
                                                 <h5>Rank : '.$rank.'</h5>
                                             </div>  
                                         </a>';
                             } else if($first->right_id == $second->id){
-                                $second_level_node = DB::table('trees')
-                                ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                ->join('members', 'trees.user_id', '=', 'members.id')
-                                ->where('trees.user_id', $second->id)
-                                ->first();
-                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->full_name.'
+                                $second_level_node =Tree::where('user_id', $second->id)->first();
+                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->member->full_name.'
                                     <div class="info">
-                                        <h5>Name : '.$second_level_node->full_name.'</h5>
-                                        <h5>Id : '.$second_level_node->sponsorID.'</h5>
+                                        <h5>Name : '.$second_level_node->member->full_name.'</h5>
+                                        <h5>Id : '.$second_level_node->member->sponsorID.'</h5>
                                         <h5>Rank : '.$rank.'</h5>
                                     </div>  
                                 </a>';
                             }
 
                             //THIRD LEVEL STARTS
-                            $third_level = DB::table('trees')->where('parent_id',$second->id)->orderBy('parent_leg', 'ASC')->get();
+                            $third_level = Tree::where('parent_id',$second->id)->orderBy('parent_leg', 'ASC')->get();
                             
                             if ($third_level) {
                                 $html.="<ul>";
@@ -743,34 +706,26 @@ class MemberDashboardController extends Controller
                                 foreach ($third_level as $key => $third) {
                                     $html.="<li>";
                                     if ($second->left_id == $third->id) {
-                                        $third_level_node = DB::table('trees')
-                                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                        ->join('members', 'trees.user_id', '=', 'members.id')
-                                        ->where('trees.user_id', $third->id)
-                                        ->first();
-                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->full_name.'
+                                        $third_level_node = Tree::where('user_id', $third->id)->first();
+                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->member->full_name.'
                                             <div class="info">
-                                                <h5>Name : '.$third_level_node->full_name.'</h5>
-                                                <h5>Id : '.$third_level_node->sponsorID.'</h5>
+                                                <h5>Name : '.$third_level_node->member->full_name.'</h5>
+                                                <h5>Id : '.$third_level_node->member->sponsorID.'</h5>
                                                 <h5>Rank : '.$rank.'</h5>
                                             </div>  
                                         </a>';
                                     } else if($second->right_id == $third->id){
-                                        $third_level_node = DB::table('trees')
-                                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                        ->join('members', 'trees.user_id', '=', 'members.id')
-                                        ->where('trees.user_id', $third->id)
-                                        ->first();
-                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->full_name.'
+                                        $third_level_node = Tree::where('user_id', $third->id)->first();
+                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->member->full_name.'
                                             <div class="info">
-                                                <h5>Name : '.$third_level_node->full_name.'</h5>
-                                                <h5>Id : '.$third_level_node->sponsorID.'</h5>
+                                                <h5>Name : '.$third_level_node->member->full_name.'</h5>
+                                                <h5>Id : '.$third_level_node->member->sponsorID.'</h5>
                                                 <h5>Rank : '.$rank.'</h5>
                                             </div>  
                                         </a>';
                                     }
                                     //FOURTH LEVEL STARTS
-                                    $fourth_level = DB::table('trees')->where('parent_id',$third->id)->orderBy('parent_leg', 'ASC')->get();
+                                    $fourth_level = Tree::where('parent_id',$third->id)->orderBy('parent_leg', 'ASC')->get();
                                     if ($fourth_level) {
                                         $html.="<ul>";
                                         if(empty($third->left_id)){
@@ -779,35 +734,27 @@ class MemberDashboardController extends Controller
                                         foreach ($fourth_level as $key => $fourth) {
                                             $html.="<li>";
                                             if ($third->left_id == $fourth->id) {
-                                                $fourth_level_node = DB::table('trees')
-                                                ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                                ->join('members', 'trees.user_id', '=', 'members.id')
-                                                ->where('trees.user_id', $fourth->id)
-                                                ->first();
-                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->full_name.'
+                                                $fourth_level_node = Tree::where('user_id', $fourth->id)->first();
+                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->member->full_name.'
                                                     <div class="info">
-                                                        <h5>Name : '.$fourth_level_node->full_name.'</h5>
-                                                        <h5>Id : '.$fourth_level_node->sponsorID.'</h5>
+                                                        <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
+                                                        <h5>Id : '.$fourth_level_node->member->sponsorID.'</h5>
                                                         <h5>Rank : '.$rank.'</h5>
                                                     </div>  
                                                 </a>';
                                             } else if($third->right_id == $fourth->id){
-                                                $fourth_level_node = DB::table('trees')
-                                                ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                                ->join('members', 'trees.user_id', '=', 'members.id')
-                                                ->where('trees.user_id', $fourth->id)
-                                                ->first();
-                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->full_name.'
+                                                $fourth_level_node = Tree::where('user_id', $fourth->id)->first();
+                                                $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->member->full_name.'
                                                 <div class="info">
-                                                    <h5>Name : '.$fourth_level_node->full_name.'</h5>
-                                                    <h5>Id : '.$fourth_level_node->sponsorID.'</h5>
+                                                    <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
+                                                    <h5>Id : '.$fourth_level_node->member->sponsorID.'</h5>
                                                     <h5>Rank : '.$rank.'</h5>
                                                 </div>  
                                             </a>';
                                             }
 
                                             // FIFTH LEVEL STARTS
-                                            $fifth_level = DB::table('trees')->where('parent_id',$fourth->id)->orderBy('parent_leg', 'ASC')->get();
+                                            $fifth_level = Tree::where('parent_id',$fourth->id)->orderBy('parent_leg', 'ASC')->get();
                                             if ($fifth_level) {
                                                 $html.="<ul>";
                                                 if(empty($fourth->left_id)){
@@ -816,28 +763,20 @@ class MemberDashboardController extends Controller
                                                 foreach ($fifth_level as $key => $fifth) {
                                                     $html.="<li>";
                                                     if ($fourth->left_id == $fifth->id) {
-                                                        $fifth_level_node = DB::table('trees')
-                                                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                                        ->join('members', 'trees.user_id', '=', 'members.id')
-                                                        ->where('trees.user_id', $fifth->id)
-                                                        ->first();
-                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->full_name.'
+                                                        $fifth_level_node = Tree::where('user_id', $fifth->id)->first();
+                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->member->full_name.'
                                                             <div class="info">
-                                                                <h5>Name : '.$fifth_level_node->full_name.'</h5>
-                                                                <h5>Id : '.$fifth_level_node->sponsorID.'</h5>
+                                                                <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
+                                                                <h5>Id : '.$fifth_level_node->member->sponsorID.'</h5>
                                                                 <h5>Rank : '.$rank.'</h5>
                                                             </div>  
                                                         </a>';
                                                     } else if($fourth->right_id == $fifth->id){
-                                                        $fifth_level_node = DB::table('trees')
-                                                        ->select('trees.*', 'members.full_name', 'members.sponsorID')
-                                                        ->join('members', 'trees.user_id', '=', 'members.id')
-                                                        ->where('trees.user_id', $fifth->id)
-                                                        ->first();
-                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->full_name.'
+                                                        $fifth_level_node = Tree::where('user_id', $fifth->id)->first();
+                                                        $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->member->full_name.'
                                                         <div class="info">
-                                                            <h5>Name : '.$fifth_level_node->full_name.'</h5>
-                                                            <h5>Id : '.$fifth_level_node->sponsorID.'</h5>
+                                                            <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
+                                                            <h5>Id : '.$fifth_level_node->member->sponsorID.'</h5>
                                                             <h5>Rank : '.$rank.'</h5>
                                                         </div>  
                                                     </a>';
@@ -1046,4 +985,5 @@ class MemberDashboardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  // RETURN THE CONTENTS OF THE CALL
         $return_val = curl_exec($ch);
     }
+
 }

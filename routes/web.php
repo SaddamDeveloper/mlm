@@ -62,7 +62,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/check/loginID', 'MemberDashboardController@loginIDCheck')->name('member.login_id_check');
 
     // Thank You Page
-    Route::get('/thank/you', 'MemberDashboardController@thankYou')->name('member.thank_you');
+    Route::get('/thank/you/{token}', 'MemberDashboardController@thankYou')->name('member.thank_you');
 
     // Downline list
     Route::get('/my/downline/', 'MemberDashboardController@memberDownlineListForm')->name('member.mem_downline_list_form');

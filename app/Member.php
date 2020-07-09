@@ -10,9 +10,9 @@ class Member extends Authenticatable
 
         protected $guard = 'member';
         protected $table = 'members';
-
+        protected $primary_key = "id";
         protected $fillable = [
-            'name', 'email', 'password',
+            'login_id', 'sponsorID', 'full_name', 'dob', 'email', 'mobile', 'pan', 'aadhar', 'address', 'bank_name', 'ac_holder_name', 'ifsc', 'account_no', 'status'
         ];
 
         protected $hidden = [
