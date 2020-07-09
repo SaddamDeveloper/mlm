@@ -444,7 +444,7 @@ class MemberDashboardController extends Controller
 
                 // TDS Commission Fetch
                 $tdsCommissionFetch = DB::table('admin_tds')->first();
-                $tdsCommission = ($earning2 * $tdsCommissionFetch->tds)/100;
+                $tdsCommission = (200 * $tdsCommissionFetch->tds)/100;
                 $earning = $earning2 - $tdsCommission;
                 // Admin TDS Insert
                 $admin_tds_insert = DB::table('admin_tdses') 
@@ -637,7 +637,7 @@ class MemberDashboardController extends Controller
                     </div>
                 </a>';
             $rank++;
-            $first_level = Tree::where('parent_id',$root->id)->get();
+            $first_level = Tree::where('parent_id',$root->id)->orderBy('parent_leg', 'ASC')->get();
          
             if ($first_level) {
                 $html.="<ul>";
