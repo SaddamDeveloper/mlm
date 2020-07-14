@@ -34,7 +34,7 @@
                                   <thead>
                                     <tr>
                                       <th>Sl. No</th>
-                                      <th>Member ID</th>
+                                      <th>User ID</th>
                                       <th>Member Name</th>
                                       <th>Left Member</th>
                                       <th>Right Member</th>
@@ -61,7 +61,7 @@
             var table = $('#downline_list').DataTable({
                 processing: true,
                 serverSide: true,
-                iDisplayLength: 50,
+                iDisplayLength: 10,
                 ajax: "{{ route('member.ajax.my_downline_list') }}",
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
