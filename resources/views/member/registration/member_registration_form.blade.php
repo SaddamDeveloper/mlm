@@ -27,7 +27,7 @@
                             <div class="well" style="overflow: auto">
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
-                                        <label for="search_sponsor_id">Sponsor ID</label>
+                                        <label for="search_sponsor_id">User ID</label>
                                         <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="Sponsor ID">
                                         @if($errors->has('search_sponsor_id'))
                                             <span class="invalid-feedback" role="alert" style="color:red;">
@@ -370,7 +370,7 @@
                     },
                     success: function(data){
                         if(data == 1){
-                            $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
+                            $('#member_data').html("<font color='red'>Invalid User ID!</font>").fadeIn( "slow" );
                             $("#loading-image").hide();
                             $('#sponsorVal').val(data);
                         }else{
@@ -457,12 +457,5 @@
     </script>
 @endsection
 
-@section('css')
-    <style>
-        #search_sponsor_id{
-            text-transform: uppercase;
-        }
-    </style>
-@stop
 
 
