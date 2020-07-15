@@ -42,6 +42,9 @@
                 <li><a href="{{route('member.mem_epin_list_form')}}"> My Fund</a></li>
               </ul>
             </li>
+            <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
+            </li>
+
             {{-- <li><a><i class="fa fa-ticket"></i> Rewardz<span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('member.my_rewards_list_form')}}"> My Rewards</a></li>

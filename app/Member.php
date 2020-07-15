@@ -19,4 +19,8 @@ class Member extends Authenticatable
             'password', 'remember_token',
         ];
 
+        public function tree()
+        {
+            return $this->hasOne('App\Tree', 'id');
+        }
 }

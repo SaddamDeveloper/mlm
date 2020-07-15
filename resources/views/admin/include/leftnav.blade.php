@@ -27,18 +27,14 @@
           <ul class="nav side-menu">
           <li><a href="{{route('admin.dashboard')}}"><i class="fa fa-home"></i> Home </a>
             </li>
-            {{-- <li><a><i class="fa fa-edit"></i> Member Product <span class="fa fa-chevron-down"></span></a>
-              <ul class="nav child_menu">
-                <li><a href="{{route('admin.mem_product_list')}}">Product List</a></li>
-              </ul>
-            </li> --}}
-            {{-- <li><a><i class="fa fa-users"></i> Members <span class="fa fa-chevron-down"></span></a>
+            <li><a><i class="fa fa-users"></i> Members <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_member_list')}}">Member List</a></li>
                 <li><a href="{{route('admin.mem_commission_history')}}">Commision History</a></li>
                 <li><a href="{{route('admin.mem_wallet')}}">Member Wallet List</a></li>
               </ul>
             </li>
+            {{--
             <li><a><i class="fa fa-shopping-cart"></i> Shopping <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.shopping_slider')}}">Slider List</a></li>

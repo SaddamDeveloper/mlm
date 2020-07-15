@@ -48,6 +48,26 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // TDS
     Route::get('/admin/tds', 'AdminDashboardController@adminTds')->name('admin.mem_tds');
     Route::post('/add/tds', 'AdminDashboardController@storeTds')->name('admin.store_tds');
+
+    // Member List
+    Route::get('/list/members', 'AdminDashboardController@memberList')->name('admin.mem_member_list');
+    Route::get('/list/all/members', 'AdminDashboardController@ajaxGetMemberList')->name('admin.ajax.get_member_list');
+    Route::get('/status/member/{id}/{status}', 'AdminDashboardController@memberStatus')->name('admin.member_status');
+    Route::get('/view/member/{id}', 'AdminDashboardController@memberView')->name('admin.member_view');
+    Route::get('/edit/member/{id}', 'AdminDashboardController@memberEdit')->name('admin.member_edit');
+    Route::post('/edit/member/', 'AdminDashboardController@memberUpdate')->name('admin.update_member');
+    Route::get('/downline/member/{id}', 'AdminDashboardController@memberDownline')->name('admin.member_downline');
+    Route::get('/member/tree/{rank?}/{user_id?}', 'AdminDashboardController@memberTree')->name('admin.member.tree');
+    Route::get('/downline/member/list/{id}', 'AdminDashboardController@memberDownlineList')->name('admin.ajax.downline_list');
+
+
+    // Commision
+    Route::get('/commission/members', 'AdminDashboardController@memberCommissionHistory')->name('admin.mem_commission_history');
+    Route::get('/commission/history', 'AdminDashboardController@memberCommissionHistoryList')->name('admin.ajax.commission_list');
+    Route::get('/wallet/', 'AdminDashboardController@memberWallet')->name('admin.mem_wallet');
+    Route::get('/wallet/list', 'AdminDashboardController@memberWalletList')->name('admin.ajax.wallet_list');
+    Route::get('/wallet/history/{id}', 'AdminDashboardController@memberWalletHistory')->name('admin.wallet_history');
+    Route::get('/wallet/ajax/history/{id}', 'AdminDashboardController@memberAjaxWalletHistory')->name('admin.ajax.wallet_history');
 });
 
 
@@ -83,5 +103,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/rewards/list', 'MemberDashboardController@memberGetRewardList')->name('member.ajax.my_rewards_list');
     Route::get('/my/rewards/list/history', 'MemberDashboardController@memberGetRewardListHistory')->name('member.mem_rewards_history');
 
+    // Commission
+    Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
 
 });
