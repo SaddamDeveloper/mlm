@@ -28,7 +28,7 @@
                                 <div class="form-row mb-10 mb-2">
                                     <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                         <label for="search_sponsor_id">User ID</label>
-                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="Sponsor ID">
+                                        <input type="text" name="search_sponsor_id" id="search_sponsor_id" value="{{old('search_sponsor_id')}}" class="form-control" placeholder="User ID">
                                         @if($errors->has('search_sponsor_id'))
                                             <span class="invalid-feedback" role="alert" style="color:red;">
                                                 <strong>{{ $errors->first('search_sponsor_id') }}</strong>
