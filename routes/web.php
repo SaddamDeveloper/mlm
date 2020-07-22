@@ -106,4 +106,7 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     // Commission
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
 
+    Route::get('/my/test/from', 'MemberDashboardController@memberTestForm')->name('member.test.form');
+    Route::post('/my/test/add', 'MemberDashboardController@memberTest')->name('member.test.add');
+
 });

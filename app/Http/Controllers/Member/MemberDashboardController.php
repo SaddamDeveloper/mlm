@@ -16,6 +16,10 @@ use Session;
 use App\Rewards;
 use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
+
+use Faker\Factory as Faker;
+use Illuminate\Support\Str;
+
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -1073,5 +1077,91 @@ class MemberDashboardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  // RETURN THE CONTENTS OF THE CALL
         $return_val = curl_exec($ch);
     }
+
+
+// *************************************************************************************************TEST*****************************************************
+public function memberTestForm()
+{
+    return view('member.test.test');
+}
+
+public function memberTest(Request $request)
+{
+    $this->validate($request, [
+        "search_sponsor_id" => 'required',
+        'leg' => 'required',
+        'how_many' => 'required'
+    ]);
+
+    $sponsorID = $request->input('search_sponsor_id');
+    $leg = $request->input('leg');
+    $how_many = $request->input('how_many');
+    $faker = Faker::create();
+    for ($i=0; $i <$how_many ; $i++) { 
+        $f_name = $faker->name;
+        $l_name = $faker->name;
+        $mobile = rand(1111111111, 9999999999);
+        $last_member = Member::orderBy('created_at', 'DESC')->count();
+
+        $login_id = substr($f_name,2).$last_member;
+        $password = Hash::make(123456);
+        $email = $faker->email;
+        $this->addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $login_id, $password, $email);
+        echo $i."Done <br>";
+    }
+    return redirect()->back()->with('message','joined Successfully');
+    
+}
+
+public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $login_id, $password, $email)
+    {
+        $sponsor_member_data = Member::where('login_id', $sponsorID)->first();
+        if(empty($sponsor_member_data)){
+            return redirect()->back();
+        }
+        $sponsorID          = $sponsor_member_data->sponsorID;
+        $leg                = $leg;
+        $f_name             = $f_name;
+        $m_name             = NULL;
+        $l_name             = $l_name;
+        $fullName           = $f_name . " " . $m_name ." ". $l_name;
+        $email              = $email;
+        $mobile             = $mobile;
+        $dob                = NULL;
+        $pan                = NULL;
+        $aadhar             = NULL;
+        $address            = NULL;
+        // Bank
+        $bank               = NULL;
+        $ifsc               = NULL;
+        $account_no         = NULL;
+        // Credentials
+        $login_id           = $login_id;
+        $password           = $password;
+        $member_data = Member::where('sponsorID', $sponsorID)->first();
+        if(!empty($leg)){
+            if($member_data){
+                $tree_data = Tree::where('user_id', $member_data->id)->first();
+                if($tree_data){
+                    if($leg == 1){
+                        $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $token = rand(111111,999999);
+                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                    }else if($leg == 2){
+                        $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $token = rand(111111,999999);
+                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                    }
+                }else{
+                    return back()->with('error', 'Inavlid SponsorID!');
+                }
+            }else{
+                return back()->with('error', 'SponsorID is invalid');
+            }
+        }else{
+            return back()->with('error', 'Select Leg!');
+        }
+    }
+
 
 }
