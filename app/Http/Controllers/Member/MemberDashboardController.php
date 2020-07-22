@@ -182,11 +182,11 @@ class MemberDashboardController extends Controller
                     'sponsorID' =>  $generatedID,
                 ]);
                 // $this->sendSms($fullName, $mobile, $login_id, $password);
-                $sponsor = Member::where('sponsorID', $sponsorID)->first();
+                $sponsor = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                 //Fetch Tree Data Using User ID
                 $sponsor_tree = DB::table('trees')
                     ->where('user_id', $sponsor->id)
-                    ->first();
+                    ->lockForUpdate()->first();
                 $tree_insert = null;      
                 // Checking Direct Referral
                 if($leg == 1){
@@ -250,11 +250,11 @@ class MemberDashboardController extends Controller
                         JOIN
                         (SELECT @pv:=:start_node) tmp
                     ) a
-                    WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000")
+                    WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
                     , array(
                       'start_node' => $tree_insert,
                     )
-                );
+                    );
                 $this->treePair($parrents, $member_insert);
             });
             
@@ -272,7 +272,7 @@ class MemberDashboardController extends Controller
                     JOIN
                     (SELECT @pv:=:start_node) tmp
                 ) a
-                WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE") 
                 , array(
                 'start_node' => $sponsor_tree_ID,
                 )
@@ -306,11 +306,11 @@ class MemberDashboardController extends Controller
                             JOIN
                             (SELECT @pv:=:start_node) tmp
                         ) a
-                        WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000")
+                        WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE")
                         , array(
                         'start_node' => $sponsor_tree_ID
                         )
-                    );
+                        );
 
                 $expected = [];
                 foreach($right_iteration as $k=>$v){
@@ -367,7 +367,7 @@ class MemberDashboardController extends Controller
             $parent = $parents[$i]->lv; 
             //**************Fetch parrent details***************************
             $fetch_parent = DB::table('trees')
-                ->where('id',$parent)
+                ->where('id',$parent)->lockForUpdate()
                 ->first();
             //***************check child node is in left or right*******************
             if ($fetch_parent->left_id == $child){
@@ -393,7 +393,7 @@ class MemberDashboardController extends Controller
             //Fetch Pair Match
             $pair_match = DB::table('trees')
                 ->select('left_count', 'right_count')
-                ->where('id',$parent)
+                ->where('id',$parent)->lockForUpdate()
                 ->first();
 
             //Check 1:1 Check
@@ -426,7 +426,7 @@ class MemberDashboardController extends Controller
                 ]);
                 //Fetch User with Node ID
                 $fetch_tree = DB::table('trees')
-                ->where('id', $parent)
+                ->where('id',$parent)->lockForUpdate()
                 ->first();        
                 
                 // Member Commission Logic
@@ -1115,7 +1115,7 @@ public function memberTest(Request $request)
 
 public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $login_id, $password, $email)
     {
-        $sponsor_member_data = Member::where('login_id', $sponsorID)->first();
+        $sponsor_member_data = Member::where('login_id', $sponsorID)->lockForUpdate()->first();
         if(empty($sponsor_member_data)){
             return redirect()->back();
         }
@@ -1138,10 +1138,10 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
         // Credentials
         $login_id           = $login_id;
         $password           = $password;
-        $member_data = Member::where('sponsorID', $sponsorID)->first();
+        $member_data = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
         if(!empty($leg)){
             if($member_data){
-                $tree_data = Tree::where('user_id', $member_data->id)->first();
+                $tree_data = Tree::where('user_id', $member_data->id)->lockForUpdate()->first();
                 if($tree_data){
                     if($leg == 1){
                         $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
