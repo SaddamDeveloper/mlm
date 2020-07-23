@@ -86,16 +86,17 @@ class MemberDashboardController extends Controller
         $login_id           = $request->get('login_id');
         $password           = $request->get('password');
         $member_data = Member::where('sponsorID', $sponsorID)->first();
+        $member_sponsor_id = $member_data->id;
         if(!empty($leg)){
             if($member_data){
-                $tree_data = Tree::where('user_id', $member_data->id)->first();
+                $tree_data = Tree::where('user_id', $member_data->id)->lockForUpdate()->first();
                 if($tree_data){
                     if($leg == 1){
-                        $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password,$member_sponsor_id);
                         $token = rand(111111,999999);
                         return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                     }else if($leg == 2){
-                        $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                        $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password,$member_sponsor_id);
                         $token = rand(111111,999999);
                         return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                     }
@@ -158,7 +159,8 @@ class MemberDashboardController extends Controller
 
     function memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password){
         try {
-            DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
+            // DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
+                DB::beginTransaction();
                 $member_registration = new Member;
                 $member_registration->login_id = $login_id;
                 $member_registration->password = Hash::make($password);
@@ -256,47 +258,59 @@ class MemberDashboardController extends Controller
                     )
                     );
                 $this->treePair($parrents, $member_insert);
-            });
+                 DB::commit();
+            // });
             
         }catch (\Exception $e) {
+            DB::rollback();
                 return redirect()->back()->with('error','Something Went Wrong Please try Again');
         }
     }
     public function extremeLeg($leg, $member_insert, $sponsor_tree_ID, $registerdBY){
         if($leg == 1){
             //    Left
-            $left_iteration = DB::select( DB::raw("SELECT * FROM (
-                SELECT @pv:=(
-                    SELECT left_id FROM trees WHERE id = @pv
-                    ) AS tv FROM trees
-                    JOIN
-                    (SELECT @pv:=:start_node) tmp
-                ) a
-                WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE") 
-                , array(
-                'start_node' => $sponsor_tree_ID,
-                )
-            );
-            $expected = [];
-            foreach($left_iteration as $k=>$v){
-                $expected[$k]=end($v);
+            try {
+                DB::raw('lock table trees write');
+                DB::beginTransaction();
+                $left_iteration = DB::select( DB::raw("SELECT * FROM (
+                    SELECT @pv:=(
+                        SELECT left_id FROM trees WHERE id = @pv
+                        ) AS tv FROM trees
+                        JOIN
+                        (SELECT @pv:=:start_node) tmp
+                    ) a
+                    WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE") 
+                    , array(
+                    'start_node' => $sponsor_tree_ID,
+                    )
+                );
+                $expected = [];
+                foreach($left_iteration as $k=>$v){
+                    $expected[$k]=end($v);
+                }
+                $extreme_left = end($expected);
+                $tree_insert = DB::table('trees')
+                ->insertGetId([
+                    'user_id' => $member_insert,
+                    'parent_id' => $extreme_left,
+                    'parent_leg' => 'L',
+                    'registered_by' => $registerdBY,
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
+                $tree_update = DB::table('trees')
+                ->where('user_id', $extreme_left)
+                ->update([
+                    'left_id' => $tree_insert,
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                    ]);
+                    DB::commit();
+                    DB::raw('unlock tables');
+                return $tree_insert;
+            } catch (\Exception $e) {
+                DB::raw('unlock tables');
+                DB::rollback();
             }
-            $extreme_left = end($expected);
-            $tree_insert = DB::table('trees')
-            ->insertGetId([
-                'user_id' => $member_insert,
-                'parent_id' => $extreme_left,
-                'parent_leg' => 'L',
-                'registered_by' => $registerdBY,
-                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-            ]);
-            $tree_update = DB::table('trees')
-            ->where('user_id', $extreme_left)
-            ->update([
-                'left_id' => $tree_insert,
-                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-            ]);
-            return $tree_insert;
+
         }else if($leg == 2){
             // Right
                 $right_iteration = DB::select( DB::raw("SELECT * FROM (
