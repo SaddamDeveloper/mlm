@@ -159,8 +159,8 @@ class MemberDashboardController extends Controller
 
     function memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password){
         try {
-            // DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
-                DB::beginTransaction();
+            DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
+                // DB::beginTransaction();
                 DB::raw('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $member_registration = new Member;
                 $member_registration->login_id = $login_id;
@@ -259,8 +259,8 @@ class MemberDashboardController extends Controller
                     )
                     );
                 $this->treePair($parrents, $member_insert);
-                 DB::commit();
-            // });
+                //  DB::commit();
+            }, 5);
             
         }catch (\Exception $e) {
             DB::rollback();
@@ -270,7 +270,10 @@ class MemberDashboardController extends Controller
     public function extremeLeg($leg, $member_insert, $sponsor_tree_ID, $registerdBY){
         if($leg == 1){
             //    Left
-                 $left_iteration = DB::select( DB::raw("SELECT * FROM (
+            try {
+                DB::beginTransaction();
+                DB::raw('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
+                $left_iteration = DB::select( DB::raw("SELECT * FROM (
                     SELECT @pv:=(
                         SELECT left_id FROM trees WHERE id = @pv
                         ) AS tv FROM trees
@@ -301,7 +304,11 @@ class MemberDashboardController extends Controller
                     'left_id' => $tree_insert,
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                     ]);
+                    DB::commit();
                 return $tree_insert;
+            } catch (\Exception $e) {
+                DB::rollback();
+            }
 
         }else if($leg == 2){
             // Right
