@@ -161,7 +161,7 @@ class MemberDashboardController extends Controller
         try {
             // DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
                 DB::beginTransaction();
-                DB::statement('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
+                DB::raw('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $member_registration = new Member;
                 $member_registration->login_id = $login_id;
                 $member_registration->password = Hash::make($password);
@@ -264,16 +264,13 @@ class MemberDashboardController extends Controller
             
         }catch (\Exception $e) {
             DB::rollback();
-                return redirect()->back()->with('error','Something Went Wrong Please try Again');
+            return redirect()->back()->with('error','Something Went Wrong Please try Again');
         }
     }
     public function extremeLeg($leg, $member_insert, $sponsor_tree_ID, $registerdBY){
         if($leg == 1){
             //    Left
-            try {
-                DB::beginTransaction();
-                DB::statement('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
-                $left_iteration = DB::select( DB::raw("SELECT * FROM (
+                 $left_iteration = DB::select( DB::raw("SELECT * FROM (
                     SELECT @pv:=(
                         SELECT left_id FROM trees WHERE id = @pv
                         ) AS tv FROM trees
@@ -304,11 +301,7 @@ class MemberDashboardController extends Controller
                     'left_id' => $tree_insert,
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                     ]);
-                    DB::commit();
                 return $tree_insert;
-            } catch (\Exception $e) {
-                DB::rollback();
-            }
 
         }else if($leg == 2){
             // Right
