@@ -161,6 +161,7 @@ class MemberDashboardController extends Controller
         try {
             // DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
                 DB::beginTransaction();
+                DB::statement('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $member_registration = new Member;
                 $member_registration->login_id = $login_id;
                 $member_registration->password = Hash::make($password);
@@ -270,8 +271,8 @@ class MemberDashboardController extends Controller
         if($leg == 1){
             //    Left
             try {
-                DB::raw('lock table trees write');
                 DB::beginTransaction();
+                DB::statement('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $left_iteration = DB::select( DB::raw("SELECT * FROM (
                     SELECT @pv:=(
                         SELECT left_id FROM trees WHERE id = @pv
@@ -304,10 +305,8 @@ class MemberDashboardController extends Controller
                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
                     ]);
                     DB::commit();
-                    DB::raw('unlock tables');
                 return $tree_insert;
             } catch (\Exception $e) {
-                DB::raw('unlock tables');
                 DB::rollback();
             }
 
