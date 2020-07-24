@@ -85,38 +85,63 @@ class MemberDashboardController extends Controller
         // Credentials
         $login_id           = $request->get('login_id');
         $password           = $request->get('password');
-        $member_data = Member::where('sponsorID', $sponsorID)->first();
-        $member_sponsor_id = $member_data->id;
+        $sleep = 0;
+        $member_data = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
         if(!empty($leg)){
-            for ($i=0; $i <5; $i++){
-                $chk_lock = ManualLock::where('id', 1)->first();
-                if ($chk_lock->joining == 1) {
-                    $chk_lock->joining = 2;
-                    // $chk_lock->save();
-                    dd( $chk_lock->save());
-                    if($member_data){
-                        $tree_data = Tree::where('user_id', $member_data->id)->lockForUpdate()->first();
-                        if($tree_data){
-                            if($leg == 1){
-                                $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password,$member_sponsor_id);
-                                $token = rand(111111,999999);
-                                return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
-                            }else if($leg == 2){
-                                $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password,$member_sponsor_id);
-                                $token = rand(111111,999999);
-                                return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+            try {
+                for ($i=0; $i <2; $i++){
+                    $chk_lock = ManualLock::where('id', 1)->lockForUpdate()->first();
+                    if ($chk_lock->joining == 1) {
+                        $i = 2;
+                        $chk_lock->joining = 2;
+                        $chk_lock->save();
+                        $member_data = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
+                        if($member_data){
+                            $tree_data = Tree::where('user_id', $member_data->id)->lockForUpdate()->first();
+                            if($tree_data){
+                                if($leg == 1){
+                                    $a = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                    $token = rand(111111,999999);
+                                    $chk_lock = ManualLock::find(1);
+                                    $chk_lock->joining = 1;
+                                    $chk_lock->save();
+                                    return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                }else if($leg == 2){
+                                    $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
+                                    $token = rand(111111,999999);
+                                    $chk_lock = ManualLock::find(1);
+                                    $chk_lock->joining = 1;
+                                    $chk_lock->save();
+                                    return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                }
+                            }else{
+                                $chk_lock = ManualLock::find(1);
+                                $chk_lock->joining = 1;
+                                $chk_lock->save();
+                                return back()->with('error', 'Inavlid SponsorID!');
                             }
                         }else{
-                            return back()->with('error', 'Inavlid SponsorID!');
+                            $chk_lock = ManualLock::find(1);
+                            $chk_lock->joining = 1;
+                            $chk_lock->save();
+                            return back()->with('error', 'SponsorID is invalid');
                         }
-                    }else{
-                        return back()->with('error', 'SponsorID is invalid');
+                    }else {
+                        $sleep++;
+                        sleep(1);
                     }
-                }else {
-                    sleep(1);
                 }
+            } catch (\Exception $e) {
+                $chk_lock = ManualLock::find(1);
+                $chk_lock->joining = 1;
+                $chk_lock->save();
+                return back()->with('error', 'Please Try After Sometime');
             }
-            if ($i == 5) {
+            
+            if ($sleep == 2) {
+                $chk_lock = ManualLock::find(1);
+                $chk_lock->joining = 1;
+                $chk_lock->save();
                 return back()->with('error', 'Please Try After Sometime');
             }
            
@@ -1215,7 +1240,7 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
                 $chk_lock = ManualLock::find(1);
                 $chk_lock->joining = 1;
                 $chk_lock->save();
-                // return back()->with('error', 'Please Try After Sometime Sleep');
+                return back()->with('error', 'Please Try After Sometime');
             }
            
         }else{
