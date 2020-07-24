@@ -1163,11 +1163,12 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
         if(!empty($leg)){
             try {
                 for ($i=0; $i <2; $i++){
-                    $chk_lock = ManualLock::where('id', 1)->first();
+                    $chk_lock = ManualLock::where('id', 1)->lockForUpdate()->first();
                     if ($chk_lock->joining == 1) {
                         $i = 2;
                         $chk_lock->joining = 2;
                         $chk_lock->save();
+                        $member_data = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                         if($member_data){
                             $tree_data = Tree::where('user_id', $member_data->id)->lockForUpdate()->first();
                             if($tree_data){
