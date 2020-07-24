@@ -1214,7 +1214,7 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
                 $chk_lock = ManualLock::find(1);
                 $chk_lock->joining = 1;
                 $chk_lock->save();
-                return back()->with('error', 'Please Try After Sometime Sleep');
+                // return back()->with('error', 'Please Try After Sometime Sleep');
             }
            
         }else{
