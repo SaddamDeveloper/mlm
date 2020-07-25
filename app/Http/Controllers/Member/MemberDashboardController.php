@@ -259,12 +259,11 @@ class MemberDashboardController extends Controller
                             'registered_by' => Auth::user()->id,
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        $sponsor_tree_update = DB::table('trees')
-                            ->where('id', $sponsor_tree->id)
-                            ->update([
-                                'left_id' => $tree_insert,
-                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                        ]);
+
+                        $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
+                        $sponsor_tree_update->left_id = $tree_insert;
+                        $sponsor_tree_update->save();
+                           
                         // dd($sponsor_tree_update);
                     }else{
                         //Go to Extreme Left
@@ -281,12 +280,10 @@ class MemberDashboardController extends Controller
                             'parent_leg' => 'R',
                             'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         ]);
-                        $sponsor_tree_update = DB::table('trees')
-                            ->where('id', $sponsor_tree->id)
-                            ->update([
-                                'right_id' => $tree_insert,
-                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                            ]);
+                        $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
+                        $sponsor_tree_update->left_id = $tree_insert;
+                        $sponsor_tree_update->save();
+                        
                     }else{
                         //Go to Extreme Right
                         $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
@@ -351,12 +348,18 @@ class MemberDashboardController extends Controller
                     'registered_by' => $registerdBY,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-                $tree_update = DB::table('trees')
-                ->where('user_id', $extreme_left)
-                ->update([
-                    'left_id' => $tree_insert,
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                    ]);
+
+                $tree_update = Tree::where('user_id', $extreme_left)->lockForUpdate()->first();
+                $tree_update->left_id = $tree_insert;
+                $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
+                $tree_update->save();
+                
+                // $tree_update = DB::table('trees')
+                // ->where('user_id', $extreme_left)
+                // ->update([
+                //     'left_id' => $tree_insert,
+                //     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                //     ])->lockForUpdate();
                 return $tree_insert;
 
         }else if($leg == 2){
@@ -387,12 +390,18 @@ class MemberDashboardController extends Controller
                     'registered_by' => $registerdBY,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-                $tree_update = DB::table('trees')
-                ->where('id', $extreme_right)
-                ->update([
-                    'right_id' => $tree_insert ,
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                ]);
+
+                $tree_update = Tree::where('user_id', $extreme_right)->lockForUpdate()->first();
+                $tree_update->right_id = $tree_insert;
+                $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
+                $tree_update->save();
+
+                // $tree_update = DB::table('trees')
+                // ->where('id', $extreme_right)
+                // ->update([
+                //     'right_id' => $tree_insert ,
+                //     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
+                // ])->lockForUpdate();
                 return $tree_insert;
         }
     }
