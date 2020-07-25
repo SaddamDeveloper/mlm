@@ -246,6 +246,7 @@ class MemberDashboardController extends Controller
                 $sponsor_tree = DB::table('trees')
                     ->where('user_id', $sponsor->id)
                     ->lockForUpdate()->first();
+                    
                 $tree_insert = null;      
                 // Checking Direct Referral
                 if($leg == 1){
@@ -263,8 +264,7 @@ class MemberDashboardController extends Controller
                         $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
                         $sponsor_tree_update->left_id = $tree_insert;
                         $sponsor_tree_update->save();
-                           
-                        // dd($sponsor_tree_update);
+                        
                     }else{
                         //Go to Extreme Left
                         $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
@@ -354,12 +354,6 @@ class MemberDashboardController extends Controller
                 $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
                 $tree_update->save();
                 
-                // $tree_update = DB::table('trees')
-                // ->where('user_id', $extreme_left)
-                // ->update([
-                //     'left_id' => $tree_insert,
-                //     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                //     ])->lockForUpdate();
                 return $tree_insert;
 
         }else if($leg == 2){
@@ -396,12 +390,6 @@ class MemberDashboardController extends Controller
                 $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
                 $tree_update->save();
 
-                // $tree_update = DB::table('trees')
-                // ->where('id', $extreme_right)
-                // ->update([
-                //     'right_id' => $tree_insert ,
-                //     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString() 
-                // ])->lockForUpdate();
                 return $tree_insert;
         }
     }
@@ -469,7 +457,7 @@ class MemberDashboardController extends Controller
 
             //Check 1:1 Check
             if($pair_match->right_count > 0 && $pair_match->left_count  > 0){
-                $this->creditCommisionOneIsToOne($parent,1, 1);
+                // $this->creditCommisionOneIsToOne($parent,1, 1);
                 $total_pair_update = DB::table('trees')
                 ->where('id', $parent)
                 ->update([
