@@ -493,7 +493,7 @@ class MemberDashboardController extends Controller
                 ->select('total_pair')
                 ->where('id',$parent)
                 ->first();
-                $this->rewardsChecking($total_pair_count, $parent);
+                // $this->rewardsChecking($total_pair_count, $parent);
             }
             $child = $parent;
         }
