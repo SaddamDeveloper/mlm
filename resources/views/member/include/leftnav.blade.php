@@ -45,7 +45,7 @@
             <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
             </li>
             <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a></li>
-            {{-- <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li> --}}
+            <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li>
           </ul>
         </div>
       </div>

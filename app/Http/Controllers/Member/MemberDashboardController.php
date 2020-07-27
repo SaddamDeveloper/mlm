@@ -246,24 +246,34 @@ class MemberDashboardController extends Controller
                 $sponsor_tree = DB::table('trees')
                     ->where('user_id', $sponsor->id)
                     ->lockForUpdate()->first();
-                    
+
+                $registerdBY = Auth::user()->id;
+
                 $tree_insert = null;      
                 // Checking Direct Referral
                 if($leg == 1){
                     // Direct Referaal
                     if (empty($sponsor_tree->left_id)) {
-                        $tree_insert = DB::table('trees')
-                        ->insertGetId([
-                            'user_id' => $member_insert,
-                            'parent_id' => $sponsor_tree->id,
-                            'parent_leg' => 'L',
-                            'registered_by' => Auth::user()->id,
-                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                        ]);
 
-                        $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
-                        $sponsor_tree_update->left_id = $tree_insert;
-                        $sponsor_tree_update->save();
+                        $lag = "L";
+                        $insert_id =DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
+                        $tree_insert = $insert_id[0]->InsertedIds;
+                        $status = $insert_id[0]->sts;
+                        if($status == FALSE){
+                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                        }
+                        // $tree_insert = DB::table('trees')
+                        // ->insertGetId([
+                        //     'user_id' => $member_insert,
+                        //     'parent_id' => $sponsor_tree->id,
+                        //     'parent_leg' => 'L',
+                        //     'registered_by' => Auth::user()->id,
+                        //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        // ]);
+
+                        // $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
+                        // $sponsor_tree_update->left_id = $tree_insert;
+                        // $sponsor_tree_update->save();
                         
                     }else{
                         //Go to Extreme Left
@@ -272,17 +282,24 @@ class MemberDashboardController extends Controller
                 }else if($leg == 2){
                     if (empty($sponsor_tree->right_id)) {
                         // Direct Referaal
-                        $tree_insert = DB::table('trees')
-                        ->insertGetId([
-                            'user_id' => $member_insert,
-                            'parent_id' => $sponsor_tree->id,
-                            'registered_by' => Auth::user()->id,
-                            'parent_leg' => 'R',
-                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                        ]);
-                        $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
-                        $sponsor_tree_update->left_id = $tree_insert;
-                        $sponsor_tree_update->save();
+                        $lag = "R";
+                        $insert_id =DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
+                        $tree_insert = $insert_id[0]->InsertedIds;
+                        $status = $insert_id[0]->sts;
+                        if($status == FALSE){
+                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                        }
+                        // $tree_insert = DB::table('trees')
+                        // ->insertGetId([
+                        //     'user_id' => $member_insert,
+                        //     'parent_id' => $sponsor_tree->id,
+                        //     'registered_by' => Auth::user()->id,
+                        //     'parent_leg' => 'R',
+                        //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        // ]);
+                        // $sponsor_tree_update = Tree::where('id', $sponsor_tree->id)->lockForUpdate()->first();
+                        // $sponsor_tree_update->left_id = $tree_insert;
+                        // $sponsor_tree_update->save();
                         
                     }else{
                         //Go to Extreme Right
@@ -323,74 +340,82 @@ class MemberDashboardController extends Controller
     public function extremeLeg($leg, $member_insert, $sponsor_tree_ID, $registerdBY){
         if($leg == 1){
             //    Left
-                $left_iteration = DB::select( DB::raw("SELECT * FROM (
-                    SELECT @pv:=(
-                        SELECT left_id FROM trees WHERE id = @pv
-                        ) AS tv FROM trees
-                        JOIN
-                        (SELECT @pv:=:start_node) tmp
-                    ) a
-                    WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE") 
-                    , array(
-                    'start_node' => $sponsor_tree_ID,
-                    )
-                );
-                $expected = [];
-                foreach($left_iteration as $k=>$v){
-                    $expected[$k]=end($v);
-                }
-                $extreme_left = end($expected);
-                $tree_insert = DB::table('trees')
-                ->insertGetId([
-                    'user_id' => $member_insert,
-                    'parent_id' => $extreme_left,
-                    'parent_leg' => 'L',
-                    'registered_by' => $registerdBY,
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
+                $leg = 'L';
+            
+                $insert_id =DB::select("call TreeInsertAndUpdate(?,?,?,?)",array($member_insert,$sponsor_tree_ID,$leg,$registerdBY));
+                $id = $insert_id[0]->InsertedIds;
+                // $left_iteration = DB::select( DB::raw("SELECT * FROM (
+                //     SELECT @pv:=(
+                //         SELECT left_id FROM trees WHERE id = @pv
+                //         ) AS tv FROM trees
+                //         JOIN
+                //         (SELECT @pv:=:start_node) tmp
+                //     ) a
+                //     WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE") 
+                //     , array(
+                //     'start_node' => $sponsor_tree_ID,
+                //     )
+                // );
+                // $expected = [];
+                // foreach($left_iteration as $k=>$v){
+                //     $expected[$k]=end($v);
+                // }
+                // $extreme_left = end($expected);
+                // $tree_insert = DB::table('trees')
+                // ->insertGetId([
+                //     'user_id' => $member_insert,
+                //     'parent_id' => $extreme_left,
+                //     'parent_leg' => 'L',
+                //     'registered_by' => $registerdBY,
+                //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                // ]);
 
-                $tree_update = Tree::where('user_id', $extreme_left)->lockForUpdate()->first();
-                $tree_update->left_id = $tree_insert;
-                $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
-                $tree_update->save();
+                // $tree_update = Tree::where('user_id', $extreme_left)->lockForUpdate()->first();
+                // $tree_update->left_id = $tree_insert;
+                // $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
+                // $tree_update->save();
                 
-                return $tree_insert;
+                return $id;
 
         }else if($leg == 2){
             // Right
-                $right_iteration = DB::select( DB::raw("SELECT * FROM (
-                        SELECT @pv:=(
-                            SELECT right_id FROM trees WHERE id = @pv
-                            ) AS tv FROM trees
-                            JOIN
-                            (SELECT @pv:=:start_node) tmp
-                        ) a
-                        WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE")
-                        , array(
-                        'start_node' => $sponsor_tree_ID
-                        )
-                        );
+            $inserted_ids = null;
+            $leg = 'R';
+            $insert_id = DB::select('call TreeInsertAndUpdate(?,?,?,?)',array($member_insert,$sponsor_tree_ID,$leg,$registerdBY));
+            $id = $insert_id[0]->InsertedIds;
+                // $right_iteration = DB::select( DB::raw("SELECT * FROM (
+                //         SELECT @pv:=(
+                //             SELECT right_id FROM trees WHERE id = @pv
+                //             ) AS tv FROM trees
+                //             JOIN
+                //             (SELECT @pv:=:start_node) tmp
+                //         ) a
+                //         WHERE tv IS NOT NULL AND tv != 0 LIMIT 1000 FOR UPDATE")
+                //         , array(
+                //         'start_node' => $sponsor_tree_ID
+                //         )
+                //         );
 
-                $expected = [];
-                foreach($right_iteration as $k=>$v){
-                    $expected[$k]=end($v);
-                }
-                $extreme_right = end($expected);
-                $tree_insert = DB::table('trees')
-                ->insertGetId([
-                    'user_id' => $member_insert,
-                    'parent_id' => $extreme_right,
-                    'parent_leg' => 'R',
-                    'registered_by' => $registerdBY,
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
+                // $expected = [];
+                // foreach($right_iteration as $k=>$v){
+                //     $expected[$k]=end($v);
+                // }
+                // $extreme_right = end($expected);
+                // $tree_insert = DB::table('trees')
+                // ->insertGetId([
+                //     'user_id' => $member_insert,
+                //     'parent_id' => $extreme_right,
+                //     'parent_leg' => 'R',
+                //     'registered_by' => $registerdBY,
+                //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                // ]);
 
-                $tree_update = Tree::where('user_id', $extreme_right)->lockForUpdate()->first();
-                $tree_update->right_id = $tree_insert;
-                $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
-                $tree_update->save();
+                // $tree_update = Tree::where('user_id', $extreme_right)->lockForUpdate()->first();
+                // $tree_update->right_id = $tree_insert;
+                // $tree_update->updated_at = Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString();
+                // $tree_update->save();
 
-                return $tree_insert;
+                return $id;
         }
     }
     public function thankYou($token){
