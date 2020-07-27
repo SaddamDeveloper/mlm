@@ -729,12 +729,10 @@ class MemberDashboardController extends Controller
             <tr>
                 <th>Left Distributor</th>
                 <th>Right Distributor</th>
-                <th>Total Distributor</th>
             </tr>
             <tr>
                 <td>'.$root->total_left_count.'</td>
                 <td>'.$root->total_right_count.'</td>
-                <td>'.$root->total_pair.'</td>
             </tr>
         </table>
         </div>
