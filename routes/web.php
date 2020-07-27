@@ -80,6 +80,8 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::post('/add', 'MemberDashboardController@addNewMember')->name('member.add_new_member');
     Route::get('/search/sponsorID', 'MemberDashboardController@searchSponsorID')->name('member.search_sponsor_id');
     Route::get('/check/loginID', 'MemberDashboardController@loginIDCheck')->name('member.login_id_check');
+    Route::get('/add/refresh/{id}', 'MemberDashboardController@refreshMember')->name('member.refresh');
+
 
     // Thank You Page
     Route::get('/thank/you/{token}', 'MemberDashboardController@thankYou')->name('member.thank_you');

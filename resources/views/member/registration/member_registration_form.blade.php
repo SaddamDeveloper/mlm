@@ -10,6 +10,9 @@
     
                     <div class="x_title">
                         <h2>Add New Member</h2>
+                        <div class="pull-right">
+                            <a href="{{route('member.refresh', ['id' => encrypt(1)])}}" class="btn btn-success" id="refresh"><i class="fa fa-refresh"></i></a>
+                        </div> 
                         <div class="clearfix"></div>
                     </div>
                     <div>

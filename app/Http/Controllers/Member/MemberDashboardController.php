@@ -1171,6 +1171,21 @@ class MemberDashboardController extends Controller
         $return_val = curl_exec($ch);
     }
 
+    public function refreshMember($id)
+    {
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        $refreshMember = DB::table('lock_table') 
+        ->update([
+            'joining' => $id,
+        ]);
+
+        return redirect()->back()->with('message','Refreshed Successfully!');
+    }
 
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()
