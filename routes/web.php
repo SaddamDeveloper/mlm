@@ -107,6 +107,16 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
 
     // Commission
     Route::get('/my/commission', 'MemberDashboardController@memberCommissionListForm')->name('member.mem_commission_list_form');
+    
+    
+    Route::get('/member/activate', 'MemberActivationController@memberActivatePage')->name('member.activate_page');
+    Route::get('/member/fund', 'MemberActivationController@memberFund')->name('member.ajax.fund');
+    Route::get('/member/add/activation', 'MemberActivationController@memberAddActivation')->name('member.add_activation');
+    Route::get('/member/activate/details', 'MemberActivationController@memberActivatePageDetails')->name('member.activate_page_details');
+    Route::post('/member/add/package', 'MemberActivationController@addPackage')->name('member.add_package');
+    Route::get('/member/distributor/details', 'MemberActivationController@distributorDetails')->name('member.ajax.distributor_details');
+
+
 
     Route::get('/my/test/from', 'MemberDashboardController@memberTestForm')->name('member.test.form');
     Route::post('/my/test/add', 'MemberDashboardController@memberTest')->name('member.test.add');

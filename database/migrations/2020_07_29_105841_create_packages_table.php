@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTreeTable extends Migration
+class CreatePackagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateTreeTable extends Migration
      */
     public function up()
     {
-        Schema::create('tree', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->nestedSet();
+            $table->string('package')->nullable();
+            $table->string('user_id')->nullable();
             $table->timestamps();
         });
     }
@@ -27,7 +28,6 @@ class CreateTreeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tree');
-        $table->dropNestedSet();
+        Schema::dropIfExists('packages');
     }
 }

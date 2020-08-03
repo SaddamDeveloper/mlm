@@ -240,7 +240,7 @@ class MemberDashboardController extends Controller
                 ->update([
                     'sponsorID' =>  $generatedID,
                 ]);
-                $this->sendSms($fullName, $mobile, $login_id, $password);
+                // $this->sendSms($fullName, $mobile, $login_id, $password);
                 $sponsor = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                 //Fetch Tree Data Using User ID
                 $sponsor_tree = DB::table('trees')
@@ -451,7 +451,7 @@ class MemberDashboardController extends Controller
             $parent = $parents[$i]->lv; 
             //**************Fetch parrent details***************************
             $fetch_parent = DB::table('trees')
-                ->where('id',$parent)->lockForUpdate()
+                ->where('id',$parent)
                 ->first();
             //***************check child node is in left or right*******************
             if ($fetch_parent->left_id == $child){
@@ -476,24 +476,26 @@ class MemberDashboardController extends Controller
             
             //Fetch Pair Match
             $pair_match = DB::table('trees')
-                ->select('left_count', 'right_count')
+                ->select('left_count', 'right_count', 'status')
                 ->where('id',$parent)->lockForUpdate()
                 ->first();
-
-            //Check 1:1 Check
-            if($pair_match->right_count > 0 && $pair_match->left_count  > 0){
-                // $this->creditCommisionOneIsToOne($parent,1, 1);
-                $total_pair_update = DB::table('trees')
-                ->where('id', $parent)
-                ->update([
-                    'total_pair' => DB::raw("`total_pair`+".(1)),
-                ]);
-                 //Pair checking
-                $total_pair_count =  DB::table('trees')
-                ->select('total_pair')
-                ->where('id',$parent)
-                ->first();
-                // $this->rewardsChecking($total_pair_count, $parent);
+            // Check member is activated or not
+            if($pair_match->status == 1){
+                //Check 1:1 Check
+                if($pair_match->right_count > 0 && $pair_match->left_count  > 0){
+                    // $this->creditCommisionOneIsToOne($parent,1, 1);
+                    $total_pair_update = DB::table('trees')
+                    ->where('id', $parent)
+                    ->update([
+                        'total_pair' => DB::raw("`total_pair`+".(1)),
+                    ]);
+                     //Pair checking
+                    $total_pair_count =  DB::table('trees')
+                    ->select('total_pair')
+                    ->where('id',$parent)
+                    ->first();
+                    // $this->rewardsChecking($total_pair_count, $parent);
+                }
             }
             $child = $parent;
         }
@@ -526,6 +528,7 @@ class MemberDashboardController extends Controller
                     ->update([
                         'amount' => DB::raw("`amount`+".($adminCommission)),
                     ]);
+
                 // Fetch Admin Wallet 
                 $fetch_admin_wallet =  DB::table('admin_wallets')->first();
                 //Admin Wallet History
@@ -742,7 +745,7 @@ class MemberDashboardController extends Controller
             $level_checking = $this->levelCheck($user_id);
             $html .= '<ul>
             <li>        
-                <a href="#"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$root->member->full_name.'<br> ('.$level_checking.')
+                <a href="#"><img src="'.asset($root->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$root->member->full_name.'<br> ('.$level_checking.')
                     <div class="info">
                         <h5>Name : '.$root->member->full_name.'</h5>
                         <h5>Sponsor ID : '.$root->member->login_id.'</h5>
@@ -764,7 +767,7 @@ class MemberDashboardController extends Controller
                         if(!empty($first->id)){
                             $level_checking = $this->levelCheck($first->user_id);
                             $first_level_node = Tree::where('user_id', $first->user_id)->first();
-                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->member->full_name.'<br> ('.$level_checking.')
+                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset($first_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$first_level_node->member->full_name.'<br> ('.$level_checking.')
                                 <div class="info">
                                     <h5>Name : '.$first_level_node->member->full_name.'</h5>
                                     <h5>Sponsor ID : '.$first_level_node->member->login_id.'</h5>
@@ -777,7 +780,7 @@ class MemberDashboardController extends Controller
                         if(!empty($first->id)){
                             $level_checking = $this->levelCheck($first->user_id);
                             $first_level_node = Tree::where('user_id', $first->user_id)->first();
-                            $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$first_level_node->member->full_name.'<br> ('.$level_checking.')
+                            $html.='<a href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($first->user_id)]).'"><img src="'.asset($first_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$first_level_node->member->full_name.'<br> ('.$level_checking.')
                                 <div class="info">
                                     <h5>Name : '.$first_level_node->member->full_name.'</h5>
                                     <h5>Sponsor ID : '.$first_level_node->member->login_id.'</h5>
@@ -801,7 +804,7 @@ class MemberDashboardController extends Controller
                                 if(!empty($second->id)){
                                     $level_checking = $this->levelCheck($second->user_id);
                                     $second_level_node = Tree::where('user_id', $second->user_id)->first();
-                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->member->full_name.'<br> ('.$level_checking.')
+                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset($second_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$second_level_node->member->full_name.'<br> ('.$level_checking.')
                                                 <div class="info">
                                                     <h5>Name : '.$second_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$second_level_node->member->login_id.'</h5>
@@ -814,7 +817,7 @@ class MemberDashboardController extends Controller
                                 if(!empty($second->id)){
                                     $level_checking = $this->levelCheck($second->user_id);
                                     $second_level_node =Tree::where('user_id', $second->user_id)->first();
-                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$second_level_node->member->full_name.'<br> ('.$level_checking.')
+                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($second->user_id)]).'"><img src="'.asset($second_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$second_level_node->member->full_name.'<br> ('.$level_checking.')
                                         <div class="info">
                                             <h5>Name : '.$second_level_node->member->full_name.'</h5>
                                             <h5>Sponsor ID : '.$second_level_node->member->login_id.'</h5>
@@ -839,7 +842,7 @@ class MemberDashboardController extends Controller
                                         if(!empty($third->id)){
                                             $level_checking = $this->levelCheck($third->user_id);
                                             $third_level_node = Tree::where('user_id', $third->user_id)->first();
-                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->member->full_name.'<br> ('.$level_checking.')
+                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset($third_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$third_level_node->member->full_name.'<br> ('.$level_checking.')
                                                 <div class="info">
                                                     <h5>Name : '.$third_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$third_level_node->member->login_id.'</h5>
@@ -852,7 +855,7 @@ class MemberDashboardController extends Controller
                                         if(!empty($third->id)){
                                             $level_checking = $this->levelCheck($third->user_id);
                                             $third_level_node = Tree::where('user_id', $third->user_id)->first();
-                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$third_level_node->member->full_name.'<br> ('.$level_checking.')
+                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($third->user_id)]).'"><img src="'.asset($third_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$third_level_node->member->full_name.'<br> ('.$level_checking.')
                                                 <div class="info">
                                                     <h5>Name : '.$third_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$third_level_node->member->login_id.'</h5>
@@ -876,7 +879,7 @@ class MemberDashboardController extends Controller
                                                 if(!empty($fourth->id)){
                                                     $level_checking = $this->levelCheck($fourth->user_id);
                                                     $fourth_level_node = Tree::where('user_id', $fourth->user_id)->first();
-                                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->member->full_name.'<br> ('.$level_checking.')
+                                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset($fourth_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$fourth_level_node->member->full_name.'<br> ('.$level_checking.')
                                                         <div class="info">
                                                             <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fourth_level_node->member->login_id.'</h5>
@@ -889,7 +892,7 @@ class MemberDashboardController extends Controller
                                                 if(!empty($fourth->id)){
                                                     $level_checking = $this->levelCheck($fourth->user_id);
                                                     $fourth_level_node = Tree::where('user_id', $fourth->user_id)->first();
-                                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fourth_level_node->member->full_name.'<br> ('.$level_checking.')
+                                                    $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fourth->user_id)]).'"><img src="'.asset($fourth_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$fourth_level_node->member->full_name.'<br> ('.$level_checking.')
                                                     <div class="info">
                                                         <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
                                                         <h5>Sponsor ID : '.$fourth_level_node->member->login_id.'</h5>
@@ -913,7 +916,7 @@ class MemberDashboardController extends Controller
                                                         if(!empty($fifth->id)){
                                                             $level_checking = $this->levelCheck($fourth->user_id);
                                                             $fifth_level_node = Tree::where('user_id', $fifth->user_id)->first();
-                                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->member->full_name.'<br> ('.$level_checking.')
+                                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset($fifth_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$fifth_level_node->member->full_name.'<br> ('.$level_checking.')
                                                             <div class="info">
                                                             <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fifth_level_node->member->login_id.'</h5>
@@ -928,7 +931,7 @@ class MemberDashboardController extends Controller
                                                          if(!empty($fourth->right_id)  && !empty($fifth->id)){
                                                             $level_checking = $this->levelCheck($fourth->user_id);
                                                             $fifth_level_node = Tree::where('user_id', $fifth->user_id)->first();
-                                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset('admin/build/images/avatar.jpg').'">'.$fifth_level_node->member->full_name.'<br> ('.$level_checking.')
+                                                            $html.='<a  href="'.route('member.tree', ['rank' => 0,'user_id' => encrypt($fifth->user_id)]).'"><img src="'.asset($fifth_level_node->status == 1 ? 'admin/build/images/avatar.jpg' : 'admin/build/images/star.png' ).'">'.$fifth_level_node->member->full_name.'<br> ('.$level_checking.')
                                                             <div class="info">
                                                             <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fifth_level_node->member->login_id.'</h5>

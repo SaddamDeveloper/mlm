@@ -23,4 +23,9 @@ class Member extends Authenticatable
         {
             return $this->hasOne('App\Tree', 'id');
         }
+
+        public function package()
+        {
+            return $this->hasOne('App\Package', 'id');
+        }
 }
