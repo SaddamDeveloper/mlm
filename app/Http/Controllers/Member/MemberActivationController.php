@@ -25,7 +25,7 @@ class MemberActivationController extends Controller
     {
         $member = Member::where('id', Auth::user()->id)->first();
         $fund = Fund::where('alloted_to', Auth::user()->id)->first();
-        $package = AdminPackage::orderBy('created_at', 'DESC')->get();
+        $package = AdminPackage::orderBy('created_at', 'ASC')->get();
         return view('member.activation', compact('member', 'fund', 'package'));
     }
 
