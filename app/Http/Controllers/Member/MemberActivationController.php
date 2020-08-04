@@ -78,8 +78,8 @@ class MemberActivationController extends Controller
                                                     'start_node' => $trees->id,
                                                     )
                                                 );
-                                            $this->treePair($parrents, $members->id, $pk);
-                                            if($updateTree){
+                                            $a = $this->treePair($parrents, $members->id, $pk);
+                                            if($a){
                                                 return redirect()->back()->with('message', $member_id.' is successfully activated!');
                                             }else{
                                                 return redirect()->back()->with('error', 'Something went Wrong!');
@@ -281,7 +281,7 @@ class MemberActivationController extends Controller
             if($pair_match->status == 1){
                 //Check 1:1 Check
                 if($pair_match->activate_right > 0 && $pair_match->activate_left  > 0){
-                    $this->creditCommisionOneIsToOne($parent,$pk);
+                    $a = $this->creditCommisionOneIsToOne($parent,$pk);
                     $total_pair_update = DB::table('trees')
                     ->where('id', $parent)
                     ->update([
@@ -300,6 +300,7 @@ class MemberActivationController extends Controller
             }
             $child = $parent;
         }
+        return true;
     }
     function creditCommisionOneIsToOne($parent,$pk){
         //Insert Comission Data
@@ -392,7 +393,7 @@ class MemberActivationController extends Controller
                         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
         }
-
+    return true;
 }
     // public function fundDeduct($funds, $package_name)
     // {
