@@ -11,7 +11,13 @@
     
                         <div class="x_title">
                             <h2>My FUND</h2>
-                            <div class="text-center text-success"><h3>Total Fund: <i class="fa fa-rupee"></i> {{number_format($total_fund->amount, 2)}}</h3></div>
+                            <div class="text-center text-success"><h3>Total Fund: 
+                                    <i class="fa fa-rupee"></i> 
+                                    @if(empty($total_fund))
+                                            0.0
+                                    @else
+                                        {{number_format($total_fund->amount, 2)}}</h3></div>
+                                    @endif
                             <div class="clearfix"></div>
                         </div>
                     <div>
@@ -29,8 +35,9 @@
                                 <tr>
                                     <th>Sl. No1</th>
                                     <th>Fund</th>
-                                    <th>Alloted To</th>
                                     <th>Available Fund</th>
+                                    <th>Alloted To</th>
+                                    <th>Transfered At</th>
                                 </tr>
                                 </thead>
                                 <tbody>                       
@@ -55,9 +62,9 @@
             columns: [
                 {data: 'id', name: 'id',searchable: true},
                 {data: 'fund', name: 'fund',searchable: true},
-                {data: 'name', name: 'name' ,searchable: true}, 
                 {data: 'available_fund', name: 'available_fund' ,searchable: true},                 
-                // {data: 'action', name: 'action', orderable: false, searchable: false},
+                {data: 'name', name: 'name' ,searchable: true}, 
+                {data: 'created_at', name: 'created_at' ,searchable: true},  
             ]
         });
         

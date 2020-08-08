@@ -146,7 +146,7 @@ class AdminDashboardController extends Controller
         $member_data_fetch = DB::table('members')->where('login_id', $member_id)->first();
 
         $total_fund_insert_check = DB::table('total_funds')->where('user_id', $member_data_fetch->id)->first();
-        if($total_fund_insert_check){
+        if(!empty($total_fund_insert_check)){
               // Wallet Insert
               $wallet_insert = DB::table('total_funds') 
               ->where('user_id', $member_data_fetch->id)
@@ -155,11 +155,12 @@ class AdminDashboardController extends Controller
               ]);
         }else{
             $total_fund_insert = DB::table('total_funds')
-                    ->insert([
-                        'user_id'           =>  $member_data_fetch->id,
-                        'status'            => 1,
-                        'created_at'        => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                    ]);
+                ->insert([
+                    'user_id'           =>  $member_data_fetch->id,
+                    'status'            => 1,
+                    'created_at'        => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                ]);
+
             // Wallet Insert
             $wallet_insert = DB::table('total_funds') 
                 ->where('user_id', $member_data_fetch->id)
@@ -170,18 +171,13 @@ class AdminDashboardController extends Controller
         $fetch_fund = TotalFund::where('user_id', $member_data_fetch->id)->first();
         $fund_insert = DB::table('funds')
             ->insert([
-                'fund'                  =>  $fetch_fund->amount,
-                'available_fund'        => 0,
+                'fund'                  => $fund,
+                'available_fund'        => $fetch_fund->amount,
                 'alloted_to'            => $member_data_fetch->id,
                 'alloted_date'          => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 'created_at'            => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
         $fetch_fund_two = TotalFund::where('user_id', $member_data_fetch->id)->first();
-        $fund_update = DB::table('funds') 
-            ->where('alloted_to', $member_data_fetch->id)
-            ->update([
-                'available_fund' => DB::raw("`available_fund`+".($fetch_fund_two->amount)),
-            ]);
         return redirect()->back()->with('message', ''.$fund.' Fund is transfered successfully to '.$member_data_fetch->full_name.'');
     }
 

@@ -33,8 +33,8 @@
                                     <tr>
                                       <th>Sl. No</th>
                                       <th>Fund</th>
-                                      <th>Alloted To</th>
                                       <th>Fund Available</th>
+                                      <th>Alloted To</th>
                                       <th>Transfered At</th>
                                     </tr>
                                   </thead>
@@ -62,8 +62,8 @@
                 columns: [
                     {data: 'id', name: 'id',searchable: true},
                     {data: 'fund', name: 'fund',searchable: true},
-                    {data: 'alloted_to', name: 'alloted_to' ,searchable: true}, 
                     {data: 'available_fund', name: 'available_fund' ,searchable: true},  
+                    {data: 'alloted_to', name: 'alloted_to' ,searchable: true}, 
                     {data: 'created_at', name: 'created_at' ,searchable: true},  
                 ]
             });
