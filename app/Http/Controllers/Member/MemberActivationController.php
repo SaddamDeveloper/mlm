@@ -14,6 +14,7 @@ use App\Tree;
 use Carbon\Carbon;
 use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
+use App\TotalFund;
 class MemberActivationController extends Controller
 {
     public function memberActivatePageDetails()
@@ -24,7 +25,7 @@ class MemberActivationController extends Controller
     public function memberAddActivation()
     {
         $member = Member::where('id', Auth::user()->id)->first();
-        $fund = Fund::where('alloted_to', Auth::user()->id)->first();
+        $fund = TotalFund::where('user_id', Auth::user()->id)->first();
         $package = AdminPackage::orderBy('created_at', 'ASC')->get();
         return view('member.activation', compact('member', 'fund', 'package'));
     }

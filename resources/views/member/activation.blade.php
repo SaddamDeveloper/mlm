@@ -34,7 +34,7 @@
                                 <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
                                     <div class="input-box">
                                         <label for="fund">Fund Amount:</label>   
-                                        <input type="text" readonly value="{{isset($fund) ? number_format($fund->fund, 2) : "0.0"}}" class="form-control">
+                                        <input type="text" readonly value="{{isset($fund) ? number_format($fund->amount, 2) : "0.0"}}" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-4 mx-auto col-sm-12 col-xs-12 mb-3">
