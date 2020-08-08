@@ -98,6 +98,8 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/ajax/get/wallet/history','MemberDashboardController@ajaxGetWalletHistory')->name('member.ajax.my_wallet_history');
     Route::get('/my/epin/', 'MemberDashboardController@memberEpinListForm')->name('member.mem_epin_list_form');
     Route::get('/my/epin/list', 'MemberDashboardController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    Route::get('/my/fund/hostory', 'MemberDashboardController@memberFundHistoryForm')->name('member.mem_fund_history');
+    Route::get('/fund/history', 'MemberDashboardController@memberGetFundHistory')->name('member.ajax.fund_history');
     
     // Rewardz
 

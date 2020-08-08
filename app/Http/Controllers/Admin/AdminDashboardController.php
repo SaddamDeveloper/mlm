@@ -13,6 +13,7 @@ use App\AdminTdses;
 use App\Member;
 use App\Tree;
 use App\TotalFund;
+use App\FundHistory;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -153,6 +154,11 @@ class AdminDashboardController extends Controller
               ->update([
                   'amount' => DB::raw("`amount`+".($fund)),
               ]);
+              $fund_history = new FundHistory;
+              $fund_history->amount = $fund;
+              $fund_history->user_id = $member_data_fetch->id;
+              $fund_history->comment = "Rs ".$fund ." Fund has been credited";
+              $fund_history->save();
         }else{
             $total_fund_insert = DB::table('total_funds')
                 ->insert([
@@ -160,7 +166,13 @@ class AdminDashboardController extends Controller
                     'status'            => 1,
                     'created_at'        => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                 ]);
-
+            
+            // Fund History
+            $fund_history = new FundHistory;
+            $fund_history->amount = $fund;
+            $fund_history->user_id = $member_data_fetch->id;
+            $fund_history->comment = "Rs ".$fund ." Fund has been credited";
+            $fund_history->save();
             // Wallet Insert
             $wallet_insert = DB::table('total_funds') 
                 ->where('user_id', $member_data_fetch->id)

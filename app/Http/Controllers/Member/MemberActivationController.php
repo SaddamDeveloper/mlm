@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
 use App\TotalFund;
+use App\FundHistory;
 class MemberActivationController extends Controller
 {
     public function memberActivatePageDetails()
@@ -36,9 +37,9 @@ class MemberActivationController extends Controller
             'package'=> 'required'
         ]);
         $member_id = $request->input('member_id');
-        
         $package_name = $request->input('package');
         $member = Member::where('login_id', $member_id)->count();
+        $members = Member::where('login_id', $member_id)->first();
         if($member > 0 ){
             $package = Package::where('login_id', $member_id)->count();
                 if($package < 1){
@@ -46,21 +47,25 @@ class MemberActivationController extends Controller
                     $package->package_name = $package_name;
                     $package->login_id = $member_id;
                     $package->added_by = Auth::user()->full_name;
-                    $funds = Fund::where('alloted_to', Auth::user()->id)->first();
+                    $funds = TotalFund::where('user_id', Auth::user()->id)->first();
                     try {
-                        DB::transaction(function () use($package_name, $funds, $package, $member_id) {
+                        DB::transaction(function () use($package_name, $funds, $package, $member_id, $members) {
                             if($package_name == 1){
                                 $pk = 1;
-                                if($funds->available_fund > 1099){
-                                    $fund = DB::table('funds')
-                                        ->where('alloted_to', Auth::user()->id)
+                                if($funds->amount > 1099){
+                                    $fund = DB::table('total_funds')
+                                        ->where('user_id', Auth::user()->id)
                                         ->update([
-                                            'fund' => ($funds->available_fund - 1099),
-                                            'available_fund' => ($funds->available_fund - 1099)
+                                            'amount' => ($funds->amount - 1099),
                                         ]);
+                                        $fund_history = new FundHistory;
+                                        $fund_history->amount = "1099";
+                                        $fund_history->user_id = Auth::user()->id;
+                                        $fund_history->comment = "Rs 1099 Fund has been debited";
+                                        $fund_history->status = "2";
+                                        $fund_history->save();
                                         // Update Tree 
                                         if($package->save()){
-                                            $members = Member::where('login_id', $member_id)->first();
                                             $trees = Tree::where('user_id', $members->id)->first();
                                             $updateTree = DB::table('trees')
                                             ->where('user_id', $trees->user_id)
@@ -80,11 +85,7 @@ class MemberActivationController extends Controller
                                                     )
                                                 );
                                             $a = $this->treePair($parrents, $members->id, $pk);
-                                            if($a){
-                                                return redirect()->back()->with('message', $member_id.' is successfully activated!');
-                                            }else{
-                                                return redirect()->back()->with('error', 'Something went Wrong!');
-                                            }
+                                            return redirect()->back()->with('message', $member_id.' is successfully activated!');
                                         }else {
                                             return redirect()->back()->with('error', 'Something went Wrong!');
                                         }
@@ -94,12 +95,18 @@ class MemberActivationController extends Controller
                             }elseif ($package_name == 2) {
                                 $pk = 2;
                                 if($funds->available_fund > 2199){
-                                    $fund = DB::table('funds')
-                                    ->where('alloted_to', Auth::user()->id)
-                                    ->update([
-                                        'fund' => ($funds->available_fund - 2199),
-                                        'available_fund' => ($funds->available_fund - 2199)
-                                    ]);
+                                    $fund = DB::table('total_funds')
+                                        ->where('user_id', Auth::user()->id)
+                                        ->update([
+                                            'amount' => ($funds->amount - 2199),
+                                        ]);
+
+                                        $fund_history = new FundHistory;
+                                        $fund_history->amount = "1099";
+                                        $fund_history->user_id = Auth::user()->id;
+                                        $fund_history->comment = "Rs 1099 Fund has been debited";
+                                        $fund_history->status = "2";
+                                        $fund_history->save();
                                     if($package->save()){
                                         $members = Member::where('login_id', $member_id)->first();
                                         $trees = Tree::where('user_id', $members->id)->first();
@@ -135,12 +142,18 @@ class MemberActivationController extends Controller
                             }elseif ($package_name == 3) {
                                 $pk = 3;
                                 if($funds->available_fund > 2500){
-                                    $fund = DB::table('funds')
-                                    ->where('alloted_to', Auth::user()->id)
-                                    ->update([
-                                        'fund' => ($funds->available_fund - 2500),
-                                        'available_fund' => ($funds->available_fund - 2500)
-                                    ]);
+                                    $fund = DB::table('total_funds')
+                                        ->where('user_id', Auth::user()->id)
+                                        ->update([
+                                            'amount' => ($funds->amount - 2500),
+                                        ]);
+
+                                        $fund_history = new FundHistory;
+                                        $fund_history->amount = "1099";
+                                        $fund_history->user_id = Auth::user()->id;
+                                        $fund_history->comment = "Rs 1099 Fund has been debited";
+                                        $fund_history->status = "2";
+                                        $fund_history->save();
                                     if($package->save()){
                                         $members = Member::where('login_id', $member_id)->first();
                                         $trees = Tree::where('user_id', $members->id)->first();
@@ -176,12 +189,18 @@ class MemberActivationController extends Controller
                             }elseif ($package_name == 4) {
                                 $pk = 4;
                                 if($funds->available_fund > 5500){
-                                    $fund = DB::table('funds')
-                                    ->where('alloted_to', Auth::user()->id)
-                                    ->update([
-                                        'fund' => ($funds->available_fund - 5500),
-                                        'available_fund' => ($funds->available_fund - 5500)
-                                    ]);
+                                    $fund = DB::table('total_funds')
+                                        ->where('user_id', Auth::user()->id)
+                                        ->update([
+                                            'amount' => ($funds->amount - 5500),
+                                        ]);
+
+                                        $fund_history = new FundHistory;
+                                        $fund_history->amount = "1099";
+                                        $fund_history->user_id = Auth::user()->id;
+                                        $fund_history->comment = "Rs 1099 Fund has been debited";
+                                        $fund_history->status = "2";
+                                        $fund_history->save();
                                     if($package->save()){
                                         $members = Member::where('login_id', $member_id)->first();
                                         $trees = Tree::where('user_id', $members->id)->first();
@@ -222,9 +241,9 @@ class MemberActivationController extends Controller
                 }else { 
                     return redirect()->back()->with('error', 'You are already activated to the package');
                 }
-            }else{
-                return redirect()->back()->with('error','Member Not Found!');
-            }
+        }else{
+            return redirect()->back()->with('error','Member Not Found!');
+        }
             
     }
 

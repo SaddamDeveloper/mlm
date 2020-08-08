@@ -21,6 +21,7 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Str;
 use App\Fund;
 use App\TotalFund;
+use App\FundHistory;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -1069,6 +1070,18 @@ class MemberDashboardController extends Controller
                 ->leftjoin('members', 'funds.alloted_to', '=', 'members.id')
                 ->select('funds.*', 'members.full_name as name')
                 ->where('members.id', Auth::user()->id);
+            return datatables()->of($query->get())
+            ->addIndexColumn()
+            ->make(true);
+    }
+    
+    public function memberFundHistoryForm(){
+        $fund_history = FundHistory::where('user_id', Auth::user()->id)->first();
+        return view('member.fund_history', compact('fund_history'));
+    }
+    public function memberGetFundHistory()
+    {
+        $query = DB::table('fund_histories')->where('user_id', Auth::user()->id);
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);
