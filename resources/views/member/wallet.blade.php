@@ -24,7 +24,25 @@
                     </div>
                         <div>
                             <div class="x_content text-center text-success">
-                                <h3>Wallet Balance: <i class="fa fa-rupee"></i> {{$amount}}</h3>
+                                <div class="col-md-6">
+                                  <h3>Wallet Balance: <i class="fa fa-rupee"></i> {{$amount}}</h3>
+                                </div>
+                                <div class="col-md-3">
+                                  {{ Form::open(['method' => 'post','route'=>'member.fund_transfer_from_wallet']) }}
+                                  @if($amount > 0)
+                                    <input type="number" class="form-control" name="fund_transfer" placeholder="How many amount to transfer?"> 
+                                      @if($errors->has('fund_transfer'))
+                                      <span class="invalid-feedback" role="alert" style="color:red">
+                                          <strong>{{ $errors->first('fund_transfer') }}</strong>
+                                      </span>
+                                      @enderror
+                                  </div>
+                                  <div class="col-md-3">
+                                    <button class="btn btn-success">Transfer Fund</button>
+                                  </div>
+                                </form>
+                                  @endif
+                                </div>
                             </div>
                         </div>
                         <div>

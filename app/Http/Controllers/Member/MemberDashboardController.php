@@ -19,7 +19,8 @@ use App\AdminTdsesHistory;
 use App\ManualLock;
 use Faker\Factory as Faker;
 use Illuminate\Support\Str;
-
+use App\Fund;
+use App\TotalFund;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -1059,7 +1060,8 @@ class MemberDashboardController extends Controller
     }
 
     public function memberEpinListForm(){
-        return view('member.epin');
+        $total_fund = TotalFund::where('user_id', Auth::user()->id)->first();
+        return view('member.epin', compact('total_fund'));
     }
 
     public function memberGetEpinList(){
@@ -1190,6 +1192,46 @@ class MemberDashboardController extends Controller
         return redirect()->back()->with('message','Refreshed Successfully!');
     }
 
+    public function fundTransferFromWallet(Request $request)
+    {
+        $this->validate($request, [
+            'fund_transfer'     => 'required'
+        ]);
+        $fund_transfer_amount = $request->input('fund_transfer');
+        $fetch_wallet = Wallet::where('user_id', Auth::user()->id)->first();
+        if($fetch_wallet->amount > $fund_transfer_amount){
+              // Wallet Insert
+        $wallet_update = DB::table('wallets') 
+                ->where('user_id', Auth::user()->id)
+                ->update([
+                    'amount' => DB::raw("`amount`-".($fund_transfer_amount)),
+                ]);
+
+        $update_wallet_history = DB::table('wallet_histories')
+              ->insertGetId([
+                  'wallet_id' =>  $fetch_wallet->id,
+                  'user_id'   => Auth::user()->id,
+                  'transaction_type'  =>  2,
+                  'amount' => $fund_transfer_amount,
+                  'total_amount'  => $fetch_wallet->amount,
+                  'comment'   => $fund_transfer_amount.' Rs is debited from you wallet for transfering the fund! ',
+                  'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+              ]);
+
+        $fetch_fund = Fund::where('alloted_to', Auth::user()->id)->first();
+        $update_fund = DB::table('funds')
+              ->insertGetId([
+                  'fund' =>  $fund_transfer_amount,
+                  'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
+                  'alloted_to'  =>  Auth::user()->id,
+                  'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                  'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+              ]);
+                return redirect()->back()->with('message', 'Fund Transfered Successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Insufficent Wallet Balane');
+        }
+    }
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()
 {

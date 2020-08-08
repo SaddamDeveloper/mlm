@@ -11,6 +11,7 @@
     
                         <div class="x_title">
                             <h2>My FUND</h2>
+                            <div class="text-center text-success"><h3>Total Fund: <i class="fa fa-rupee"></i> {{number_format($total_fund->amount, 2)}}</h3></div>
                             <div class="clearfix"></div>
                         </div>
                     <div>

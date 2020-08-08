@@ -115,6 +115,8 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/member/activate/details', 'MemberActivationController@memberActivatePageDetails')->name('member.activate_page_details');
     Route::post('/member/add/package', 'MemberActivationController@addPackage')->name('member.add_package');
     Route::get('/member/distributor/details', 'MemberActivationController@distributorDetails')->name('member.ajax.distributor_details');
+    
+    Route::post('/member/fund/transfer', 'MemberDashboardController@fundTransferFromWallet')->name('member.fund_transfer_from_wallet');
 
 
 
