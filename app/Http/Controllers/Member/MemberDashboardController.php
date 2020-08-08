@@ -241,7 +241,7 @@ class MemberDashboardController extends Controller
                 ->update([
                     'sponsorID' =>  $generatedID,
                 ]);
-                // $this->sendSms($fullName, $mobile, $login_id, $password);
+                $this->sendSms($fullName, $mobile, $login_id, $password);
                 $sponsor = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                 //Fetch Tree Data Using User ID
                 $sponsor_tree = DB::table('trees')
@@ -1132,7 +1132,7 @@ class MemberDashboardController extends Controller
         }
     }
 
-    function sendSms($fullName, $mobile, $login_id, $password){
+    // function sendSms($fullName, $mobile, $login_id, $password){
         $sms = "Congratulations $fullName!!!
         You are successfully registered with SSSDREAM LIFE E-COMMERCE PVT LTD
         Your User ID: $login_id
