@@ -16,6 +16,7 @@ use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
 use App\TotalFund;
 use App\FundHistory;
+
 class MemberActivationController extends Controller
 {
     public function memberActivatePageDetails()
@@ -38,18 +39,19 @@ class MemberActivationController extends Controller
         ]);
         $member_id = $request->input('member_id');
         $package_name = $request->input('package');
-        $member = Member::where('login_id', $member_id)->count();
-        $members = Member::where('login_id', $member_id)->first();
-        if($member > 0 ){
+        $member = Member::where('login_id', $member_id);
+        if($member->count() > 0 ){
+            
+            $members = $member->first();
             $package = Package::where('login_id', $member_id)->count();
                 if($package < 1){
-                    $package = new Package;
-                    $package->package_name = $package_name;
-                    $package->login_id = $member_id;
-                    $package->added_by = Auth::user()->full_name;
-                    $funds = TotalFund::where('user_id', Auth::user()->id)->first();
                     try {
-                        DB::transaction(function () use($package_name, $funds, $package, $member_id, $members) {
+                        DB::transaction(function () use($package_name, $member_id, $members) {
+                            $package = new Package;
+                            $package->package_name = $package_name;
+                            $package->login_id = $member_id;
+                            $package->added_by = Auth::user()->full_name;
+                            $funds = TotalFund::where('user_id', Auth::user()->id)->first();
                             if($package_name == 1){
                                 $pk = 1;
                                 if($funds->amount > 1099){
@@ -84,17 +86,16 @@ class MemberActivationController extends Controller
                                                     'start_node' => $trees->id,
                                                     )
                                                 );
-                                            $a = $this->treePair($parrents, $members->id, $pk);
-                                            return redirect()->back()->with('message', $member_id.' is successfully activated!');
+                                            $this->treePair($parrents, $members->id, $pk);
                                         }else {
-                                            return redirect()->back()->with('error', 'Something went Wrong!');
+                                            throw new \Exception('Exception message');
                                         }
                                 }else {
-                                    return redirect()->back()->with('error', 'Insufficient Funds!');
+                                    throw new \Exception('Exception message');
                                 }            
                             }elseif ($package_name == 2) {
                                 $pk = 2;
-                                if($funds->available_fund > 2199){
+                                if($funds->amount > 2199){
                                     $fund = DB::table('total_funds')
                                         ->where('user_id', Auth::user()->id)
                                         ->update([
@@ -128,20 +129,15 @@ class MemberActivationController extends Controller
                                                 )
                                             );
                                         $this->treePair($parrents, $members->id, $pk);
-                                            if($updateTree){
-                                                return redirect()->back()->with('message', $member_id.' is successfully activated!');
-                                            }else{
-                                                return redirect()->back()->with('error', 'Something went Wrong!');
-                                            }
                                     }else {
-                                        return redirect()->back()->with('error', 'Something went Wrong!');
+                                        throw new \Exception('Exception message');
                                     }
                                 }else{
-                                    return redirect()->back()->with('error', 'Insufficient Funds!');
+                                    throw new \Exception('Exception message');
                                 }
                             }elseif ($package_name == 3) {
                                 $pk = 3;
-                                if($funds->available_fund > 2500){
+                                if($funds->amount > 2500){
                                     $fund = DB::table('total_funds')
                                         ->where('user_id', Auth::user()->id)
                                         ->update([
@@ -175,20 +171,15 @@ class MemberActivationController extends Controller
                                                     )
                                                 );
                                             $this->treePair($parrents, $members->id, $pk);
-                                            if($updateTree){
-                                                return redirect()->back()->with('message', $member_id.' is successfully activated!');
-                                            }else{
-                                                return redirect()->back()->with('error', 'Something went Wrong!');
-                                            }
                                     }else {
-                                        return redirect()->back()->with('error', 'Something went Wrong!');
+                                        throw new \Exception('Exception message');
                                     }
                                 }else{
-                                    return redirect()->back()->with('error', 'Insufficient Funds!');
+                                    throw new \Exception('Exception message');
                                 }
                             }elseif ($package_name == 4) {
                                 $pk = 4;
-                                if($funds->available_fund > 5500){
+                                if($funds->amount > 5500){
                                     $fund = DB::table('total_funds')
                                         ->where('user_id', Auth::user()->id)
                                         ->update([
@@ -222,19 +213,15 @@ class MemberActivationController extends Controller
                                                     )
                                                 );
                                             $this->treePair($parrents, $members->id, $pk);
-                                            if($updateTree){
-                                                return redirect()->back()->with('message', $member_id.' is successfully activated!');
-                                            }else{
-                                                return redirect()->back()->with('error', 'Something went Wrong!');
-                                            }
                                     }else {
-                                        return redirect()->back()->with('error', 'Something went Wrong!');
+                                        throw new \Exception('Exception message');
                                     }
                                 }else{
-                                    return redirect()->back()->with('error', 'Insufficient Funds!');
+                                    throw new \Exception('Exception message');
                                 }
                             }
                         });
+                        return redirect()->back()->with('message', ' Member successfully activated!');
                     } catch (\Exception $e) {
                         return redirect()->back()->with('error', 'Something went Wrong! Try after sometime!');
                     }
