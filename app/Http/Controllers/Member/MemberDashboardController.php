@@ -1132,7 +1132,7 @@ class MemberDashboardController extends Controller
         }
     }
 
-    // function sendSms($fullName, $mobile, $login_id, $password){
+    function sendSms($fullName, $mobile, $login_id, $password){
         $sms = "Congratulations $fullName!!!
         You are successfully registered with SSSDREAM LIFE E-COMMERCE PVT LTD
         Your User ID: $login_id
