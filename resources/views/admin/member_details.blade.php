@@ -82,10 +82,10 @@
                                             <th>Account No</th>
                                             <td>{{$fetch_member_data->account_no}}</td>
                                         </tr>
-                                        {{-- <tr>
-                                            <th>Registered By</th>
-                                            <td>{{$fetch_member_data->registered_by}}</td>
-                                        </tr> --}}
+                                        <tr>
+                                            <th>Photo</th>
+                                            <td><img src="{{asset('admin/production/images/'.$fetch_member_data->photo)}}" alt="" width="100"></td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>  

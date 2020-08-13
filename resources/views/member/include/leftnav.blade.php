@@ -9,7 +9,7 @@
       <!-- menu profile quick info -->
       <div class="profile clearfix">
         <div class="profile_pic">
-          <img src="{{asset('member/production/images/img.jpg')}}" alt="..." class="img-circle profile_img">
+          <img src="{{Auth::user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::user()->photo)}}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
           <span>Welcome,</span>
@@ -41,6 +41,7 @@
               <ul class="nav child_menu">
                 <li><a href="{{route('member.mem_epin_list_form')}}"> My Fund</a></li>
                 <li><a href="{{route('member.mem_fund_history')}}"> Fund History</a></li>
+                <li><a href="{{route('member.mem_fund_request')}}"> Fund Request</a></li>
               </ul>
             </li>
             <li><a><i class="fa fa-users"></i> Activate Distributor<span class="fa fa-chevron-down"></span></a>
@@ -52,7 +53,7 @@
             <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
             </li>
             <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a></li>
-            <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li>
+            {{-- <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li> --}}
           </ul>
         </div>
       </div>

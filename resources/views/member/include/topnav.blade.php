@@ -9,18 +9,18 @@
         <ul class="nav navbar-nav navbar-right">
           <li class="">
             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{asset('member/production/images/img.jpg')}}" alt="">{{Auth::user()->full_name}}
+              <img src="{{Auth::user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::user()->photo)}}" alt="">{{Auth::user()->full_name}}
               <span class=" fa fa-angle-down"></span>
             </a>
             <ul class="dropdown-menu dropdown-usermenu pull-right">
-              {{-- <li>
+              <li>
                 <a href="{{ route('member.profile') }}" class="fa fa-user"> Profile</a>
               </li>
               <li>
                 <a href="{{route('member.change_password')}}" class="fa fa-key">
                   Change Password
                 </a>
-              </li> --}}
+              </li>
               <div class="devider">
 
               </div>

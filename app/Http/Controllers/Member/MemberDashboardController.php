@@ -22,6 +22,9 @@ use Illuminate\Support\Str;
 use App\Fund;
 use App\TotalFund;
 use App\FundHistory;
+use Intervention\Image\Facades\Image;
+use File;
+use App\FundRequest;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -1244,6 +1247,142 @@ class MemberDashboardController extends Controller
         }else{
             return redirect()->back()->with('error', 'Insufficent Wallet Balane');
         }
+    }
+
+    public function profile(){
+        $member = Member::findOrFail(Auth::user()->id);
+        return view('member.profile', compact('member'));
+    }
+    public function changePasswordPage()
+    {
+        return view('member.change_password');
+    }
+
+    public function changePassword(Request $request){
+        $validatedData = $request->validate([
+            'current-password' => 'required',
+            'new-password' => 'required|string|min:6|confirmed',
+        ]);
+
+        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+            // The passwords matches
+            return redirect()->back()->with('error','Your current password does not matches with the password you provided. Please try again.');
+        }
+
+        if(strcmp($request->get('current-password'), $request->get('new-password')) == 0){
+            //Current password and new password are same
+            return redirect()->back()->with("error","New Password cannot be same as your current password. Please choose a different password.");
+        }
+
+
+        //Change Password
+        $user = Auth::user();
+        $user->password = bcrypt($request->get('new-password'));
+        $user->save();
+
+        return redirect()->back()->with("message","Password changed successfully !");
+
+    }
+    public function accountUpdatePage()
+    {
+        $member = Member::findOrFail(Auth::user()->id);
+        return view('member.account', compact('member'));
+    }
+
+    public function updateMember(Request $request)
+    {   
+        $this->validate($request, [
+            'member_name'   => 'required',
+            'mobile'        => 'required',
+            'email'         => 'required|email',
+            'ifsc'          => 'required',
+            'account_no'    =>  'required',
+        ]);
+        
+        $member = Member::find(Auth::user()->id);
+        $member->full_name = $request->input('member_name');
+        $member->mobile = $request->input('mobile');
+        $member->email = $request->input('email');
+        $member->dob = $request->input('dob');
+        $member->pan = $request->input('pan');
+        $member->aadhar = $request->input('aadhar');
+        $member->address = $request->input('address');
+        $member->bank_name = $request->input('bank');
+        $member->ifsc = $request->input('ifsc');
+        $member->account_no = $request->input('account_no');
+        $image = null;
+        if($request->hasfile('photo')){
+            $this->validate($request, [
+                'photo'         =>  'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
+            if($member->photo){
+                //Delete
+                $image_path_thumb = "/public/admin/production/images/thumb/".$member->photo;  
+                $image_path_original = "/public/admin/production/images/".$member->photo;  
+                if(File::exists($image_path_thumb)) {
+                    File::delete($image_path_thumb);
+                }
+                if(File::exists($image_path_original)){
+                    File::delete($image_path_original);
+                }
+            }
+            $image_array = $request->file('photo');
+            $image = $this->imageInsert($image_array, $request, 1);
+            $member->photo = $image;
+        }
+        if($member->save()){
+            return redirect()->back()->with('message', 'Account Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Something Went Wrong!');
+        }
+    }
+    public function memberRequestForm()
+    {
+        return view('member.fund_request');
+    }
+    public function memberRequest(Request $request)
+    {
+        $this->validate($request, [
+            'fund' => 'required|numeric'
+        ]);
+        
+        $fund_request = new FundRequest;
+        $fund_request->fund = $request->input('fund');
+        $image = null;
+        if($request->hasfile('photo')){
+            $this->validate($request, [
+                'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
+            $image_array = $request->file('photo');
+            $image = $this->ImageInsert($image_array, $request, 1);
+        }
+        $fund_request->attachment = $image;
+        $fund_request->added_by = Auth::user()->full_name;
+        if($fund_request->save()){
+            return redirect()->back()->with('message', 'Successfully Requested!');
+        }else{
+            return redirect()->back()->with('error', 'Something Went Wrong Please Try Again');
+        }
+    }
+    public function fundRequestList()
+    {
+        return datatables()->of(FundRequest::orderBy('created_at', 'DESC')->get())
+        ->make(true);
+    }
+    function imageInsert($image, Request $request, $flag){
+        $destination = base_path().'/public/admin/production/images/';
+        $image_extension = $image->getClientOriginalExtension();
+        $image_name = md5(date('now').time()).$flag.".".$image_extension;
+        $original_path = $destination.$image_name;
+        Image::make($image)->save($original_path);
+        $thumb_path = base_path().'/public/admin/production/images/thumb/'.$image_name;
+        Image::make($image)
+        ->resize(300, 400)
+        ->save($thumb_path);
+
+        return $image_name;
     }
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()

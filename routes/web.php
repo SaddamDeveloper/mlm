@@ -68,6 +68,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/wallet/list', 'AdminDashboardController@memberWalletList')->name('admin.ajax.wallet_list');
     Route::get('/wallet/history/{id}', 'AdminDashboardController@memberWalletHistory')->name('admin.wallet_history');
     Route::get('/wallet/ajax/history/{id}', 'AdminDashboardController@memberAjaxWalletHistory')->name('admin.ajax.wallet_history');
+    
+    // Fund Request
+    Route::get('/member/fund/request', 'AdminDashboardController@memberFundRequests')->name('admin.mem_fund_requests');
+    Route::get('/member/fund/request/list', 'AdminDashboardController@memberFundRequestList')->name('admin.ajax.fund_request_list');
+    Route::get('/member/fund/request/status/{id}', 'AdminDashboardController@memberFundRequestStatus')->name('admin.fund_request_status');
+
 });
 
 
@@ -76,13 +82,27 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
  */
 Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Member'],function(){
     Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
+    Route::get('/profile', 'MemberDashboardController@profile')->name('member.profile');
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::post('/add', 'MemberDashboardController@addNewMember')->name('member.add_new_member');
     Route::get('/search/sponsorID', 'MemberDashboardController@searchSponsorID')->name('member.search_sponsor_id');
     Route::get('/check/loginID', 'MemberDashboardController@loginIDCheck')->name('member.login_id_check');
     Route::get('/add/refresh/{id}', 'MemberDashboardController@refreshMember')->name('member.refresh');
 
+    // Fund Request
+    Route::get('/my/fund/request/form', 'MemberDashboardController@memberRequestForm')->name('member.mem_fund_request');
+    Route::post('/my/fund/request', 'MemberDashboardController@memberRequest')->name('member.store_fund_requests');
+    Route::get('/my/fund/request/list', 'MemberDashboardController@fundRequestList')->name('member.ajax.fund_request_list');
+    Route::get('/my/fund/transfer/form', 'MemberDashboardController@memberTransferForm')->name('member.fund_transfer');
+    Route::post('/my/fund/transfer', 'MemberDashboardController@memberfundTransfer')->name('member.store_fund_transfer');
 
+    // Member Password Change
+    Route::get('/change/password', 'MemberDashboardController@changePasswordPage')->name('member.change_password');
+    Route::post('/changePassword','MemberDashboardController@changePassword')->name('member.changePassword');
+
+    // Profile UPdation
+    Route::get('/account/update/page', 'MemberDashboardController@accountUpdatePage')->name('member.account_update');
+    Route::post('/update/member','MemberDashboardController@updateMember')->name('member.update_member');
     // Thank You Page
     Route::get('/thank/you/{token}', 'MemberDashboardController@thankYou')->name('member.thank_you');
 

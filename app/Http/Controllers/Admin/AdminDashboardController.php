@@ -14,6 +14,7 @@ use App\Member;
 use App\Tree;
 use App\TotalFund;
 use App\FundHistory;
+use App\FundRequest;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -836,5 +837,88 @@ class AdminDashboardController extends Controller
             ->addIndexColumn()
             ->make(true);
     
+    }
+
+    public function memberUpdate(Request $request)
+    {
+        $this->validate($request, [
+            'f_name'                => 'required',
+            'email'                 => 'required|email',
+            'mobile'                => 'required|numeric|min:10',
+            'pan'                   => 'required',
+            'aadhar'                => 'required',
+            'ifsc'                  => 'required',
+            'account_no'            => 'required',
+        ]);
+        
+        $id = $request->input('id');
+        $full_name = $request->input('f_name');
+        $email = $request->input('email');
+        $mobile = $request->input('mobile');
+        $dob = $request->input('dob');
+        $pan = $request->input('pan');
+        $aadhar = $request->input('aadhar');
+        $address = $request->input('address');
+        $bank_name = $request->input('bank_name');
+        $ac_holder_name = $request->input('ac_holder_name');
+        $ifsc = $request->input('ifsc');
+        $account_no = $request->input('account_no');
+
+        $member = Member::find($id);
+        $member->full_name = $full_name;
+        $member->email = $email;
+        $member->mobile = $mobile;
+        $member->dob = $dob;
+        $member->pan = $pan;
+        $member->aadhar = $aadhar;
+        $member->address = $address;
+        $member->bank_name = $bank_name;
+        $member->ac_holder_name = $ac_holder_name;
+        $member->ifsc = $ifsc;
+        $member->account_no = $account_no;
+
+        if($member->save()){
+            return redirect()->back()->with('message', "Information updated Successfully!");
+        }
+    }
+
+    public function memberFundRequests()
+    {
+        return view('admin.fund_requests');
+    }
+    public function memberFundRequestList()
+    {
+        $query = FundRequest::orderBy('created_at', 'DESC');
+            return datatables()->of($query->get())
+            ->addIndexColumn()
+            ->addColumn('attachment', function($row){
+                $image = '<a href="'.asset('admin/production/images/'.$row->attachment).'" target="_blank"><img src="'.asset('admin/production/images/'.$row->attachment).'" alt="attachment" width="200"></a>';
+                return $image;
+            })
+            ->addColumn('action', function($row){
+                if($row->status == '1'){
+                    $action = '<a href="'.route('admin.fund_request_status', ['id' => encrypt($row->id)]).'" class="btn btn-success">Solve</a>';
+                }else{
+                    $action = '<a href="#" class="btn btn-danger" disabled>Solved</a>';
+                }
+                return $action;
+            })
+            ->rawColumns(['attachment','action'])
+            ->make(true);
+    }
+
+    public function memberFundRequestStatus($id)
+    {
+        try {
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $update = FundRequest::where('id', $id)->update(array('status' => '2'));
+        if($update){
+            return redirect()->back()->with('message','Updated Successfully');
+        }else {
+            return redirect()->back()->with('error', 'Something Went Wrong Please Try Again');
+        }
     }
 }
