@@ -5,29 +5,129 @@
         <!-- page content -->
         <div class="right_col" role="main">
           <!-- top tiles -->
-           <div class="row tile_count">
-            <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-rupee"></i> My Commission</span>
-            <div class="count">{{$my_commission}}</div>
+          <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="count">{{$user_info->login_id}}</div>
+                <h3>{{$user_info->full_name}}</h3>
+              </div>
             </div>
-            <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-clock-o"></i> Total Pair Completed</span>
-              <div class="count">{{$total_pair_completed}}</div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="count">{{$user_info->created_at->format('d/m/Y')}}</div>
+                <h3>Joining Date</h3>
+              </div>
             </div>
-            {{-- <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-ticket"></i> EPIN Available</span>
-              <div class="count">{{$epin_available}}</div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                <div class="count">{{$direct_member}}</div>
+                <h3>Direct Member</h3>
+              </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-ticket"></i> EPIN Used</span>
-              <div class="count">{{$epin_used}}</div>
-            </div>--}}
-            <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-              <span class="count_top"><i class="fa fa-cc-visa"></i> My Wallet</span>
-              <div class="count">{{$my_wallet}}</div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                <div class="count">{{$total_left}}</div>
+                <h3>Total Left</h3>
+              </div>
             </div>
           </div>
-          
+          <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="count">{{$total_right}}</div>
+                <h3>Total Right</h3>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                <div class="count">{{$left_active}}</div>
+                <h3>Left Active</h3>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                <div class="count">{{$right_active}}</div>
+                <h3>Right Active</h3>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                <div class="count">{{$pair_matching}}</div>
+                <h3>Pair Matching</h3>
+              </div>
+            </div>
+          </div>
+          {{-- <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="count">179</div>
+                <h3>Left BV</h3>
+                <p>Username</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                <div class="count">179</div>
+                <h3>Right BV</h3>
+                <p>Joining Date</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                <div class="count">179</div>
+                <h3>Matching BV</h3>
+                <p>Lorem ipsum psdea itgum rixt.</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                <div class="count">179</div>
+                <h3>Matching Income</h3>
+                <p>Lorem ipsum psdea itgum rixt.</p>
+              </div>
+            </div>
+          </div>
+          <div class="row top_tiles">
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="count">179</div>
+                <h3>Total Income</h3>
+                <p>Username</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                <div class="count">179</div>
+                <h3>Available Fund</h3>
+                <p>Joining Date</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                <div class="count">179</div>
+                <h3>Matching BV</h3>
+                <p>Lorem ipsum psdea itgum rixt.</p>
+              </div>
+            </div>
+            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+              <div class="tile-stats">
+                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                <div class="count">179</div>
+                <h3>Matching Income</h3>
+                <p>Lorem ipsum psdea itgum rixt.</p>
+              </div>
+            </div>
+          </div> --}}
         </div>
           <!-- /top tiles -->
 

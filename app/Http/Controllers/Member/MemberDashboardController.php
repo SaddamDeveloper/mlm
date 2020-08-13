@@ -29,15 +29,21 @@ class MemberDashboardController extends Controller
 {
     public function index()
     {
-        $my_commission = CommissionHistory::where('user_id', Auth::user()->id)->sum('amount');
-        $total_pair_completed = Tree::where('user_id', Auth::user()->id)->value('total_pair');
+        // $my_commission = CommissionHistory::where('user_id', Auth::user()->id)->sum('amount');
+        // $total_pair_completed = Tree::where('user_id', Auth::user()->id)->value('total_pair');
         // $epin_available = Epin::where('status', 2)->where('alloted_to', Auth::user()->id)->count();
         // $epin_used = Epin::where('status', 1)->where('alloted_to', Auth::user()->id)->count();
-        $my_wallet = Wallet::where('user_id', Auth::user()->id)->value('amount');
-
+        // $my_wallet = Wallet::where('user_id', Auth::user()->id)->value('amount');
         // $epin_list = Epin::with('member')->where('alloted_to', Auth::user()->id)->paginate(10);
-
-        return view('member.dashboard', compact('my_commission', 'total_pair_completed', 'my_wallet'));
+        $user_info = Auth::user();
+        $direct_member = Tree::where('registered_by', $user_info->id)->count();
+        $tree = Tree::where('user_id', $user_info->id)->first();
+        $total_left = $tree->total_left_count;
+        $total_right = $tree->total_right_count;
+        $left_active = $tree->total_activate_left;
+        $right_active = $tree->total_activate_right;
+        $pair_matching = $tree->activate_pair;
+        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching'));
     }
 
     public function addNewMemberForm()
