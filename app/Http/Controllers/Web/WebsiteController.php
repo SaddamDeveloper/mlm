@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Model\ShoppingSlider;
+use App\Model\ShoppingProduct;
 class WebsiteController extends Controller
 {
     public function index()
     {
-        return view('web.index');
+        $slider = ShoppingSlider::orderBy('created_at', 'DESC')->get();
+        $product = ShoppingProduct::orderBy('created_at', 'DESC')->get();
+        return view('web.index', compact('slider', 'product'));
     }
     public function about()
     {

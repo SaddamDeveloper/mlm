@@ -34,14 +34,14 @@
                 <li><a href="{{route('admin.mem_wallet')}}">Member Wallet List</a></li>
               </ul>
             </li>
-            {{--
-            <li><a><i class="fa fa-shopping-cart"></i> Shopping <span class="fa fa-chevron-down"></span></a>
+            
+            <li><a><i class="fa fa-shopping-cart"></i> Website Manage <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.shopping_slider')}}">Slider List</a></li>
                 <li><a href="{{route('admin.shopping_product')}}">Product List</a></li>
                 <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
               </ul>
-            </li>--}}
+            </li>
             <li>
                 <a href="{{route('admin.important_notice')}}">
                   <i class="fa fa-bell"></i> Important Notice

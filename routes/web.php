@@ -83,6 +83,39 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/view/notice/{id}', 'AdminDashboardController@viewNotice')->name('admin.notice_view');
     Route::get('/status/notice/{id}/{status}', 'AdminDashboardController@noticeStatus')->name('admin.notice_status');
 
+
+    /**
+     * Shopping Product List Control
+     */
+
+    //  Slider
+    Route::get('/shopping/slider', 'ShoppingProductController@shoppingSlider')->name('admin.shopping_slider');
+    Route::get('/shopping/slider/add', 'ShoppingProductController@addShoppingSlider')->name('admin.add_slider');
+    Route::get('/shopping/slider/list', 'ShoppingProductController@ShoppingSliderList')->name('admin.shopping_slider_list');
+    Route::post('/shopping/slider/store', 'ShoppingProductController@storeShoppingSlider')->name('admin.store_shopping_slider');
+    Route::get('/shopping/slider/status/{sId}/{status}', 'ShoppingProductController@ShoppingSliderStatus')->name('admin.shopping_slider_status');
+    Route::get('/shopping/slider/edit/{id}', 'ShoppingProductController@ShoppingSliderEdit')->name('admin.shopping_slider_edit');
+    Route::post('/shopping/slider/update', 'ShoppingProductController@ShoppingSliderUpdate')->name('admin.update_shopping_slider');
+
+
+    //Shopping Product
+    Route::get('/shopping/product', 'ShoppingProductController@shoppingProduct')->name('admin.shopping_product');
+    Route::get('/shopping/product/add', 'ShoppingProductController@addShoppingProduct')->name('admin.add_shopping_product');
+    Route::post('/shopping/product/store', 'ShoppingProductController@storeShoppingProduct')->name('admin.store_shopping_product');
+    Route::get('/shopping/product/list', 'ShoppingProductController@ShoppingProductList')->name('admin.shopping_product_list');
+    Route::get('/shopping/product/status/{pId}/{status}', 'ShoppingProductController@ShoppingProductStatus')->name('admin.shopping_product_status');
+    Route::get('/shopping/product/edit/{id}', 'ShoppingProductController@ShoppingProductEdit')->name('admin.shopping_product_edit');
+    Route::post('/shopping/product/update', 'ShoppingProductController@ShoppingProductUpdate')->name('admin.update_shopping_product');
+
+    //Shopping Category
+    Route::get('/shopping/category', 'ShoppingProductController@shoppingCategory')->name('admin.shopping_category');
+    Route::get('/shopping/category/add', 'ShoppingProductController@addShoppingCategory')->name('admin.add_shopping_category');
+    Route::post('/shopping/category/store', 'ShoppingProductController@storeShoppingCategory')->name('admin.store_shopping_category');
+    Route::get('/shopping/category/list', 'ShoppingProductController@ShoppingCategoryList')->name('admin.shoppingCategoryList');
+    Route::get('/shopping/category/status/{pId}/{status}', 'ShoppingProductController@ShoppingCategoryStatus')->name('admin.shopping_category_status');
+    Route::get('/shopping/category/edit/{id}', 'ShoppingProductController@ShoppingCategoryEdit')->name('admin.shopping_category_edit');
+    Route::post('/shopping/category/update/{id}', 'ShoppingProductController@ShoppingCategoryUpdate')->name('admin.update_shopping_category');
+
 });
 
 
