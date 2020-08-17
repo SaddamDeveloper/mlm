@@ -41,12 +41,12 @@
                 <li><a href="{{route('admin.shopping_product')}}">Product List</a></li>
                 <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
               </ul>
-            </li>
+            </li>--}}
             <li>
                 <a href="{{route('admin.important_notice')}}">
                   <i class="fa fa-bell"></i> Important Notice
                 </a>
-            </li>--}}
+            </li>
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>
               <ul class="nav child_menu">
                 <li><a href="{{route('admin.mem_epin')}}">Fund Allocate</a></li>

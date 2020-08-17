@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Corano - Jewellery Shop eCommerce Bootstrap 4 Template</title>
+    <title>SSSDREAM Life</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -50,7 +50,7 @@
                         <div class="col-lg-2">
                             <div class="logo">
                                 <a href="index.html">
-                                    <img src="{{asset('web/img/logo/logo.png')}}" alt="Brand Logo">
+                                    <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="Brand Logo" width="100">
                                 </a>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                                     <nav class="desktop-menu">
                                         <ul>
                                             <li class="active"><a href="{{route('web.index')}}">Home </a></li>
-                                            <li class="active"><a href="index.html">About </a></li>
+                                            <li class="active"><a href="{{route('web.about')}}">About </a></li>
                                             <li><a href="blog-left-sidebar.html">Product <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
                                                     <li><a href="blog-left-sidebar.html">Our Product</a></li>
@@ -89,10 +89,10 @@
                                             </li>
                                             <li><a href="{{route('web.login')}}">Login</a></li>
                                             <li><a href="{{route('web.join')}}">Club</a></li>
-                                            <li><a href="contact-us.html">Reward</a></li>
+                                            <li><a href="{{route('web.reward')}}">Reward</a></li>
                                             <li><a href="{{route('web.join')}}">Join us</a></li>
                                             <li><a href="contact-us.html">Contact</a></li>
-                                            <li><a href="contact-us.html">Plan</a></li>
+                                            <li><a href="{{route('web.plan')}}">Plan</a></li>
                                             <li><a href="contact-us.html">Rank Achiever</a></li>
                                             <li><a href="contact-us.html">Reward Achiever</a></li>
                                         </ul>

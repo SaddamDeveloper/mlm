@@ -25,6 +25,7 @@ use App\FundHistory;
 use Intervention\Image\Facades\Image;
 use File;
 use App\FundRequest;
+use App\ImportantNotice;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -43,7 +44,8 @@ class MemberDashboardController extends Controller
         $left_active = $tree->total_activate_left;
         $right_active = $tree->total_activate_right;
         $pair_matching = $tree->activate_pair;
-        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching'));
+        $notice = ImportantNotice::where('status', 1)->orderBy('created_at', 'DESC')->limit(10)->get();
+        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching', 'notice'));
     }
 
     public function addNewMemberForm()
@@ -72,7 +74,6 @@ class MemberDashboardController extends Controller
             'login_id'              => 'required|unique:members',
             'password'              => 'required|confirmed|min:6'
         ]);
-
         $sponsor_member_data = Member::where('login_id', $request->input('search_sponsor_id'))->first();
         if(empty($sponsor_member_data)){
             return redirect()->back();
@@ -1350,11 +1351,13 @@ class MemberDashboardController extends Controller
     public function memberRequest(Request $request)
     {
         $this->validate($request, [
-            'fund' => 'required|numeric'
+            'fund' => 'required|numeric',
+            'utr'   => 'required'
         ]);
         
         $fund_request = new FundRequest;
         $fund_request->fund = $request->input('fund');
+        $fund_request->utr = $request->input('utr');
         $image = null;
         if($request->hasfile('photo')){
             $this->validate($request, [
@@ -1389,6 +1392,26 @@ class MemberDashboardController extends Controller
         ->save($thumb_path);
 
         return $image_name;
+    }
+     public function getNotice($nId)
+    {
+        try{
+            $id = decrypt($nId);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+
+        $notice = ImportantNotice::findOrFail($id);
+        return view('member.view_notice', compact('notice'));
+    }
+    public function memberGetRewardListForm()
+    {
+        return view('member.reward_history');
+    }
+    public function memberGetRewardList()
+    {
+        return datatables()->of(Rewards::orderBy('created_at', 'DESC')->get())
+        ->make(true);
     }
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()

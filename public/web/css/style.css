@@ -33,7 +33,9 @@ body {
   font-weight: 400;
   font-family: "Lato", sans-serif;
 }
-
+.invalid-feedback{
+  display: block !important;
+}
 a {
   -webkit-transition: 0.4s;
   -o-transition: 0.4s;

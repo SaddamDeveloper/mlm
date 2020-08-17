@@ -47,16 +47,53 @@
                     </h3>
 
                     <ul class="list-unstyled user_data">
-                      <li><i class="fa fa-map-marker user-profile-icon"></i> {{$member->state}}, {{$member->city}}, {{$member->pin}}
-                      </li>
 
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->full_name}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->login_id}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->sponsorID}}
+                      </li>
+                      <li>
+                        <i class="fa fa-envelope-o user-profile-icon"></i> {{$member->email}}
+                      </li>
+                      <li>
+                        <i class="fa fa-mobile user-profile-icon"></i> {{$member->mobile}}
+                      </li>
+                      <li>
+                        <i class="fa fa-birthday-cake user-profile-icon"></i> {{$member->dob}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->pan}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->aadhar}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->address}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->bank}}
+                      </li>
+                      <li>
+                        <i class="fa fa-user user-profile-icon"></i> {{$member->ac_holder_name}}
+                      </li>
+                      <li>
+                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->ifsc}}
+                      </li>
+                      <li>
+                        <i class="fa fa-credit-card user-profile-icon"></i> {{$member->account_no}}
+                      </li>
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> SILVER LEVEL
                       </li>
 
                       <li class="m-top-xs">
                         <i class="fa fa-external-link user-profile-icon"></i>
-                        <a href="http://www.kimlabs.com/profile/" target="_blank">www.kimlabs.com</a>
+                        <a href="http://www.kimlabs.com/profile/" target="_blank">refferal</a>
                       </li>
                     </ul>
 

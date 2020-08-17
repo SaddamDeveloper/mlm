@@ -50,7 +50,8 @@
                 <li><a href="{{route('member.activate_page_details')}}"> ID Activation Details</a></li>
               </ul>
             </li>
-            <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Commission History</a>
+            <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Income History</a>
+            <li><a href="{{route('member.my_rewards_list_form')}}"><i class="fa fa-percent"></i> Reward History</a>
             </li>
             <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a></li>
             {{-- <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li> --}}

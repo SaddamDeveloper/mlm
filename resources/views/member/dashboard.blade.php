@@ -128,6 +128,17 @@
               </div>
             </div>
           </div> --}}
+          <div class="x_content">
+            <div class="well text-info">
+              <h3>Important Notice</h3>
+              @if(isset($notice) && !empty($notice))
+                <marquee height="100px"  direction="up" scrolldelay="50" style="/*position:absolute;*/ animation: marquee 30s infinite;" loop="true" onmouseover="this.stop()" onmouseout="this.start()" > 
+                  @foreach ($notice as $nt)
+                    <a href="{{route('member.notice', ['id' => encrypt($nt->id)])}}" target="_blank">{!! Str::words($nt->title, 10, ' ...') !!}</a> <br>
+                  @endforeach
+                </marquee>
+              @endif  
+            </div>
         </div>
           <!-- /top tiles -->
 

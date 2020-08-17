@@ -15,7 +15,7 @@ Route::post('/admin/logout', 'Admin\AdminLoginController@logout')->name('admin.l
  * Member Login Control
  */
 Route::get('/member/login', 'Member\MemberLoginController@showMemberLoginForm')->name('member.login');
-Route::post('/member/login', 'Member\MemberLoginController@memberLogin');
+Route::post('/member/login', 'Member\MemberLoginController@memberLogin')->name('member.doLogin');
 Route::post('/member/logout', 'Member\MemberLoginController@logout')->name('member.logout');
 
 /***
@@ -74,18 +74,28 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/member/fund/request/list', 'AdminDashboardController@memberFundRequestList')->name('admin.ajax.fund_request_list');
     Route::get('/member/fund/request/status/{id}', 'AdminDashboardController@memberFundRequestStatus')->name('admin.fund_request_status');
 
+    /**
+     * Important Notice
+     */
+    Route::get('/important/notice/page', 'AdminDashboardController@importantNoticePage')->name('admin.important_notice');
+    Route::post('/important/notice', 'AdminDashboardController@importantNotice')->name('admin.store_important_notice');
+    Route::get('/my/notice/list', 'AdminDashboardController@getNoticeList')->name('admin.ajax.notice_list');
+    Route::get('/view/notice/{id}', 'AdminDashboardController@viewNotice')->name('admin.notice_view');
+    Route::get('/status/notice/{id}/{status}', 'AdminDashboardController@noticeStatus')->name('admin.notice_status');
+
 });
 
 
 /***
  * Member Dashboard Routes
  */
+
+Route::get('/search/sponsorID', 'Member\MemberDashboardController@searchSponsorID')->name('member.search_sponsor_id');
 Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Member'],function(){
     Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
     Route::get('/profile', 'MemberDashboardController@profile')->name('member.profile');
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');
     Route::post('/add', 'MemberDashboardController@addNewMember')->name('member.add_new_member');
-    Route::get('/search/sponsorID', 'MemberDashboardController@searchSponsorID')->name('member.search_sponsor_id');
     Route::get('/check/loginID', 'MemberDashboardController@loginIDCheck')->name('member.login_id_check');
     Route::get('/add/refresh/{id}', 'MemberDashboardController@refreshMember')->name('member.refresh');
 
@@ -145,4 +155,6 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/test/from', 'MemberDashboardController@memberTestForm')->name('member.test.form');
     Route::post('/my/test/add', 'MemberDashboardController@memberTest')->name('member.test.add');
 
+    // Member Notice
+    Route::get('/member/notice/{id}', 'MemberDashboardController@getNotice')->name('member.notice');
 });

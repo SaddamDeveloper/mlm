@@ -27,7 +27,7 @@
                                 <div class="well">
                                 {{ Form::open(['method' => 'post','route'=>'member.store_fund_requests', 'enctype' => 'multipart/form-data']) }}
                                     <div class="form-row mb-10 row">
-                                        <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
+                                        <div class="col-md-3 col-sm-12 col-xs-12 mb-3">
                                             <label for="fund">Fund</label>
                                             <input type="number" name="fund" class="form-control" placeholder="How much fund you need?">
                                             @if($errors->has('fund'))
@@ -36,7 +36,16 @@
                                                 </span>
                                             @enderror
                                         </div>
-                                        <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
+                                        <div class="col-md-3 col-sm-12 col-xs-12 mb-3">
+                                            <label for="utr">UTR No.</label>
+                                            <input type="number" name="utr" class="form-control" placeholder="UTR No">
+                                            @if($errors->has('utr'))
+                                                <span class="invalid-feedback" role="alert" style="color:red">
+                                                    <strong>{{ $errors->first('utr') }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-3 col-sm-12 col-xs-12 mb-3">
                                             <label for="photo">Attachment</label>
                                             <input type="file" name="photo" class="form-control">
                                             @if($errors->has('photo'))
@@ -57,6 +66,7 @@
                                     <tr>
                                       <th>Sl. No</th>
                                       <th>FUND</th>
+                                      <th>UTR No</th>
                                       <th>Comment</th>
                                       <th>Added By</th>
                                       <th>Status</th>
@@ -89,6 +99,7 @@
             columns: [
                 {data: 'id', name: 'id',searchable: true},
                 {data: 'fund', name: 'fund',searchable: true},
+                {data: 'utr', name: 'utr',searchable: true},
                 {data: 'comment', name: 'comment',searchable: true},
                 {data: 'added_by', name: 'added_by',searchable: true},
                 {data: 'status', name: 'status', render:function(data, type, row){

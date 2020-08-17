@@ -35,12 +35,23 @@
                         <div class="col-lg-6 mx-auto">
                             <div class="login-reg-form-wrap">
                                 <h5>Sign In</h5>
-                                <form action="#" method="post">
+                                <form class="form-horizontal" method="POST" action="{{ route('member.doLogin') }}">
+                                    {{ csrf_field() }}
                                     <div class="single-input-item">
-                                        <input type="email" placeholder="Email or Username" required="">
+                                        <input type="text" name="username" placeholder="Email or Username" required="">
+                                        @if ($errors->has('username'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('username') }}</strong>
+                                        </span>
+                                        @endif
                                     </div>
                                     <div class="single-input-item">
-                                        <input type="password" placeholder="Enter your Password" required="">
+                                        <input type="password" name="password" placeholder="Enter your Password" required="">
+                                        @if ($errors->has('password'))
+                                        <span class="help-block">
+                                            <strong>{{ $errors->first('password') }}</strong>
+                                        </span>
+                                        @endif
                                     </div>
                                     <div class="single-input-item">
                                         <div class="login-reg-form-meta d-flex align-items-center justify-content-between">

@@ -12,9 +12,10 @@
 */
 
 // =========== index ============= 
-Route::get('/', function () {
-    return view('web.index');
-})->name('web.index');
+Route::get('/', 'Web\WebsiteController@index')->name('web.index');
+Route::get('/about', 'Web\WebsiteController@about')->name('web.about');
+Route::get('/plan', 'Web\WebsiteController@plan')->name('web.plan');
+Route::get('/reward', 'Web\WebsiteController@reward')->name('web.reward');
 
 // =========== join-us ============= 
 Route::get('/join-us', function () {
