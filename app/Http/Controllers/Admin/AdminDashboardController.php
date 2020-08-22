@@ -15,7 +15,7 @@ use App\Tree;
 use App\TotalFund;
 use App\FundHistory;
 use App\FundRequest;
-use App\importantNotice;
+use App\ImportantNotice;
 use Illuminate\Support\Str;
 use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
