@@ -16,6 +16,7 @@ use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
 use App\TotalFund;
 use App\FundHistory;
+use App\Rewards;
 class MemberActivationController extends Controller
 {
     public function memberActivatePageDetails()
@@ -266,58 +267,58 @@ function creditCommisionOneIsToOne($user_id, $totalbv){
 
 function rewardsChecking($user_id, $total_pair_count)
 {
-    if($total_pair_count->activate_pair == 10){
+    if($total_pair_count->activate_pair >= 10){
         $rewards = new Rewards;
-        $rewards->user_id = $parent;
+        $rewards->user_id = $user_id;
         $rewards->comment = "Congratulations! You are the winner of Casserol 2500 ml reward for 10 BV";
         $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 15){
+    if($total_pair_count->activate_pair >= 15){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of Pressure Cooker reward for 15 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 30){
+    if($total_pair_count->activate_pair >= 30){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of Home Theater reward for 30 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 70){
+    if($total_pair_count->activate_pair >= 70){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of Safari Suitcase reward for 70 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 120){
+    if($total_pair_count->activate_pair >= 120){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of 4G Tablet reward for 120 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 200){
+    if($total_pair_count->activate_pair >= 200){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of 20'' LED TV reward for 200 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 300){
+    if($total_pair_count->activate_pair >= 300){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of 32'' LED TV reward for 300 BV";
             $rewards->save();
     }
 
-    if($total_pair_count->activate_pair == 500){
+    if($total_pair_count->activate_pair >= 500){
             $rewards = new Rewards;
-            $rewards->user_id = $parent;
+            $rewards->user_id = $user_id;
             $rewards->comment = "Congratulations! You are the winner of Voltas 1.5 ton AC reward for 500 BV";
             $rewards->save();
     }
