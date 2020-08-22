@@ -92,12 +92,25 @@
                                             </div>                     
                                         </div>
                                         <div class="form-row mb-10">
-                                            <div class="col-md-12 col-sm-12 col-xs-12 mb-3">
+                                            <div class="col-md-6 col-sm-6 col-xs-6 mb-3">
                                                 <label for="long_desc">Long Description</label>
                                                     <textarea class="form-control" name="long_desc" placeholder="Enter Long description">{{old('long_desc')}}</textarea>
                                                     @if($errors->has('long_desc'))
                                                         <span class="invalid-feedback" role="alert" style="color:red">
                                                             <strong>{{ $errors->first('long_desc') }}</strong>
+                                                        </span>
+                                                    @enderror
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-6 mb-3">
+                                                <label for="section">Where to place</label>
+                                                   <select name="section" id="" class="form-control">
+                                                       <option value="" selected disabled>--SELECT PLACE--</option>
+                                                       <option value="1" {{old('section') == '1'?'selected':''}}>Lower Section</option>
+                                                       <option value="2" {{old('section') == '2'?'selected':''}}>Upper Section</option>
+                                                   </select>
+                                                    @if($errors->has('section'))
+                                                        <span class="invalid-feedback" role="alert" style="color:red">
+                                                            <strong>{{ $errors->first('section') }}</strong>
                                                         </span>
                                                     @enderror
                                             </div>

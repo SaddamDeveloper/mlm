@@ -17,7 +17,12 @@ use App\FundHistory;
 use App\FundRequest;
 use App\importantNotice;
 use Illuminate\Support\Str;
-
+use App\AdminWalletHistory;
+use App\AdminTdsesHistory;
+use App\Fund;
+use App\PaymentRequest;
+use App\Frotend;
+use Intervention\Image\Facades\Image;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -32,7 +37,9 @@ class AdminDashboardController extends Controller
 
         $admin_wallet_bal = AdminWallet::value('amount');
         $admin_tds = AdminTdses::value('tds');
-        return view('admin.dashboard', compact('total_members', 'total_member_wallet_balance', 'latest_members', 'admin_wallet_bal', 'admin_tds'));
+        $fund = Fund::sum('fund');
+        $latest_members = Member::orderBy('created_at', 'DESC')->paginate(10);
+        return view('admin.dashboard', compact('total_members', 'total_member_wallet_balance', 'latest_members', 'admin_wallet_bal', 'admin_tds', 'fund', 'latest_members'));
     }
 
     // EPIN CONTROLL
@@ -232,7 +239,8 @@ class AdminDashboardController extends Controller
     public function adminCommission()
     {
         $admin = AdminCommission::first();
-        return view('admin.commission', compact('admin'));
+        $wallet = AdminWallet::where('role', 1)->first();
+        return view('admin.commission', compact('admin', 'wallet'));
     }
 
     public function storeCommission(Request $request)
@@ -248,11 +256,18 @@ class AdminDashboardController extends Controller
 
         return redirect()->back()->with('message','Inserted Successfully');
     }
-    
+    public function getCommissionList()
+    {
+        return datatables()->of(AdminWalletHistory::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->make(true);
+    }
+
     public function adminTds()
     {
         $tds = AdminTds::first();
-        return view('admin.tds', compact('tds'));
+        $tds_bal = AdminTdses::where('role', 1)->first();
+        return view('admin.tds', compact('tds', 'tds_bal'));
     }
 
     public function storeTds(Request $request)
@@ -267,6 +282,13 @@ class AdminDashboardController extends Controller
             ]);
 
         return redirect()->back()->with('message','Inserted Successfully');
+    }
+
+    public function getTdsList()
+    {
+        return datatables()->of(AdminTdsesHistory::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->make(true);
     }
 
     public function memberList(){
@@ -1002,5 +1024,89 @@ class AdminDashboardController extends Controller
         }else{
             return redirect()->back()->with('error', 'Something Went Wrong!');
         }
+    }
+
+    public function paymentRequestForm()
+    {
+        return view('admin.payment_request');
+    }
+    public function ajaxPaymentRequest()
+    {
+        $query = PaymentRequest::orderBy('id','desc');
+            return datatables()->of($query->get())
+            ->addIndexColumn()
+            ->addColumn('name', function($row){
+                $member = Member::where('id', $row->id)->first();
+                return $member->full_name;
+            })
+            ->addColumn('action', function($row){
+                   if($row->status == '1'){
+                        $btn = '<a href="'.route('admin.verify', ['id' => encrypt($row->id)]).'" class="btn btn-success btn-sm"><i class="fa fa-check"></i></a>';
+                        return $btn;
+                    }else{
+                        $btn ='<a href="#" disabled class="btn btn-danger btn-sm"><i class="fa fa-power-off"></i></a>';
+                        return $btn;
+                    }
+                 return $btn;
+            })
+            ->rawColumns(['name', 'action'])
+            ->make(true);
+    }
+    public function verify($id)
+    {
+        try {
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $payment_request = PaymentRequest::findOrFail($id);
+        if($payment_request->fill(array('status' => '2'))->save()){
+            return redirect()->back()->with('message', 'Payment Request Verified Successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Something Went Wrong!');
+        }
+    }
+
+    public function info(){
+        $info = Frotend::first();
+        return view('admin.info', compact('info'));
+    }
+    public function storeInfo(Request $request){
+        $image1 = null;
+        if($request->hasfile('logo'))
+        {
+            $logo_array = $request->file('logo');
+            $image1 = $this->imageInsert($logo_array, $request, 1);
+        }
+        $frontend = DB::table('frotends')
+                 ->update([
+                     'logo' => $image1,
+                     'footer_text' => $request->input('footer'),
+                     'footer_address' => $request->input('address'),
+                     'email' => $request->input('email'),
+                     'mobile' => $request->input('mobile'),
+                     'fb_id' => $request->input('fb_id'),
+                     'tw_id' => $request->input('tw_id'),
+                     'insta_id' => $request->input('insta_id'),
+                     'yt_id' => $request->input('yt_id'),
+                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                 ]);   
+        if($frontend){
+            return redirect()->back()->with('message','Successfully Updated Successfully');
+        }
+    }
+
+    function imageInsert($image, Request $request, $flag){
+        $destination = base_path().'/public/web/img/logo/';
+        $image_extension = $image->getClientOriginalExtension();
+        $image_name = md5(date('now').time()).$flag.".".$image_extension;
+        $original_path = $destination.$image_name;
+        Image::make($image)->save($original_path);
+        $thumb_path = base_path().'/public/web/img/logo/thumb/'.$image_name;
+        Image::make($image)
+        ->resize(300, 400)
+        ->save($thumb_path);
+
+        return $image_name;
     }
 }

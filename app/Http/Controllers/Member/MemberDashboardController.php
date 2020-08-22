@@ -26,6 +26,7 @@ use Intervention\Image\Facades\Image;
 use File;
 use App\FundRequest;
 use App\ImportantNotice;
+use App\PaymentRequest;
 class MemberDashboardController extends Controller
 {
     public function index()
@@ -1222,34 +1223,34 @@ class MemberDashboardController extends Controller
         ]);
         $fund_transfer_amount = $request->input('fund_transfer');
         $fetch_wallet = Wallet::where('user_id', Auth::user()->id)->first();
-        if($fetch_wallet->amount > $fund_transfer_amount){
+        if($fetch_wallet->amount >= $fund_transfer_amount && $fetch_wallet->amount > 0){
               // Wallet Insert
-        $wallet_update = DB::table('wallets') 
-                ->where('user_id', Auth::user()->id)
-                ->update([
-                    'amount' => DB::raw("`amount`-".($fund_transfer_amount)),
+            $wallet_update = DB::table('wallets') 
+                    ->where('user_id', Auth::user()->id)
+                    ->update([
+                        'amount' => DB::raw("`amount`-".($fund_transfer_amount)),
+                    ]);
+
+            $update_wallet_history = DB::table('wallet_histories')
+                ->insertGetId([
+                    'wallet_id' =>  $fetch_wallet->id,
+                    'user_id'   => Auth::user()->id,
+                    'transaction_type'  =>  2,
+                    'amount' => $fund_transfer_amount,
+                    'total_amount'  => $fetch_wallet->amount,
+                    'comment'   => $fund_transfer_amount.' Rs is debited from you wallet for transfering the fund! ',
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
 
-        $update_wallet_history = DB::table('wallet_histories')
-              ->insertGetId([
-                  'wallet_id' =>  $fetch_wallet->id,
-                  'user_id'   => Auth::user()->id,
-                  'transaction_type'  =>  2,
-                  'amount' => $fund_transfer_amount,
-                  'total_amount'  => $fetch_wallet->amount,
-                  'comment'   => $fund_transfer_amount.' Rs is debited from you wallet for transfering the fund! ',
-                  'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-              ]);
-
-        $fetch_fund = Fund::where('alloted_to', Auth::user()->id)->first();
-        $update_fund = DB::table('funds')
-              ->insertGetId([
-                  'fund' =>  $fund_transfer_amount,
-                  'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
-                  'alloted_to'  =>  Auth::user()->id,
-                  'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                  'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-              ]);
+            $fetch_fund = Fund::where('alloted_to', Auth::user()->id)->first();
+            $update_fund = DB::table('funds')
+                ->insertGetId([
+                    'fund' =>  $fund_transfer_amount,
+                    'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
+                    'alloted_to'  =>  Auth::user()->id,
+                    'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);
                 return redirect()->back()->with('message', 'Fund Transfered Successfully!');
         }else{
             return redirect()->back()->with('error', 'Insufficent Wallet Balane');
@@ -1412,6 +1413,51 @@ class MemberDashboardController extends Controller
     {
         return datatables()->of(Rewards::orderBy('created_at', 'DESC')->get())
         ->make(true);
+    }
+    public function memberPaymentRequestForm()
+    {
+        $wallet_bal = Wallet::where('user_id', Auth::user()->id)->value('amount');
+        return view('member.payment_request', compact('wallet_bal'));
+    }
+    public function ajaxGetPaymentRequest()
+    {
+        return datatables()->of(PaymentRequest::orderBy('created_at', 'DESC')->get())
+        ->make(true);
+    }
+    public function paymentRequest(Request $request)
+    {
+        $this->validate($request, [
+            'withdraw' => 'required|numeric'
+        ]);
+        $fetch_wallet = Wallet::where('user_id', Auth::user()->id)->first();
+        if($fetch_wallet->amount > $request->input('withdraw') && $request->input('withdraw') >= 500){
+            $wallet_update = DB::table('wallets') 
+            ->where('user_id', Auth::user()->id)
+            ->update([
+                'amount' => DB::raw("`amount`-".($request->input('withdraw'))),
+            ]);
+
+        $update_wallet_history = DB::table('wallet_histories')
+          ->insertGetId([
+              'wallet_id' =>  $fetch_wallet->id,
+              'user_id'   => Auth::user()->id,
+              'transaction_type'  =>  2,
+              'amount' =>$request->input('withdraw'),
+              'total_amount'  => $fetch_wallet->amount,
+              'comment'   =>$request->input('withdraw').' Rs is debited from you wallet for Withdraw! ',
+              'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+          ]);
+        
+        $payment_requests = DB::table('payment_requests')
+              ->insertGetId([
+                  'amount' =>  $request->input('withdraw'),
+                  'user_id'  =>  Auth::user()->id,
+                  'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+              ]);
+                return redirect()->back()->with('message', 'Payment Requested Successfully!');
+        }else{
+            return redirect()->back()->with('error', 'Insufficient Balance to withdraw!');
+        }
     }
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()

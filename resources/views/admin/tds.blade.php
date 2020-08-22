@@ -44,10 +44,54 @@
                                 </div>
                                 {{ Form::close() }}
                             </div>
+                            <div class="x_content">
+                                <h2 class="slide-title text-center">Balance : {{ number_format($tds_bal->amount, 2) }}</h2>
+                                <table id="tds_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                                  <thead>
+                                    <tr>
+                                      <th>Sl. No</th>
+                                      <th>Amount</th>
+                                      <th>Total Amount</th>
+                                      <th>Comment</th>
+                                      <th>Created At</th>
+                                      <th>Transaction Type</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>                       
+                                  </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
         </div>
 </div>
 <!-- /page content -->
+@endsection
+@section('script')
+  <script type="text/javascript">
+      $(function () {
+        var i = 1;
+        var table = $('#tds_list').DataTable({
+            processing: true,
+            serverSide: true,
+            iDisplayLength: "50",
+            ajax: "{{ route('admin.ajax.tds_list') }}",
+            columns: [
+                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'amount', name: 'amount',searchable: true},
+                {data: 'total_amount', name: 'total_amount',searchable: true},
+                {data: 'comment', name: 'comment',searchable: true},
+                {data: 'created_at', name: 'created_at',searchable: true},
+                {data: 'transaction_type', name: 'transaction_type', render:function(data, type, row){
+                  if (row.status == '1') {
+                    return "<button class='btn btn-success rounded'>Cr</a>"
+                  }else{
+                    return "<button class='btn btn-warning rounded'>Dr</a>"
+                  }                        
+                }},              
+            ]
+        });
+    });
+  </script>
 @endsection

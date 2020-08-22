@@ -49,7 +49,7 @@
                         <!-- start logo area -->
                         <div class="col-lg-2">
                             <div class="logo">
-                                <a href="index.html">
+                                <a href="{{ route('web.index') }}">
                                     <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="Brand Logo" width="100">
                                 </a>
                             </div>
@@ -67,8 +67,7 @@
                                             <li class="active"><a href="{{route('web.about')}}">About </a></li>
                                             <li><a href="blog-left-sidebar.html">Product <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
-                                                    <li><a href="blog-left-sidebar.html">Our Product</a></li>
-                                                    <li><a href="blog-list-left-sidebar.html">Online Product</a></li>
+                                                    <li><a href="{{ route('web.product') }}">Our Product</a></li>
                                                 </ul>
                                             </li>
 											<li><a href="blog-left-sidebar.html">Other <i class="fa fa-angle-down"></i></a>
@@ -91,10 +90,10 @@
                                             <li><a href="{{route('web.join')}}">Club</a></li>
                                             <li><a href="{{route('web.reward')}}">Reward</a></li>
                                             <li><a href="{{route('web.join')}}">Join us</a></li>
-                                            <li><a href="contact-us.html">Contact</a></li>
+                                            <li><a href="{{ route('web.contact') }}">Contact</a></li>
                                             <li><a href="{{route('web.plan')}}">Plan</a></li>
-                                            <li><a href="contact-us.html">Rank Achiever</a></li>
-                                            <li><a href="contact-us.html">Reward Achiever</a></li>
+                                            <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
+                                            <li><a href="{{ route('web.reward_achiever') }}">Reward Achiever</a></li>
                                         </ul>
                                     </nav>
                                     <!-- main menu navbar end -->
@@ -119,8 +118,8 @@
                     <div class="col-12">
                         <div class="mobile-main-header">
                             <div class="mobile-logo">
-                                <a href="index.html">
-                                    <img src="{{asset('web/img/logo/logo.png')}}" alt="Brand Logo">
+                                <a href="{{ route('web.index') }}">
+                                    <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="Brand Logo">
                                 </a>
                             </div>
                             <div class="mobile-menu-toggler">
@@ -164,100 +163,16 @@
                         <!-- mobile menu navigation start -->
                         <nav>
                             <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><a href="index.html">Home</a>
-                                    <ul class="dropdown">
-                                        <li><a href="index.html">Home version 01</a></li>
-                                        <li><a href="index-2.html">Home version 02</a></li>
-                                        <li><a href="index-3.html">Home version 03</a></li>
-                                        <li><a href="index-4.html">Home version 04</a></li>
-                                        <li><a href="index-5.html">Home version 05</a></li>
-                                        <li><a href="index-6.html">Home version 06</a></li>
-                                    </ul>
+                                <li class="menu-item-has-children"><a href="{{ route('web.index') }}">Home</a>
                                 </li>
-                                <li class="menu-item-has-children"><a href="#">pages</a>
-                                    <ul class="megamenu dropdown">
-                                        <li class="mega-title menu-item-has-children"><a href="#">column 01</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop.html">shop grid left
-                                                        sidebar</a></li>
-                                                <li><a href="shop-grid-right-sidebar.html">shop grid right
-                                                        sidebar</a></li>
-                                                <li><a href="shop-list-left-sidebar.html">shop list left sidebar</a></li>
-                                                <li><a href="shop-list-right-sidebar.html">shop list right sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-title menu-item-has-children"><a href="#">column 02</a>
-                                            <ul class="dropdown">
-                                                <li><a href="product-details.html">product details</a></li>
-                                                <li><a href="product-details-affiliate.html">product
-                                                        details
-                                                        affiliate</a></li>
-                                                <li><a href="product-details-variable.html">product details
-                                                        variable</a></li>
-                                                <li><a href="product-details-group.html">product details
-                                                        group</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-title menu-item-has-children"><a href="#">column 03</a>
-                                            <ul class="dropdown">
-                                                <li><a href="cart.html">cart</a></li>
-                                                <li><a href="checkout.html">checkout</a></li>
-                                                <li><a href="compare.html">compare</a></li>
-                                                <li><a href="wishlist.html">wishlist</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="mega-title menu-item-has-children"><a href="#">column 04</a>
-                                            <ul class="dropdown">
-                                                <li><a href="my-account.html">my-account</a></li>
-                                                <li><a href="login-register.html">login-register</a></li>
-                                                <li><a href="about-us.html">about us</a></li>
-                                                <li><a href="contact-us.html">contact us</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                <li class="menu-item-has-children"><a href="{{route('web.about')}}">About</a>
                                 </li>
-                                <li class="menu-item-has-children "><a href="#">shop</a>
-                                    <ul class="dropdown">
-                                        <li class="menu-item-has-children"><a href="#">shop grid layout</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop.html">shop grid left sidebar</a></li>
-                                                <li><a href="shop-grid-right-sidebar.html">shop grid right sidebar</a></li>
-                                                <li><a href="shop-grid-full-3-col.html">shop grid full 3 col</a></li>
-                                                <li><a href="shop-grid-full-4-col.html">shop grid full 4 col</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><a href="#">shop list layout</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-list-left-sidebar.html">shop list left sidebar</a></li>
-                                                <li><a href="shop-list-right-sidebar.html">shop list right sidebar</a></li>
-                                                <li><a href="shop-list-full-width.html">shop list full width</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><a href="#">products details</a>
-                                            <ul class="dropdown">
-                                                <li><a href="product-details.html">product details</a></li>
-                                                <li><a href="product-details-affiliate.html">product details affiliate</a></li>
-                                                <li><a href="product-details-variable.html">product details variable</a></li>
-                                                <li><a href="product-details-group.html">product details group</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                <li class="menu-item-has-children "><a href="{{ route('web.product') }}">Product</a>
                                 </li>
-                                <li class="menu-item-has-children "><a href="#">Blog</a>
-                                    <ul class="dropdown">
-                                        <li><a href="blog-left-sidebar.html">blog left sidebar</a></li>
-                                        <li><a href="blog-list-left-sidebar.html">blog list left sidebar</a></li>
-                                        <li><a href="blog-right-sidebar.html">blog right sidebar</a></li>
-                                        <li><a href="blog-list-right-sidebar.html">blog list right sidebar</a></li>
-                                        <li><a href="blog-grid-full-width.html">blog grid full width</a></li>
-                                        <li><a href="blog-details.html">blog details</a></li>
-                                        <li><a href="blog-details-left-sidebar.html">blog details left sidebar</a></li>
-                                        <li><a href="blog-details-audio.html">blog details audio</a></li>
-                                        <li><a href="blog-details-video.html">blog details video</a></li>
-                                        <li><a href="blog-details-image.html">blog details image</a></li>
-                                    </ul>
+                                <li class="menu-item-has-children "><a href="{{ route('web.login') }}">Login</a>
                                 </li>
-                                <li><a href="contact-us.html">Contact us</a></li>
+                                <li><a href="{{ route('web.plan') }}">Plan</a></li>
+                                <li><a href="{{ route('web.reward') }}">Reward</a></li>
                             </ul>
                         </nav>
                         <!-- mobile menu navigation end -->
@@ -285,9 +200,8 @@
                                         <i class="fa fa-angle-down"></i>
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="myaccount">
-                                        <a class="dropdown-item" href="my-account.html">my account</a>
-                                        <a class="dropdown-item" href="login-register.html"> login</a>
-                                        <a class="dropdown-item" href="login-register.html">register</a>
+                                        <a class="dropdown-item" href="{{ route('web.login') }}"> Login</a>
+                                        <a class="dropdown-item" href="{{ route('web.join') }}">Register</a>
                                     </div>
                                 </div>
                             </li>

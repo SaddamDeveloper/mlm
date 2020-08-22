@@ -16,7 +16,6 @@ use App\AdminWalletHistory;
 use App\AdminTdsesHistory;
 use App\TotalFund;
 use App\FundHistory;
-
 class MemberActivationController extends Controller
 {
     public function memberActivatePageDetails()
@@ -52,173 +51,114 @@ class MemberActivationController extends Controller
                             $package->login_id = $member_id;
                             $package->added_by = Auth::user()->full_name;
                             $funds = TotalFund::where('user_id', Auth::user()->id)->first();
+                            $total_bv = 0;
                             if($package_name == 1){
-                                $pk = 1;
-                                if($funds->amount > 1099){
-                                    $fund = DB::table('total_funds')
-                                        ->where('user_id', Auth::user()->id)
-                                        ->update([
-                                            'amount' => ($funds->amount - 1099),
-                                        ]);
-                                        $fund_history = new FundHistory;
-                                        $fund_history->amount = "1099";
-                                        $fund_history->user_id = Auth::user()->id;
-                                        $fund_history->comment = "Rs 1099 Fund has been debited";
-                                        $fund_history->status = "2";
-                                        $fund_history->save();
-                                        // Update Tree 
-                                        if($package->save()){
-                                            $trees = Tree::where('user_id', $members->id)->first();
-                                            $updateTree = DB::table('trees')
+                                $total_bv = 1;
+                                $p_price = AdminPackage::where('id',1)->first();
+                            }elseif ($package_name == 2) {
+                                $total_bv = 2;
+                                $p_price = AdminPackage::where('id',2)->first();
+                            }elseif ($package_name == 3){
+                                $total_bv = 3;
+                                $p_price = AdminPackage::where('id',3)->first();
+                            }elseif ($package_name == 4){
+                                $total_bv = 4;
+                                $p_price = AdminPackage::where('id',4)->first();
+                            }
+
+                            if($funds->amount >= $p_price->price && $total_bv > 0){
+                                $fund = DB::table('total_funds')
+                                ->where('user_id', Auth::user()->id)
+                                ->update([
+                                    'amount' => ($funds->amount - $p_price->price),
+                                ]);
+                                $fund_history = new FundHistory;
+                                $fund_history->amount = $p_price->price;
+                                $fund_history->user_id = Auth::user()->id;
+                                $fund_history->comment = "Rs $p_price->price Fund has been debited";
+                                $fund_history->status = "2";
+                                $fund_history->save();
+                                
+                                if($package->save()){
+                                    $trees = Tree::where('user_id', $members->id)->first();
+                                    $parrents = DB::select( DB::raw("SELECT * FROM (
+                                        SELECT @pv:=(
+                                            SELECT parent_id FROM trees WHERE id = @pv 
+                                            ) AS lv FROM trees
+                                            JOIN
+                                            (SELECT @pv:=:start_node) tmp
+                                        ) a
+                                        WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
+                                        , array(
+                                            'start_node' => $trees->id,
+                                            )
+                                        );
+                                    $chield = $trees->id;
+                                    if (!empty($parrents)) {
+                                        
+                                        foreach ($parrents as $key => $value) {
+                                            $parent = Tree::where('id', $value->lv)->first();
+                                            if ($parent->status == '1') {
+                                                if ($parent->left_id == $chield) {
+                                                    //Check Left count already had previous value + 1
+                                                        $update_left_count = DB::table('trees')
+                                                        ->where('id', $value->lv)
+                                                        ->update([
+                                                            'activate_left' => DB::raw("`activate_left`+".($total_bv)),
+                                                            'total_activate_left' => DB::raw("`total_activate_left`+".($total_bv)),
+                                                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                                        ]);
+                                                        $lesser_bv = ($parent->activate_left+$total_bv) >= $parent->activate_right ? $parent->activate_right : ($parent->activate_left+$total_bv);
+                                                        if ($lesser_bv > 0) {
+                                                            $update_left_count = DB::table('trees')
+                                                            ->where('id', $value->lv)
+                                                            ->update([
+                                                                'activate_left' => DB::raw("`activate_left`-".($lesser_bv)),
+                                                                'activate_right' => DB::raw("`activate_right`-".($lesser_bv)),
+                                                                'activate_pair' => DB::raw("`activate_pair`+".($lesser_bv)),
+                                                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                                            ]);
+                                                            $this->creditCommisionOneIsToOne($parent->user_id, $lesser_bv);
+                                                        }
+
+                                                } else if($parent->right_id == $chield){
+                                                    //Check Left count already had previous value + 1
+                                                    $update_right_count = DB::table('trees')
+                                                    ->where('id', $value->lv)
+                                                    ->update([
+                                                        'activate_right' => DB::raw("`activate_right`+".($total_bv)),
+                                                        'total_activate_right' => DB::raw("`total_activate_right`+".($total_bv)),
+                                                        'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                                    ]);
+                                                    $lesser_bv = ($parent->activate_right+$total_bv) >= $parent->activate_left ? $parent->activate_left : ($parent->activate_right+$total_bv);
+                                                    if ($lesser_bv > 0) {
+                                                        $update_right_count = DB::table('trees')
+                                                        ->where('id', $value->lv)
+                                                        ->update([
+                                                            'activate_right' => DB::raw("`activate_right`-".($lesser_bv)),
+                                                            'activate_left' => DB::raw("`activate_left`-".($lesser_bv)),
+                                                            'activate_pair' => DB::raw("`activate_pair`+".($lesser_bv)),
+                                                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                                                        ]);
+                                                        $this->creditCommisionOneIsToOne($parent->user_id, $lesser_bv);
+                                                    }
+
+                                                }
+                                            }
+                                            $chield = $value->lv;
+                                        }
+                                        $updateTree = DB::table('trees')
                                             ->where('user_id', $trees->user_id)
                                             ->update([
                                                 'status' => '1'
-                                                ]);
-                                            $parrents = DB::select( DB::raw("SELECT * FROM (
-                                                SELECT @pv:=(
-                                                    SELECT parent_id FROM trees WHERE id = @pv
-                                                    ) AS lv FROM trees
-                                                    JOIN
-                                                    (SELECT @pv:=:start_node) tmp
-                                                ) a
-                                                WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
-                                                , array(
-                                                    'start_node' => $trees->id,
-                                                    )
-                                                );
-                                            $this->treePair($parrents, $members->id, $pk);
-                                        }else {
-                                            throw new \Exception('Exception message');
-                                        }
+                                            ]);
+                                    }
                                 }else {
                                     throw new \Exception('Exception message');
-                                }            
-                            }elseif ($package_name == 2) {
-                                $pk = 2;
-                                if($funds->amount > 2199){
-                                    $fund = DB::table('total_funds')
-                                        ->where('user_id', Auth::user()->id)
-                                        ->update([
-                                            'amount' => ($funds->amount - 2199),
-                                        ]);
-
-                                        $fund_history = new FundHistory;
-                                        $fund_history->amount = "1099";
-                                        $fund_history->user_id = Auth::user()->id;
-                                        $fund_history->comment = "Rs 1099 Fund has been debited";
-                                        $fund_history->status = "2";
-                                        $fund_history->save();
-                                    if($package->save()){
-                                        $members = Member::where('login_id', $member_id)->first();
-                                        $trees = Tree::where('user_id', $members->id)->first();
-                                        $updateTree = DB::table('trees')
-                                        ->where('user_id', $trees->user_id)
-                                        ->update([
-                                            'status' => '1'
-                                            ]);
-                                        $parrents = DB::select( DB::raw("SELECT * FROM (
-                                            SELECT @pv:=(
-                                                SELECT parent_id FROM trees WHERE id = @pv
-                                                ) AS lv FROM trees
-                                                JOIN
-                                                (SELECT @pv:=:start_node) tmp
-                                            ) a
-                                            WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
-                                            , array(
-                                                'start_node' => $trees->id,
-                                                )
-                                            );
-                                        $this->treePair($parrents, $members->id, $pk);
-                                    }else {
-                                        throw new \Exception('Exception message');
-                                    }
-                                }else{
-                                    throw new \Exception('Exception message');
                                 }
-                            }elseif ($package_name == 3) {
-                                $pk = 3;
-                                if($funds->amount > 2500){
-                                    $fund = DB::table('total_funds')
-                                        ->where('user_id', Auth::user()->id)
-                                        ->update([
-                                            'amount' => ($funds->amount - 2500),
-                                        ]);
 
-                                        $fund_history = new FundHistory;
-                                        $fund_history->amount = "1099";
-                                        $fund_history->user_id = Auth::user()->id;
-                                        $fund_history->comment = "Rs 1099 Fund has been debited";
-                                        $fund_history->status = "2";
-                                        $fund_history->save();
-                                    if($package->save()){
-                                        $members = Member::where('login_id', $member_id)->first();
-                                        $trees = Tree::where('user_id', $members->id)->first();
-                                        $updateTree = DB::table('trees')
-                                        ->where('user_id', $trees->user_id)
-                                        ->update([
-                                            'status' => '1'
-                                            ]);
-                                            $parrents = DB::select( DB::raw("SELECT * FROM (
-                                                SELECT @pv:=(
-                                                    SELECT parent_id FROM trees WHERE id = @pv
-                                                    ) AS lv FROM trees
-                                                    JOIN
-                                                    (SELECT @pv:=:start_node) tmp
-                                                ) a
-                                                WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
-                                                , array(
-                                                    'start_node' => $trees->id,
-                                                    )
-                                                );
-                                            $this->treePair($parrents, $members->id, $pk);
-                                    }else {
-                                        throw new \Exception('Exception message');
-                                    }
-                                }else{
-                                    throw new \Exception('Exception message');
-                                }
-                            }elseif ($package_name == 4) {
-                                $pk = 4;
-                                if($funds->amount > 5500){
-                                    $fund = DB::table('total_funds')
-                                        ->where('user_id', Auth::user()->id)
-                                        ->update([
-                                            'amount' => ($funds->amount - 5500),
-                                        ]);
-
-                                        $fund_history = new FundHistory;
-                                        $fund_history->amount = "1099";
-                                        $fund_history->user_id = Auth::user()->id;
-                                        $fund_history->comment = "Rs 1099 Fund has been debited";
-                                        $fund_history->status = "2";
-                                        $fund_history->save();
-                                    if($package->save()){
-                                        $members = Member::where('login_id', $member_id)->first();
-                                        $trees = Tree::where('user_id', $members->id)->first();
-                                        $updateTree = DB::table('trees')
-                                        ->where('user_id', $trees->user_id)
-                                        ->update([
-                                            'status' => '1'
-                                            ]);
-                                            $parrents = DB::select( DB::raw("SELECT * FROM (
-                                                SELECT @pv:=(
-                                                    SELECT parent_id FROM trees WHERE id = @pv
-                                                    ) AS lv FROM trees
-                                                    JOIN
-                                                    (SELECT @pv:=:start_node) tmp
-                                                ) a
-                                                WHERE lv IS NOT NULL AND lv != 0 LIMIT 1000 FOR UPDATE")
-                                                , array(
-                                                    'start_node' => $trees->id,
-                                                    )
-                                                );
-                                            $this->treePair($parrents, $members->id, $pk);
-                                    }else {
-                                        throw new \Exception('Exception message');
-                                    }
-                                }else{
-                                    throw new \Exception('Exception message');
-                                }
+                            }else {
+                                throw new \Exception('Exception message');
                             }
                         });
                         return redirect()->back()->with('message', ' Member successfully activated!');
@@ -231,7 +171,6 @@ class MemberActivationController extends Controller
         }else{
             return redirect()->back()->with('error','Member Not Found!');
         }
-            
     }
 
     public function distributorDetails(Request $request)
@@ -248,89 +187,15 @@ class MemberActivationController extends Controller
             ->make(true);
         }
     }
-    function treePair($parents, $member_insert, $pk){
-        $child = $member_insert;
-        for($i=0; $i < count($parents) ; $i++) {
-            $parent = $parents[$i]->lv; 
-            //**************Fetch parrent details***************************
-            $fetch_parent = DB::table('trees')
-                ->where('id',$parent)
-                ->first();
-            
-            //***************check child node is in left or right*******************
-            if ($fetch_parent->left_id == $child){
-                //Check Left count already had previous value + 1
-                $update_left_count = DB::table('trees')
-                ->where('id', $parent)
-                ->update([
-                    'activate_left' => DB::raw("`activate_left`+".($pk)),
-                    'total_activate_left' => DB::raw("`total_activate_left`+".($pk)),
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
-            }else{
-                //Check Right count already had previous value
-                $update_right_count = DB::table('trees')
-                ->where('id', $parent)
-                ->update([
-                    'activate_right' => DB::raw("`activate_right`+".($pk)),
-                    'total_activate_right' => DB::raw("`total_activate_right`+".($pk)),
-                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                ]);
-            }   
-            
-            //Fetch Pair Match
-            $pair_match = DB::table('trees')
-                ->select('activate_left', 'activate_right', 'status')
-                ->where('id',$parent)->lockForUpdate()
-                ->first();
-            // Check member is activated or not
-
-            if($pair_match->status == 1){
-                //Check 1:1 Check
-                if($pair_match->activate_right > 0 && $pair_match->activate_left  > 0){
-                    $a = $this->creditCommisionOneIsToOne($parent,$pk);
-                    $total_pair_update = DB::table('trees')
-                    ->where('id', $parent)
-                    ->update([
-                        'activate_pair' => DB::raw("`activate_pair`+".($pk)),
-                    ]);
-                   
-                     //Pair checking
-                    $total_pair_count =  DB::table('trees')
-                        ->select('activate_pair')
-                        ->where('id',$parent)
-                        ->first();
-                    // $this->rewardsChecking($total_pair_count, $parent);
-                }
-            }else{
-                return redirect()->back()->with('error', 'You aint activated! You cannot activate other');
-            }
-            $child = $parent;
-        }
-        return true;
-    }
-    function creditCommisionOneIsToOne($parent,$pk){
-        //Insert Comission Data
-        $update_left_right_count = DB::table('trees')
-            ->where('id', $parent)
-            ->update([
-                'activate_left' => DB::raw("`activate_left`-".($pk)),
-                'activate_right' => DB::raw("`activate_right`-".($pk)),
-                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-            ]);
-        //Fetch User with Node ID
-        $fetch_tree = DB::table('trees')
-            ->where('id',$parent)->lockForUpdate()
-            ->first();        
-        
-        // Member Commission Logic
-        for ($i=0; $i < $pk ; $i++) { 
+    
+    function creditCommisionOneIsToOne($user_id, $totalbv){   
         // Admin Commission Fetch
         $adminCommissionFetch = DB::table('admin_commissions')->first();
-        $adminCommission = (200 * $adminCommissionFetch->commission)/100;
-        $earning2 = 200 - $adminCommission;
+        $adminTdsFetch = DB::table('admin_tds')->first();
+        $adminCommission = ((200 * $totalbv) * $adminCommissionFetch->commission)/100;   
+        $tdsCommission = ((200 * $totalbv) * $adminTdsFetch->tds)/100;
+        $earning =  (200 * $totalbv) - ($adminCommission + $tdsCommission);
         
-
         // Admin Wallet Insert
         $admin_wallet_insert = DB::table('admin_wallets') 
             ->where('role', '1')
@@ -347,14 +212,8 @@ class MemberActivationController extends Controller
         $admin_wallet_history_insert->total_amount = $fetch_admin_wallet->amount;
         $admin_wallet_history_insert->comment = $adminCommission.' income is generated! ';
         $admin_wallet_history_insert->save();
-
-        // TDS Commission Fetch
-        $tdsCommissionFetch = DB::table('admin_tds')->first();
-        $tdsCommission = (200 * $tdsCommissionFetch->tds)/100;
-        $earning = $earning2 - $tdsCommission;
         // Admin TDS Insert
-        $admin_tds_insert = DB::table('admin_tdses') 
-        ->where('role', '1')
+        $admin_tds_insert = DB::table('admin_tdses')->where('role', '1')
         ->update([
             'tds' => DB::raw("`tds`+".($tdsCommission)),
         ]);
@@ -371,66 +230,32 @@ class MemberActivationController extends Controller
 
         // Wallet Insert
         $wallet_insert = DB::table('wallets') 
-            ->where('user_id', $fetch_tree->user_id)
+            ->where('user_id', $user_id)
             ->update([
                 'amount' => DB::raw("`amount`+".($earning)),
             ]);
 
         //Fetch Wallet
-        $fetch_wallet = DB::table('wallets')->where('user_id', $fetch_tree->user_id)->first();
+        $fetch_wallet = DB::table('wallets')->where('user_id', $user_id)->first();
         
-
-            $credit_commision = DB::table('commission_histories')
+        $credit_commision = DB::table('commission_histories')
                 ->insertGetId([
-                    'user_id' => $fetch_tree->user_id,
-                    'pair_number' => ($fetch_tree->activate_pair+1),
+                    'user_id' => $user_id,
                     'amount' => $earning,
-                    'comment' => $earning.' income of pair number '.($fetch_tree->activate_pair+1).' is generated! ',
+                    'comment' => "Commission Rs. ".$earning.'  is credited',
                     'status' => 1,
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                     ]);
-                $credit_commision_to_wallet = DB::table('wallet_histories')
-                    ->insertGetId([
-                        'wallet_id' =>  $fetch_wallet->id,
-                        'user_id'   => $fetch_tree->user_id,
-                        'transaction_type'  =>  1,
-                        'amount' => $earning,
-                        'total_amount'  => $fetch_wallet->amount,
-                        'comment'   => $earning.' income of pair number'.($fetch_tree->activate_pair+1).' is generated! ',
-                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
-                    ]);
-        }
+        $credit_commision_to_wallet = DB::table('wallet_histories')
+            ->insertGetId([
+                'wallet_id' =>  $fetch_wallet->id,
+                'user_id'   => $user_id,
+                'transaction_type'  =>  1,
+                'amount' => $earning,
+                'total_amount'  => $fetch_wallet->amount,
+                'comment'   => "Commission Rs. ".$earning.'  is credited',
+                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+            ]);
     return true;
 }
-    // public function fundDeduct($funds, $package_name)
-    // {
-    //     if($package_name == 1){
-    //         if($funds->available_fund > 1099){
-    //             $fund = DB::table('funds')
-    //                 ->where('alloted_to', Auth::user()->id)
-    //                 ->update([
-    //                     'fund' => ($funds->available_fund - 1099),
-    //                     'available_fund' => ($funds->available_fund - 1099)
-    //                 ]);
-    //         }else {
-    //             return redirect()->back()->with('error', 'Insufficient Funds!');
-    //         }            
-    //     }elseif ($package_name == 2) {
-    //         $fund = DB::table('funds')
-    //             ->where('alloted_to', Auth::user()->id)
-    //             ->update([
-    //                 'fund' => ($funds->available_fund - 2199),
-    //                 'available_fund' => ($funds->available_fund - 2199)
-    //             ]);
-    //     }elseif ($package_name == 3) {
-    //         $fund = DB::table('funds')
-    //         ->where('alloted_to', Auth::user()->id)
-    //         ->update([
-    //             'fund' => ($funds->available_fund - 2500),
-    //             'available_fund' => ($funds->available_fund - 2500)
-    //         ]);
-    //     }
-
-    //     return 1;
-    // }
 }

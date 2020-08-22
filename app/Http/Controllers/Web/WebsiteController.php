@@ -11,8 +11,9 @@ class WebsiteController extends Controller
     public function index()
     {
         $slider = ShoppingSlider::orderBy('created_at', 'DESC')->get();
-        $product = ShoppingProduct::orderBy('created_at', 'DESC')->get();
-        return view('web.index', compact('slider', 'product'));
+        $product = ShoppingProduct::where('section', 1)->orderBy('created_at', 'DESC')->get();
+        $product1 = ShoppingProduct::where('section', 2)->orderBy('created_at', 'ASC')->get();
+        return view('web.index', compact('slider', 'product', 'product1'));
     }
     public function about()
     {
@@ -25,5 +26,21 @@ class WebsiteController extends Controller
     public function reward()
     {
         return view('web.reward');
+    }
+    public function product()
+    {
+        $product = ShoppingProduct::where('section', 2)->orderBy('created_at', 'DESC')->paginate(4);
+        return view('web.product', compact('product'));
+    }
+    public function rankAchiever()
+    {
+        return view('web.rank_achiever');
+    }
+    public function rewardAchiever(){
+        return view('web.reward_achiever');
+    }
+    public function contact()
+    {
+        return view('web.contact');
     }
 }

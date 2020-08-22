@@ -44,10 +44,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Admin Commission
     Route::get('/admin/commission', 'AdminDashboardController@adminCommission')->name('admin.mem_commission');
     Route::post('/add/commission', 'AdminDashboardController@storeCommission')->name('admin.store_commission');
+    Route::get('/list/commission', 'AdminDashboardController@getCommissionList')->name('admin.ajax.commission_list');
 
     // TDS
     Route::get('/admin/tds', 'AdminDashboardController@adminTds')->name('admin.mem_tds');
     Route::post('/add/tds', 'AdminDashboardController@storeTds')->name('admin.store_tds');
+    Route::get('/list/tds', 'AdminDashboardController@getTdsList')->name('admin.ajax.tds_list');
 
     // Member List
     Route::get('/list/members', 'AdminDashboardController@memberList')->name('admin.mem_member_list');
@@ -115,7 +117,17 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/shopping/category/status/{pId}/{status}', 'ShoppingProductController@ShoppingCategoryStatus')->name('admin.shopping_category_status');
     Route::get('/shopping/category/edit/{id}', 'ShoppingProductController@ShoppingCategoryEdit')->name('admin.shopping_category_edit');
     Route::post('/shopping/category/update/{id}', 'ShoppingProductController@ShoppingCategoryUpdate')->name('admin.update_shopping_category');
-
+    
+    // Payment Requsets
+    Route::get('/payment/request/form', 'AdminDashboardController@paymentRequestForm')->name('admin.payment_request_form');
+    Route::get('/payment/request/list', 'AdminDashboardController@ajaxPaymentRequest')->name('admin.ajax.payment_request_list');
+    Route::get('/payment/verify/{id}', 'AdminDashboardController@verify')->name('admin.verify');
+    
+    // Forented
+    Route::get('/info/', 'AdminDashboardController@info')->name('admin.info');
+    Route::post('/store/info/', 'AdminDashboardController@storeInfo')->name('admin.store_frontend');
+    
+    
 });
 
 
@@ -163,6 +175,15 @@ Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Membe
     Route::get('/my/epin/list', 'MemberDashboardController@memberGetEpinList')->name('member.ajax.my_epin_list');
     Route::get('/my/fund/hostory', 'MemberDashboardController@memberFundHistoryForm')->name('member.mem_fund_history');
     Route::get('/fund/history', 'MemberDashboardController@memberGetFundHistory')->name('member.ajax.fund_history');
+
+    // Payment Requests
+    Route::get('/payment/request', 'MemberDashboardController@memberPaymentRequestForm')->name('member.payment_request_form');
+    Route::get('/ajax/get/payment/requests','MemberDashboardController@ajaxGetPaymentRequest')->name('member.ajax.payment_request');
+    Route::post('/payment/requests','MemberDashboardController@paymentRequest')->name('member.payment_request');
+    // Route::get('/my/epin/', 'MemberDashboardController@memberEpinListForm')->name('member.mem_epin_list_form');
+    // Route::get('/my/epin/list', 'MemberDashboardController@memberGetEpinList')->name('member.ajax.my_epin_list');
+    // Route::get('/my/fund/hostory', 'MemberDashboardController@memberFundHistoryForm')->name('member.mem_fund_history');
+    // Route::get('/fund/history', 'MemberDashboardController@memberGetFundHistory')->name('member.ajax.fund_history');
     
     // Rewardz
 

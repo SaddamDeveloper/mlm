@@ -16,6 +16,10 @@ Route::get('/', 'Web\WebsiteController@index')->name('web.index');
 Route::get('/about', 'Web\WebsiteController@about')->name('web.about');
 Route::get('/plan', 'Web\WebsiteController@plan')->name('web.plan');
 Route::get('/reward', 'Web\WebsiteController@reward')->name('web.reward');
+Route::get('/product', 'Web\WebsiteController@product')->name('web.product');
+Route::get('/rank/achiever', 'Web\WebsiteController@rankAchiever')->name('web.rank_achiever');
+Route::get('/reward/achiever', 'Web\WebsiteController@rewardAchiever')->name('web.reward_achiever');
+Route::get('/contact', 'Web\WebsiteController@contact')->name('web.contact');
 
 // =========== join-us ============= 
 Route::get('/join-us', function () {

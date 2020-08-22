@@ -40,11 +40,17 @@
                 <li><a href="{{route('admin.shopping_slider')}}">Slider List</a></li>
                 <li><a href="{{route('admin.shopping_product')}}">Product List</a></li>
                 <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
+                <li><a href="{{route('admin.info')}}">Frontend Info</a></li>
               </ul>
             </li>
             <li>
                 <a href="{{route('admin.important_notice')}}">
                   <i class="fa fa-bell"></i> Important Notice
+                </a>
+            </li>
+            <li>
+                <a href="{{route('admin.payment_request_form')}}">
+                  <i class="fa fa-bell"></i> Payment Request
                 </a>
             </li>
             <li><a><i class="fa fa-gear"></i> Configuration <span class="fa fa-chevron-down"></span></a>

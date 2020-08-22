@@ -20,7 +20,7 @@
                                 </div>
                             </div>
                             <div class="widget-body">
-                                <p>We are a team of designers and developers that create high quality wordpress, shopify, Opencart </p>
+                                <p>SSSDREAM LIFE E- COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone. </p>
                             </div>
                         </div>
                     </div>
@@ -43,12 +43,11 @@
                             <h6 class="widget-title">Information</h6>
                             <div class="widget-body">
                                 <ul class="info-list">
-                                    <li><a href="#">about us</a></li>
+                                    <li><a href="{{ route('web.about') }}">about us</a></li>
                                     <li><a href="#">Delivery Information</a></li>
-                                    <li><a href="#">privet policy</a></li>
+                                    <li><a href="#">Privacy policy</a></li>
                                     <li><a href="#">Terms & Conditions</a></li>
-                                    <li><a href="#">contact us</a></li>
-                                    <li><a href="#">site map</a></li>
+                                    <li><a href="{{ route('web.contact') }}">contact us</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -65,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row align-items-center mt-20">
+                {{-- <div class="row align-items-center mt-20">
                     <div class="col-md-6">
                         <div class="newsletter-wrapper">
                             <h6 class="widget-title-text">Signup for newsletter</h6>
@@ -87,7 +86,7 @@
                             <img src="{{asset('web/img/payment.png')}}" alt="payment method">
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         <div class="footer-bottom">
@@ -95,7 +94,7 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="copyright-text text-center">
-                            <p>Powered By <a href="#">Corano</a>. Store 1 © 2019</p>
+                            <p>Powered By <a href="https://www.webinfotech.co.in">Web Infotech</a></p>
                         </div>
                     </div>
                 </div>

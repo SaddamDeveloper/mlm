@@ -52,34 +52,34 @@
 @endsection
 
 @section('script')
-     <script type="text/javascript">
-         $(function () {
-            var i = 1;
-            var table = $('#fund_request_list').DataTable({
-                processing: true,
-                serverSide: true,
-                iDisplayLength: "50",
-                ajax: "{{ route('admin.ajax.fund_request_list') }}",
-                columns: [
-                    { "render": function(data, type, full, meta) {return i++;}},
-                    {data: 'added_by', name: 'added_by',searchable: true},
-                    {data: 'fund', name: 'fund',searchable: true},
-                    {data: 'attachment', name: 'attachment',searchable: true},
-                    {data: 'comment', name: 'comment',searchable: true},
-                    {data: 'status', name: 'status', render:function(data, type, row){
-                      if (row.status == '1') {
-                        return "<button class='btn btn-success rounded'>Active</a>"
-                      }else{
-                        return "<button class='btn btn-warning rounded'>Inactive</a>"
-                      }                        
-                    }},              
-                    {data: 'created_at', name: 'created_at',searchable: true},
-                    {data: 'action', name: 'action',searchable: true}
-                ]
-            });
+  <script type="text/javascript">
+      $(function () {
+        var i = 1;
+        var table = $('#fund_request_list').DataTable({
+            processing: true,
+            serverSide: true,
+            iDisplayLength: "50",
+            ajax: "{{ route('admin.ajax.fund_request_list') }}",
+            columns: [
+                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'added_by', name: 'added_by',searchable: true},
+                {data: 'fund', name: 'fund',searchable: true},
+                {data: 'attachment', name: 'attachment',searchable: true},
+                {data: 'comment', name: 'comment',searchable: true},
+                {data: 'status', name: 'status', render:function(data, type, row){
+                  if (row.status == '1') {
+                    return "<button class='btn btn-success rounded'>Active</a>"
+                  }else{
+                    return "<button class='btn btn-warning rounded'>Inactive</a>"
+                  }                        
+                }},              
+                {data: 'created_at', name: 'created_at',searchable: true},
+                {data: 'action', name: 'action',searchable: true}
+            ]
         });
-     </script>
-     @endsection
+    });
+  </script>
+@endsection
 
 
 
