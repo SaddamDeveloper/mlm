@@ -75,6 +75,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/member/fund/request', 'AdminDashboardController@memberFundRequests')->name('admin.mem_fund_requests');
     Route::get('/member/fund/request/list', 'AdminDashboardController@memberFundRequestList')->name('admin.ajax.fund_request_list');
     Route::get('/member/fund/request/status/{id}', 'AdminDashboardController@memberFundRequestStatus')->name('admin.fund_request_status');
+   
+    // Reward List
+    Route::get('/rewards', 'AdminDashboardController@reward')->name('admin.rewards');
+    Route::post('/store/rewards', 'AdminDashboardController@storeReward')->name('admin.store_reward');
+    // Route::get('/member/fund/request/list', 'AdminDashboardController@memberFundRequestList')->name('admin.ajax.fund_request_list');
+    // Route::get('/member/fund/request/status/{id}', 'AdminDashboardController@memberFundRequestStatus')->name('admin.fund_request_status');
 
     /**
      * Important Notice

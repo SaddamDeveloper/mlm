@@ -23,6 +23,7 @@ use App\Fund;
 use App\PaymentRequest;
 use App\Frotend;
 use Intervention\Image\Facades\Image;
+use App\AdminReward;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -1095,7 +1096,25 @@ class AdminDashboardController extends Controller
             return redirect()->back()->with('message','Successfully Updated Successfully');
         }
     }
-
+    
+    public function reward()
+    {
+        $reward = AdminReward::orderBy('created_at', 'DESC')->paginate(10);
+        return view('admin.reward', compact('reward'));
+    }
+    public function storeReward(Request $request)
+    {
+        $this->validate($request, [
+            'reward_name'   => 'required',
+            'bv_pair'       => 'required|numeric'
+        ]);
+        $reward = new AdminReward;
+        $reward->reward_name = $request->input('reward_name');
+        $reward->bv_pair = $request->input('bv_pair');
+        if($reward->save()){
+            return back()->with('message', 'Successfully Added Successfully!');
+        }
+    }
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';
         $image_extension = $image->getClientOriginalExtension();

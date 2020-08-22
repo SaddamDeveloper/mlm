@@ -81,7 +81,7 @@
                 </tbody>
             </table>
             <a href="{{route('admin.mem_member_list')}}" class="btn btn-primary pull-right">More...</a>
-        </div>
+          </div>
         </div>
         <!-- /page content -->
         @endsection

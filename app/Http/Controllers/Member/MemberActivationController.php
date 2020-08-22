@@ -141,6 +141,11 @@ class MemberActivationController extends Controller
                                                             'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                                                         ]);
                                                         $this->creditCommisionOneIsToOne($parent->user_id, $lesser_bv);
+                                                        $total_pair_count =  DB::table('trees')
+                                                            ->select('activate_pair')
+                                                            ->where('id',$parent->user_id)
+                                                            ->first();
+                                                        $this->rewardsChecking($parent->user_id, $total_pair_count);
                                                     }
 
                                                 }
@@ -188,7 +193,7 @@ class MemberActivationController extends Controller
         }
     }
     
-    function creditCommisionOneIsToOne($user_id, $totalbv){   
+function creditCommisionOneIsToOne($user_id, $totalbv){   
         // Admin Commission Fetch
         $adminCommissionFetch = DB::table('admin_commissions')->first();
         $adminTdsFetch = DB::table('admin_tds')->first();
@@ -257,5 +262,64 @@ class MemberActivationController extends Controller
                 'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
             ]);
     return true;
+}
+
+function rewardsChecking($user_id, $total_pair_count)
+{
+    if($total_pair_count->activate_pair == 10){
+        $rewards = new Rewards;
+        $rewards->user_id = $parent;
+        $rewards->comment = "Congratulations! You are the winner of Casserol 2500 ml reward for 10 BV";
+        $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 15){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of Pressure Cooker reward for 15 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 30){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of Home Theater reward for 30 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 70){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of Safari Suitcase reward for 70 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 120){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of 4G Tablet reward for 120 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 200){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of 20'' LED TV reward for 200 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 300){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of 32'' LED TV reward for 300 BV";
+            $rewards->save();
+    }
+
+    if($total_pair_count->activate_pair == 500){
+            $rewards = new Rewards;
+            $rewards->user_id = $parent;
+            $rewards->comment = "Congratulations! You are the winner of Voltas 1.5 ton AC reward for 500 BV";
+            $rewards->save();
+    }
 }
 }
