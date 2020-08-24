@@ -15,7 +15,7 @@ Route::post('/admin/logout', 'Admin\AdminLoginController@logout')->name('admin.l
  * Member Login Control
  */
 Route::get('/member/login', 'Member\MemberLoginController@showMemberLoginForm')->name('member.login');
-Route::post('/member/login', 'Member\MemberLoginController@memberLogin')->name('member.doLogin');
+Route::post('/member/do/login', 'Member\MemberLoginController@memberLogin')->name('member.doLogin');
 Route::post('/member/logout', 'Member\MemberLoginController@logout')->name('member.logout');
 
 /***

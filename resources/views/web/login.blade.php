@@ -38,7 +38,7 @@
                                 <form class="form-horizontal" method="POST" action="{{ route('member.doLogin') }}">
                                     {{ csrf_field() }}
                                     <div class="single-input-item">
-                                        <input type="text" name="username" placeholder="Email or Username" required="">
+                                        <input type="text" name="username" placeholder="Username" required="">
                                         @if ($errors->has('username'))
                                         <span class="help-block">
                                             <strong>{{ $errors->first('username') }}</strong>
