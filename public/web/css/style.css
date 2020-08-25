@@ -1046,8 +1046,8 @@ textarea:focus {
 
 /*------- short classes start -------*/
 .section-padding {
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding-top: 50px;
+    padding-bottom: 50px;
 }
 
 @media only screen and (max-width: 767.98px) {
@@ -6720,7 +6720,8 @@ blockquote {
 /*------ contact info area end -------*/
 /*----- footer area start -----*/
 .footer-top {
-    background-color: #f7f7f7;
+    background-color: #fff38d;
+    padding: 50px;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991.98px),
@@ -6865,6 +6866,7 @@ blockquote {
 
 .footer-bottom {
     padding: 20px 0;
+    background: #151b3a;
 }
 
 .copyright-text p a {
@@ -6888,6 +6890,11 @@ blockquote {
     margin-bottom: 30px;
     background: radial-gradient(#eaeaea, #d2d2d2);
     animation: hue-shift 6s ease-in-out infinite;
+}
+.service-policy {
+    background: #fff9ca;
+    padding: 20px 0;
+    border-bottom: 1px solid #fff;
 }
 
 @keyframes hue-shift {
