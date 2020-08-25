@@ -15,7 +15,7 @@ Route::post('/admin/logout', 'Admin\AdminLoginController@logout')->name('admin.l
  * Member Login Control
  */
 Route::get('/member/login', 'Member\MemberLoginController@showMemberLoginForm')->name('member.login');
-Route::post('/member/do/login', 'Member\MemberLoginController@memberLogin')->name('member.doLogin');
+Route::post('/member/login', 'Member\MemberLoginController@memberLogin');
 Route::post('/member/logout', 'Member\MemberLoginController@logout')->name('member.logout');
 
 /***
@@ -142,7 +142,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
  */
 
 Route::get('/search/sponsorID', 'Member\MemberDashboardController@searchSponsorID')->name('member.search_sponsor_id');
-Route::group(['middleware'=>'auth:member','prefix'=>'member','namespace'=>'Member'],function(){
+Route::group(['prefix'=>'member','namespace'=>'Member'],function(){
     Route::get('/dashboard', 'MemberDashboardController@index')->name('member.dashboard');
     Route::get('/profile', 'MemberDashboardController@profile')->name('member.profile');
     Route::get('/add/new', 'MemberDashboardController@addNewMemberForm')->name('member.add_new_member_form');

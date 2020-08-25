@@ -22,7 +22,7 @@ Route::get('/reward/achiever', 'Web\WebsiteController@rewardAchiever')->name('we
 Route::get('/contact', 'Web\WebsiteController@contact')->name('web.contact');
 
 // =========== join-us ============= 
-Route::get('/join-us', function () {
+Route::get('/register', function () {
     return view('web.join');
 })->name('web.join');
 

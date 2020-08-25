@@ -29,14 +29,13 @@ use App\ImportantNotice;
 use App\PaymentRequest;
 class MemberDashboardController extends Controller
 {
+    public function __construct()
+    {
+        //Multiple exclude
+        $this->middleware('auth:member')->except(['addNewMember','thankyou', 'searchSponsorID', 'loginIDCheck']);
+    }
     public function index()
     {
-        // $my_commission = CommissionHistory::where('user_id', Auth::user()->id)->sum('amount');
-        // $total_pair_completed = Tree::where('user_id', Auth::user()->id)->value('total_pair');
-        // $epin_available = Epin::where('status', 2)->where('alloted_to', Auth::user()->id)->count();
-        // $epin_used = Epin::where('status', 1)->where('alloted_to', Auth::user()->id)->count();
-        // $my_wallet = Wallet::where('user_id', Auth::user()->id)->value('amount');
-        // $epin_list = Epin::with('member')->where('alloted_to', Auth::user()->id)->paginate(10);
         $user_info = Auth::user();
         $direct_member = Tree::where('registered_by', $user_info->id)->count();
         $tree = Tree::where('user_id', $user_info->id)->first();

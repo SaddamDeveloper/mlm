@@ -89,7 +89,7 @@
                                             <li><a href="{{route('web.login')}}">Login</a></li>
                                             <li><a href="{{route('web.club')}}">Club</a></li>
                                             <li><a href="{{route('web.reward')}}">Reward</a></li>
-                                            <li><a href="{{route('web.join')}}">Join us</a></li>
+                                            <li><a href="{{route('web.join')}}">Register</a></li>
                                             <li><a href="{{ route('web.contact') }}">Contact</a></li>
                                             <li><a href="{{asset('web/img/plan.pptx')}}">Plan</a></li>
                                             <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
