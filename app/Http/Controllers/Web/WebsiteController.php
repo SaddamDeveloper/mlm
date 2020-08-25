@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Model\ShoppingSlider;
 use App\Model\ShoppingProduct;
+use App\Frotend;
 class WebsiteController extends Controller
 {
     public function index()

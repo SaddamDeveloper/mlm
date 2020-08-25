@@ -268,7 +268,7 @@ class MemberDashboardController extends Controller
                     if (empty($sponsor_tree->left_id)) {
 
                         $lag = "L";
-                        $insert_id =DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
+                        $insert_id = DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
                         $tree_insert = $insert_id[0]->InsertedIds;
                         $status = $insert_id[0]->sts;
                         if($status == FALSE){

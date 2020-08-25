@@ -113,7 +113,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/shopping/product/list', 'ShoppingProductController@ShoppingProductList')->name('admin.shopping_product_list');
     Route::get('/shopping/product/status/{pId}/{status}', 'ShoppingProductController@ShoppingProductStatus')->name('admin.shopping_product_status');
     Route::get('/shopping/product/edit/{id}', 'ShoppingProductController@ShoppingProductEdit')->name('admin.shopping_product_edit');
-    Route::post('/shopping/product/update', 'ShoppingProductController@ShoppingProductUpdate')->name('admin.update_shopping_product');
+    Route::post('/shopping/product/update/', 'ShoppingProductController@ShoppingProductUpdate')->name('admin.update_shopping_product');
 
     //Shopping Category
     Route::get('/shopping/category', 'ShoppingProductController@shoppingCategory')->name('admin.shopping_category');

@@ -110,7 +110,7 @@
                                 </div>
 
                                 <div class="form-group">    	            	
-                                    {{ Form::submit('Add', array('class'=>'btn btn-success pull-right')) }}  
+                                    {{ Form::submit('Update', array('class'=>'btn btn-success pull-right')) }}  
                                 </div>
                                     {{ Form::close() }}
                             </div>

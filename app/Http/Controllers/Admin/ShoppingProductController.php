@@ -11,6 +11,7 @@ use Intervention\Image\Facades\Image;
 use File;
 use App\Model\ShoppingProduct;
 use App\Model\ShoppingSlider;
+use DB;
 class ShoppingProductController extends Controller
 {
     public function shoppingSlider()
@@ -48,10 +49,6 @@ class ShoppingProductController extends Controller
     public function storeShoppingSlider(Request $request)
     {
         $this->validate($request, [
-            'slider_name'   => 'required',
-            'offer' => 'required',
-            'banner_title' => 'required',
-            'banner_subtitle' => 'required',
             'slider_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
@@ -111,7 +108,6 @@ class ShoppingProductController extends Controller
             abort(404);
         }
         $this->validate($request, [
-            'slider_name'   => 'required',
             'slider_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         
@@ -140,7 +136,7 @@ class ShoppingProductController extends Controller
             'category' => 'required',
             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'mrp' => 'required|min:1|numeric',
-            'price'   => 'required|min:1|numeric'
+            'price'   => 'required|min:1|numeric',
         ]);
 
         $name = $request->input('name');
@@ -154,7 +150,7 @@ class ShoppingProductController extends Controller
         $price = $request->input('price');
         $short_desc = $request->input('short_desc');
         $long_desc = $request->input('long_desc');
-
+        $section = $request->input('section');
         $shopping_product_insert = new ShoppingProduct;
         $shopping_product_insert->name = $name;
         $shopping_product_insert->category_id = $category;
@@ -163,7 +159,7 @@ class ShoppingProductController extends Controller
         $shopping_product_insert->price = $price;
         $shopping_product_insert->short_desc = $short_desc;
         $shopping_product_insert->long_desc = $long_desc;
-
+        $shopping_product_insert->section = $section;
         $save = $shopping_product_insert->save();
         if($save){
             return redirect()->back()->with('message','Product Added Successfully!');
@@ -205,8 +201,8 @@ class ShoppingProductController extends Controller
             abort(404);
         }
         $product = ShoppingProduct::find($id);
-        $category = ShoppingCategory::find($id);
-        return view('admin.edit_shopping_product', compact('product'));
+        $category = ShoppingCategory::get();
+        return view('admin.edit_shopping_product', compact('product', 'category'));
     }
 
     public function ShoppingProductStatus($pId,$statusId){
@@ -224,27 +220,77 @@ class ShoppingProductController extends Controller
        }
     }
 
-    public function ShoppingProductUpdate(Request $request, $pId){
-        try{
-            $id = decrypt($pId);
-        }catch(DecryptException $e) {
-            abort(404);
-        }
+    public function ShoppingProductUpdate(Request $request){
         $this->validate($request, [
             'name'   => 'required',
             'category' => 'required',
             'mrp' => 'required|min:1|numeric',
             'price'   => 'required|min:1|numeric'
         ]);
-        
+        $id = $request->input('product_id');
+        $name = $request->input('name');
+        $category = $request->input('category');
+        $image = null;
+        if($request->hasfile('main_image'))
+        {
+            $this->validate($request, [
+                'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+            $main_image_array = $request->file('main_image');
+            $image1 = $this->imageInsert($main_image_array, $request, 1);
+           
+            // Check wheather image is in DB
+            $checkImage = DB::table('shopping_product')->where('id', $id)->first();
+            if($checkImage->main_image){
+                //Delete
+                $image_path_thumb = "/public/web/img/product/thumb/".$checkImage->image;  
+                $image_path_original = "/public/web/img/product/".$checkImage->image;  
+                if(File::exists($image_path_thumb)) {
+                    File::delete($image_path_thumb);
+                }
+                if(File::exists($image_path_original)){
+                    File::delete($image_path_original);
+                }
+
+                //Update
+                $image_update = DB::table('shopping_product')
+                ->where('id', $id)
+                ->update([
+                    'main_image' => $image1,
+                    'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                ]);   
+
+                if($image_update){
+                        return redirect()->back()->with('message','Product Updated Successfully!');
+                    }
+            }else{
+                 //Update
+                 $image_update = DB::table('shopping_product')
+                 ->where('id', $id)
+                 ->update([
+                     'main_image' => $image1,
+                     'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                 ]);   
+                if($image_update){
+                        return redirect()->back()->with('message','Product Updated Successfully!');
+                    }
+            }
+        }
+        $mrp = $request->input('mrp');
+        $price = $request->input('price');
+        $short_desc = $request->input('short_desc');
+        $long_desc = $request->input('long_desc');
+        $section = $request->input('section');
+
         $shopping_product = ShoppingProduct::find($id);
-        $shopping_product_insert->name = $name;
-        $shopping_product_insert->category_id = $category;
-        $shopping_product_insert->main_image = $image;
-        $shopping_product_insert->mrp = $mrp;
-        $shopping_product_insert->price = $price;
-        $shopping_product_insert->short_desc = $short_desc;
-        $shopping_product_insert->long_desc = $long_desc;
+        $shopping_product->name = $name;
+        $shopping_product->category_id = $category;
+        $shopping_product->main_image = $image;
+        $shopping_product->mrp = $mrp;
+        $shopping_product->price = $price;
+        $shopping_product->short_desc = $short_desc;
+        $shopping_product->long_desc = $long_desc;
+        $shopping_product->section = $section;
         $update = $shopping_product->save();
 
         if($update){
