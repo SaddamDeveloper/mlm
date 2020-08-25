@@ -26,6 +26,11 @@ Route::get('/join-us', function () {
     return view('web.join');
 })->name('web.join');
 
+// =========== join-us ============= 
+Route::get('/club', function () {
+    return view('web.club');
+})->name('web.club');
+
 // =========== login ============= 
 Route::get('/login', function () {
     return view('web.login');
