@@ -31,8 +31,7 @@ class MemberDashboardController extends Controller
 {
     public function __construct()
     {
-        //Multiple exclude
-        $this->middleware('auth:member')->except(['addNewMember','thankyou', 'searchSponsorID', 'loginIDCheck']);
+        $this->middleware('auth:member')->except(['addNewMember', 'searchSponsorID', 'loginIDCheck']);
     }
     public function index()
     {
@@ -118,7 +117,11 @@ class MemberDashboardController extends Controller
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
                                         $chk_lock->save();
-                                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                        if(Auth::check()){
+                                            return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                        }else{
+                                            return redirect()->route('web.thanks',['token' =>encrypt($token)]);
+                                        }
                                     } else {
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
@@ -135,7 +138,11 @@ class MemberDashboardController extends Controller
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
                                         $chk_lock->save();
-                                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                        if(Auth::check()){
+                                            return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                        }else{
+                                            return redirect()->route('web.thanks',['token' =>encrypt($token)]);
+                                        }
                                     } else {
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
@@ -258,9 +265,12 @@ class MemberDashboardController extends Controller
                 $sponsor_tree = DB::table('trees')
                     ->where('user_id', $sponsor->id)
                     ->lockForUpdate()->first();
-
-                $registerdBY = Auth::user()->id;
-
+                
+                if(Auth::check()){
+                    $registerdBY = Auth::user()->id;
+                }else {
+                    $registerdBY = $sponsor->id;
+                }
                 $tree_insert = null;      
                 // Checking Direct Referral
                 if($leg == 1){
@@ -272,7 +282,7 @@ class MemberDashboardController extends Controller
                         $tree_insert = $insert_id[0]->InsertedIds;
                         $status = $insert_id[0]->sts;
                         if($status == FALSE){
-                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, $registerdBY);
                         }
                         // $tree_insert = DB::table('trees')
                         // ->insertGetId([
@@ -289,7 +299,7 @@ class MemberDashboardController extends Controller
                         
                     }else{
                         //Go to Extreme Left
-                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, $registerdBY);
                     }
                 }else if($leg == 2){
                     if (empty($sponsor_tree->right_id)) {
@@ -299,7 +309,7 @@ class MemberDashboardController extends Controller
                         $tree_insert = $insert_id[0]->InsertedIds;
                         $status = $insert_id[0]->sts;
                         if($status == FALSE){
-                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                            $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, $registerdBY);
                         }
                         // $tree_insert = DB::table('trees')
                         // ->insertGetId([
@@ -315,7 +325,7 @@ class MemberDashboardController extends Controller
                         
                     }else{
                         //Go to Extreme Right
-                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, Auth::user()->id);
+                        $tree_insert = $this->extremeLeg($leg, $member_insert, $sponsor_tree->id, $registerdBY);
                     }
                 }
 
@@ -1479,14 +1489,22 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
                                     $chk_lock = ManualLock::find(1);
                                     $chk_lock->joining = 1;
                                     $chk_lock->save();
-                                    return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                    if(Auth::check()){
+                                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                    }else{
+                                        return redirect()->route('web.thanks',['token' =>encrypt($token)]);
+                                    }
                                 }else if($leg == 2){
                                     $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
                                     $token = rand(111111,999999);
                                     $chk_lock = ManualLock::find(1);
                                     $chk_lock->joining = 1;
                                     $chk_lock->save();
-                                    return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                    if (Auth::check()) {
+                                        return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
+                                    }else {
+                                        return redirect()->route('web.thanks',['token' =>encrypt($token)]);
+                                    }
                                 }
                             }else{
                                 $chk_lock = ManualLock::find(1);

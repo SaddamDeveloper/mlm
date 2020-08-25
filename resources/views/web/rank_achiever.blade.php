@@ -32,7 +32,7 @@
                <div class="row">
                    <div class="col-md-12">
                     <div class="section-title text-center">
-                        <h2 class="title">Monthly Dhamaka Bonanza</h2>
+                        <h2 class="title">{{ $month }} Month Dhamaka Bonanza</h2>
                     </div>
                     <table class="table table-bordered">
                         <thead>
@@ -45,15 +45,24 @@
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i <= 5; $i++)
-                                <tr>
-                                    <td>{{$i+1}}</td>
-                                    <td>10 BV Pairs</td>
-                                    <td>Casserol (2500 ml)</td>
-                                    <td><img src="../web/img/casserol.png" width="65" alt=""></td>
-                                    <td>Saddam Hussain</td>
-                                </tr>
-                            @endfor
+                            @if(isset($rank_achiever) && !empty($rank_achiever))
+                            @php
+                                $count = 1;
+                            @endphp
+                                @foreach ($rank_achiever as $ra)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{$ra->target_bv}} BV Pair</td>
+                                        <td>{{ $ra->prize }}</td>
+                                        <td><img src="../web/img/casserol.png" width="65" alt=""></td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5" style="text-align: center">No Data Found</td>
+                            </tr>
+                            @endif
                         </tbody>
                       </table>
                    </div>

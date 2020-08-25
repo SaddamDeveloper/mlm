@@ -270,6 +270,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 10){
         $rewards = new Rewards;
         $rewards->user_id = $user_id;
+        $rewards->target_bv = "10";
+        $rewards->prize = "Casserol (2500 ml)";
         $rewards->comment = "Congratulations! You are the winner of Casserol 2500 ml reward for 10 BV";
         $rewards->save();
     }
@@ -277,6 +279,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 15){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "15";
+            $rewards->prize = "Pressure Cooker";
             $rewards->comment = "Congratulations! You are the winner of Pressure Cooker reward for 15 BV";
             $rewards->save();
     }
@@ -284,6 +288,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 30){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "30";
+            $rewards->prize = "Home Theater";
             $rewards->comment = "Congratulations! You are the winner of Home Theater reward for 30 BV";
             $rewards->save();
     }
@@ -291,6 +297,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 70){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "70";
+            $rewards->prize = "Safari Suitcase";
             $rewards->comment = "Congratulations! You are the winner of Safari Suitcase reward for 70 BV";
             $rewards->save();
     }
@@ -298,6 +306,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 120){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "120";
+            $rewards->prize = "4G Tablet";
             $rewards->comment = "Congratulations! You are the winner of 4G Tablet reward for 120 BV";
             $rewards->save();
     }
@@ -305,6 +315,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 200){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "200";
+            $rewards->prize = "20'' LED TV";
             $rewards->comment = "Congratulations! You are the winner of 20'' LED TV reward for 200 BV";
             $rewards->save();
     }
@@ -312,6 +324,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 300){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "300";
+            $rewards->prize = "32'' LED TV";
             $rewards->comment = "Congratulations! You are the winner of 32'' LED TV reward for 300 BV";
             $rewards->save();
     }
@@ -319,6 +333,8 @@ function rewardsChecking($user_id, $total_pair_count)
     if($total_pair_count->activate_pair >= 500){
             $rewards = new Rewards;
             $rewards->user_id = $user_id;
+            $rewards->target_bv = "500";
+            $rewards->prize = "Voltas 1.5 ton AC";
             $rewards->comment = "Congratulations! You are the winner of Voltas 1.5 ton AC reward for 500 BV";
             $rewards->save();
     }

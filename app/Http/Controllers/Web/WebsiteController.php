@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Model\ShoppingSlider;
 use App\Model\ShoppingProduct;
 use App\Frotend;
+use App\Rewards;
+use Carbon\Carbon;
 class WebsiteController extends Controller
 {
     public function index()
@@ -35,7 +37,9 @@ class WebsiteController extends Controller
     }
     public function rankAchiever()
     {
-        return view('web.rank_achiever');
+        $month = Carbon::now()->format('F');
+        $rank_achiever = Rewards::orderBy('created_at', 'DESC')->paginate(10);
+        return view('web.rank_achiever', compact('rank_achiever', 'month'));
     }
     public function rewardAchiever(){
         return view('web.reward_achiever');
@@ -43,5 +47,17 @@ class WebsiteController extends Controller
     public function contact()
     {
         return view('web.contact');
+    }
+    public function thanks($token)
+    {
+        try {
+            $token = decrypt($token);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        if($token){
+            $success = 'Registration Successfull';
+            return view('web.thanks', compact('success'));
+        }
     }
 }

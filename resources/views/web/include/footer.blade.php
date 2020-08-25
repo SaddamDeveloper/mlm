@@ -59,10 +59,10 @@
                         <div class="widget-item">
                             <h6 class="widget-title">Follow Us</h6>
                             <div class="widget-body social-link">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-instagram"></i></a>
-                                <a href="#"><i class="fa fa-youtube"></i></a>
+                                <a href="{{ $frontend->fb_id }}"><i class="fa fa-facebook"></i></a>
+                                <a href="{{ $frontend->tw_id }}"><i class="fa fa-twitter"></i></a>
+                                <a href="{{ $frontend->insta_id }}"><i class="fa fa-instagram"></i></a>
+                                <a href="{{ $frontend->yt_id }}"><i class="fa fa-youtube"></i></a>
                             </div>
                         </div>
                     </div>
