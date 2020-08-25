@@ -6,7 +6,7 @@
 
 @section('content')
     
-    <main>
+    <main style="background:url('web/img/patt.jpg')">
         @if(isset($slider) && !empty($slider))
         <!-- hero slider area start -->
         <section class="slider-area">
@@ -194,7 +194,7 @@
                 <div class="row align-items-center">
                     <div class="col-lg-5">
                         <div class="about-thumb">
-                            <img src="{{asset('web/img/immunity.jpeg')}}" alt="about thumb">
+                            <img src="{{asset('web/img/immunity.png')}}" alt="about thumb">
                         </div>
                     </div>
                     <div class="col-lg-7">
