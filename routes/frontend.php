@@ -37,9 +37,7 @@ Route::get('/login', function () {
 })->name('web.login');
 
 // =========== product-list ============= 
-Route::get('/product-list', function () {
-    return view('web.product.product-list');
-})->name('web.product.product-list');
+Route::get('/product-list', 'Web\WebsiteController@productList')->name('web.product.product-list');
 
 // =========== product-detail ============= 
 Route::get('/product-detail', function () {

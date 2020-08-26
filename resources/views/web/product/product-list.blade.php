@@ -86,6 +86,36 @@
 
                             <!-- product item list wrapper start -->
                             <div class="shop-product-wrap grid-view row mbn-30">
+                                @if(isset($products) && !empty($products))
+                                    @foreach ($products as $product)
+                                        <!-- product single item start -->
+                                        <div class="col-md-3 col-sm-6">
+                                            <!-- product grid start -->
+                                            <div class="product-item">
+                                                <figure class="product-thumb">
+                                                    <a href="{{route('web.product.product-detail')}}">
+                                                        <img class="pri-img" src="{{asset('web/img/product/'.$product->main_image)}}" alt="product">
+                                                    </a>
+                                                    <div class="cart-hover">
+                                                        <button class="btn btn-cart">add to cart</button>
+                                                    </div>
+                                                </figure>
+                                                <div class="product-caption text-center">
+                                                    <h6 class="product-name">
+                                                        <a href="{{route('web.product.product-detail')}}">{{ $product->name }}</a>
+                                                    </h6>
+                                                    <div class="price-box">
+                                                        <span class="price-regular">₹{{ number_format($product->mrp, 2) }}</span>
+                                                        <span class="price-old"><del>₹{{ number_format($product->price, 2) }}</del></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- product grid end -->
+                                        </div>
+                                        <!-- product single item start -->
+                                    @endforeach
+                                @endif
+{{-- 
                                 <!-- product single item start -->
                                 <div class="col-md-3 col-sm-6">
                                     <!-- product grid start -->
@@ -214,33 +244,7 @@
                                     </div>
                                     <!-- product grid end -->
                                 </div>
-                                <!-- product single item start -->
-
-                                <!-- product single item start -->
-                                <div class="col-md-3 col-sm-6">
-                                    <!-- product grid start -->
-                                    <div class="product-item">
-                                        <figure class="product-thumb">
-                                            <a href="{{route('web.product.product-detail')}}">
-                                                <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                            </a>
-                                            <div class="cart-hover">
-                                                <button class="btn btn-cart">add to cart</button>
-                                            </div>
-                                        </figure>
-                                        <div class="product-caption text-center">
-                                            <h6 class="product-name">
-                                                <a href="{{route('web.product.product-detail')}}">Perfect Diamond Jewelry</a>
-                                            </h6>
-                                            <div class="price-box">
-                                                <span class="price-regular">$60.00</span>
-                                                <span class="price-old"><del>$70.00</del></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- product grid end -->
-                                </div>
-                                <!-- product single item start -->
+                                <!-- product single item start --> --}}
 
                             </div>
                             <!-- product item list wrapper end -->

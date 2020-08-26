@@ -62,4 +62,10 @@ class WebsiteController extends Controller
             return view('web.thanks', compact('success'));
         }
     }
+
+    public function productList()
+    {
+        $products = ShoppingProduct::where('section', 1)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
+        return view('web.product.product-list', compact('products'));
+    }
 }
