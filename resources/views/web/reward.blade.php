@@ -35,42 +35,19 @@
                             <h2 class="title">Monthly Dhamaka Bonanza</h2>
                         </div>
                    </div>
-                   <div class="col-md-3 mt-5">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="web/img/user.svg" alt="">
-                            <h5 class="card-title">Name: Saddam Hussain</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Reward: Padmashree</h6>
-                            </div>
-                        </div>
-                    </div>
+                   @if (isset($reward_achiever) && !empty($reward_achiever))
+                   @foreach ($reward_achiever as $ra)
                     <div class="col-md-3 mt-5">
                         <div class="card">
                             <div class="card-body text-center">
                                 <img src="web/img/user.svg" alt="">
-                            <h5 class="card-title">Name: Saddam Hussain</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Reward: Padmashree</h6>
+                            <h5 class="card-title">Name: {{ $ra->member->full_name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">Reward: {{ $ra->prize }}</h6>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 mt-5">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="web/img/user.svg" alt="">
-                            <h5 class="card-title">Name: Saddam Hussain</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Reward: Padmashree</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mt-5">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <img src="web/img/user.svg" alt="">
-                            <h5 class="card-title">Name: Saddam Hussain</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Reward: Padmashree</h6>
-                            </div>
-                        </div>
-                    </div>
+                   @endforeach
+                   @endif
                </div>
             </div>
         </div>

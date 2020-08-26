@@ -44,7 +44,9 @@ class MemberDashboardController extends Controller
         $right_active = $tree->total_activate_right;
         $pair_matching = $tree->activate_pair;
         $notice = ImportantNotice::where('status', 1)->orderBy('created_at', 'DESC')->limit(10)->get();
-        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching', 'notice'));
+        $total_income = CommissionHistory::where('user_id', $user_info->id)->sum('amount');
+        $available_fund = TotalFund::where('user_id', $user_info->id)->first();
+        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching', 'notice', 'total_income', 'available_fund'));
     }
 
     public function addNewMemberForm()

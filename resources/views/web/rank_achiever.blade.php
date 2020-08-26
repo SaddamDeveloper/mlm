@@ -39,8 +39,7 @@
                           <tr>
                             <th scope="col">Sl No.</th>
                             <th scope="col">BV</th>
-                            <th scope="col">REWARDS</th>
-                            <th scope="col">IMAGES</th>
+                            <th scope="col">Rank</th>
                             <th scope="col">NAMES</th>
                           </tr>
                         </thead>
@@ -50,13 +49,49 @@
                                 $count = 1;
                             @endphp
                                 @foreach ($rank_achiever as $ra)
+                                @if ($ra->activate_pair >= 24 && $ra->activate_pair < 50)
                                     <tr>
                                         <td>{{$count}}</td>
-                                        <td>{{$ra->target_bv}} BV Pair</td>
-                                        <td>{{ $ra->prize }}</td>
-                                        <td><img src="../web/img/casserol.png" width="65" alt=""></td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Silver</td>
                                         <td>{{ $ra->member->full_name }}</td>
                                     </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 50 && $ra->activate_pair < 200)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Gold</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 200 && $ra->activate_pair < 500)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Pearl</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 500 && $ra->activate_pair < 1000)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Topaz</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 1000 && $ra->activate_pair < 1500)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Ruby (All India Tour)</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @php
+                                    $count++;
+                                @endphp
                                 @endforeach
                             @else
                             <tr>

@@ -211,7 +211,7 @@
         </section>
         <!-- about us area end -->
 
-        <!-- service policy area start -->
+        {{-- <!-- service policy area start -->
         <div class="service-policy section-padding">
             <div class="container">
                 <div class="row mtn-30">
@@ -262,7 +262,7 @@
                 </div>
             </div>
         </div>
-        <!-- service policy area end -->
+        <!-- service policy area end --> --}}
     </main>
 @endsection
 
