@@ -40,6 +40,4 @@ Route::get('/login', function () {
 Route::get('/product-list', 'Web\WebsiteController@productList')->name('web.product.product-list');
 
 // =========== product-detail ============= 
-Route::get('/product-detail', function () {
-    return view('web.product.product-detail');
-})->name('web.product.product-detail');
+Route::get('/product-detail/{id}', 'Web\WebsiteController@productDetail')->name('web.product.product-detail');

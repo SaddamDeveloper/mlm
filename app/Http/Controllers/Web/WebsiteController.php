@@ -68,4 +68,14 @@ class WebsiteController extends Controller
         $products = ShoppingProduct::where('section', 1)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
         return view('web.product.product-list', compact('products'));
     }
+    public function productDetail($id)
+    {
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $product_detail = ShoppingProduct::find($id);
+        return view('web.product.product-detail', compact('product_detail'));
+    }
 }

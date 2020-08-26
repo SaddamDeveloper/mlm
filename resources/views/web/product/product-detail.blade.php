@@ -17,7 +17,7 @@
                             <nav aria-label="breadcrumb">
                                 <ul class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="index.html"><i class="fa fa-home"></i></a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Product Name Here</li>
+                                    <li class="breadcrumb-item active" aria-current="page">{{ $product_detail->name }}</li>
                                 </ul>
                             </nav>
                         </div>
@@ -39,7 +39,7 @@
                                 <div class="col-lg-4">
                                     <div class="product-large-slider">
                                         <div class="pro-large-img img-zoom">
-                                            <img src="{{asset('web/img/product/product-details-img1.jpg')}}" alt="product-details" />
+                                            <img src="{{asset('web/img/product/'.$product_detail->main_image)}}" alt="product-details" />
                                         </div>
                                         <div class="pro-large-img img-zoom">
                                             <img src="{{asset('web/img/product/product-details-img2.jpg')}}" alt="product-details" />
@@ -77,37 +77,12 @@
                                         <div class="manufacturer-name">
                                             <a href="product-details.html">HasTech</a>
                                         </div>
-                                        <h3 class="product-name">Handmade Golden Necklace Full Family Package</h3>
+                                        <h3 class="product-name">{{ $product_detail->name }}</h3>
                                         <div class="price-box">
-                                            <span class="price-regular">$70.00</span>
-                                            <span class="price-old"><del>$90.00</del></span>
+                                            <span class="price-regular">₹{{ number_format($product_detail->mrp, 2) }}</span>
+                                            <span class="price-old"><del>₹{{ number_format($product_detail->price, 2) }}</del></span>
                                         </div>
-                                        <div class="availability">
-                                            <i class="fa fa-check-circle"></i>
-                                            <span>In stock</span>
-                                        </div>
-                                        <p class="pro-desc">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-                                            eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-                                            voluptua. Phasellus id nisi quis justo tempus mollis sed et dui. In hac
-                                            habitasse platea dictumst.</p>
-                                        <div class="quantity-cart-box d-flex align-items-center">
-                                            <h6 class="option-title">qty:</h6>
-                                            <div class="quantity">
-                                                <div class="pro-qty"><input type="text" value="1"></div>
-                                            </div>
-                                        </div>
-                                        <div class="pro-size">
-                                            <h6 class="option-title">size :</h6>
-                                            <select class="nice-select">
-                                                <option>S</option>
-                                                <option>M</option>
-                                                <option>L</option>
-                                                <option>XL</option>
-                                            </select>
-                                        </div>                                        
-                                        <div class="action_link">
-                                            <a class="btn btn-cart2" href="#">Add to cart</a>
-                                        </div>
+                                        <p class="pro-desc">{{$product_detail->long_desc}}</p>
                                     </div>
                                 </div>
                             </div>
