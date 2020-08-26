@@ -93,7 +93,7 @@
                                             <!-- product grid start -->
                                             <div class="product-item">
                                                 <figure class="product-thumb">
-                                                    <a href="{{route('web.product.product-detail')}}">
+                                                    <a href="{{route('web.product.product-detail', ['id' => encrypt($product->id)])}}">
                                                         <img class="pri-img" src="{{asset('web/img/product/'.$product->main_image)}}" alt="product">
                                                     </a>
                                                     <div class="cart-hover">
@@ -102,7 +102,7 @@
                                                 </figure>
                                                 <div class="product-caption text-center">
                                                     <h6 class="product-name">
-                                                        <a href="{{route('web.product.product-detail')}}">{{ $product->name }}</a>
+                                                        <a href="{{route('web.product.product-detail', ['id' => encrypt($product->id)])}}">{{ $product->name }}</a>
                                                     </h6>
                                                     <div class="price-box">
                                                         <span class="price-regular">₹{{ number_format($product->mrp, 2) }}</span>
