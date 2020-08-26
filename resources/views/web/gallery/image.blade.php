@@ -1,0 +1,90 @@
+@extends('web.templet.master')
+
+@section('seo')
+    <link href="https://cdn.rawgit.com/sachinchoolur/lightgallery.js/master/dist/css/lightgallery.css" rel="stylesheet">
+    <link href="{{asset('web/css/lightgallery.css')}}" rel="stylesheet">
+@endsection
+
+@section('content')
+    
+    <main>
+        <!-- breadcrumb area start -->
+        <div class="breadcrumb-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="breadcrumb-wrap">
+                            <nav aria-label="breadcrumb">
+                                <ul class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="index.html"><i class="fa fa-home"></i></a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Image Gallery</li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- breadcrumb area end -->
+
+        <!-- login register wrapper start -->
+        <div class="login-register-wrapper section-padding">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <!-- section title start -->
+                        <div class="section-title text-center">
+                            <h2 class="title">Image Gallery</h2>
+                        </div>
+                        <!-- section title start -->
+                    </div>
+                </div>
+                <div class="member-area-from-wrap">
+                    <div class="demo-gallery">
+                        <ul id="lightgallery" class="list-unstyled row">
+                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/1-375.jpg 375, img/1-480.jpg 480, img/1.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Fading Light</h4><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
+                                <div class="img-card">
+                                    <a href="">
+                                        <img class="img-responsive" src="{{asset('web/img/product/product-14.jpg')}}" alt="Thumb-1">
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/2-375.jpg 375, img/2-480.jpg 480, img/2.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
+                                <div class="img-card">
+                                    <a href="">
+                                        <img class="img-responsive" src="{{asset('web/img/product/product-15.jpg')}}" alt="Thumb-2">
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/13-375.jpg 375, img/13-480.jpg 480, img/13.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
+                                <div class="img-card">
+                                    <a href="">
+                                        <img class="img-responsive" src="{{asset('web/img/product/product-16.jpg')}}" alt="Thumb-3">
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/4-375.jpg 375, img/4-480.jpg 480, img/4.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
+                                <div class="img-card">
+                                    <a href="">
+                                        <img class="img-responsive" src="{{asset('web/img/product/product-17.jpg')}}" alt="Thumb-4">
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- login register wrapper end -->
+    </main>
+@endsection
+
+@section('script') 
+        <script src="https://cdn.jsdelivr.net/picturefill/2.3.1/picturefill.min.js"></script>
+        <script src="https://cdn.rawgit.com/sachinchoolur/lightgallery.js/master/dist/js/lightgallery.js"></script>
+        <script src="https://cdn.rawgit.com/sachinchoolur/lg-pager.js/master/dist/lg-pager.js"></script>
+        <script src="https://cdn.rawgit.com/sachinchoolur/lg-fullscreen.js/master/dist/lg-fullscreen.js"></script>
+        <script>
+            lightGallery(document.getElementById('lightgallery'));
+        </script>
+@endsection

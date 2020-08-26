@@ -84,9 +84,8 @@
                                             </li>
                                             <li><a href="blog-left-sidebar.html">Gallery <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
-                                                    <li><a href="{{route('web.index')}}">Image Gallery</a></li>
-                                                    <li><a href="{{route('web.index')}}">Video Gallery</a></li>
-                                                    <li><a href="{{route('web.index')}}">Event Gallery</a></li>
+                                                    <li><a href="{{route('web.gallery.image')}}">Image Gallery</a></li>
+                                                    <li><a href="{{route('web.gallery.video')}}">Video Gallery</a></li>
                                                 </ul>
                                             </li>
                                             <li><a href="{{route('web.login')}}">Login</a></li>

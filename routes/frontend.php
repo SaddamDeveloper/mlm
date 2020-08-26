@@ -43,3 +43,13 @@ Route::get('/product-list', 'Web\WebsiteController@productList')->name('web.prod
 
 // =========== product-detail ============= 
 Route::get('/product-detail/{id}', 'Web\WebsiteController@productDetail')->name('web.product.product-detail');
+
+// =========== Image ============= 
+Route::get('/image', function () {
+    return view('web.gallery.image');
+})->name('web.gallery.image');
+
+// =========== Video ============= 
+Route::get('/video', function () {
+    return view('web.gallery.video');
+})->name('web.gallery.video');

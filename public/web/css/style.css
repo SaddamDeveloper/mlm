@@ -1055,8 +1055,8 @@ textarea:focus {
 
 @media only screen and (max-width: 767.98px) {
     .section-padding {
-        padding-top: 63px;
-        padding-bottom: 63px;
+        padding-top: 25px;
+        padding-bottom: 25px;
     }
 }
 
@@ -1682,7 +1682,7 @@ textarea:focus {
 }
 
 .sticky.is-sticky .logo img {
-    width: 60%;
+    width: 30%;
 }
 
 /*------ sticky menu style end ------*/
@@ -1773,7 +1773,7 @@ textarea:focus {
 }
 
 .mobile-logo {
-    max-width: 140px;
+    max-width: 50px;
     width: 100%;
 }
 
@@ -2481,7 +2481,7 @@ textarea:focus {
 
 @media only screen and (max-width: 575.98px) {
     .hero-slider-item {
-        height: 350px;
+        height: 117px;
     }
 }
 
@@ -2609,7 +2609,7 @@ textarea:focus {
     height: 100%;
     content: "";
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgb(255 255 255 / 0%);
     display: none;
 }
 

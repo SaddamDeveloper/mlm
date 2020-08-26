@@ -325,7 +325,8 @@
     <!-- google map active js -->
     <script src="{{asset('web/js/plugins/google-map.js')}}"></script>
     <!-- Main JS -->
-    <script src="{{asset('web/js/main.js')}}"></script>
+    <script src="{{asset('web/js/main.js')}}"></script>    
+    <script src="https://f.vimeocdn.com/js/froogaloop2.min.js"></script>
     <script>
         $(document).ready(function () {
             function fetch_product_data(id){
@@ -362,7 +363,8 @@
                     fetch_product_data(id);
                 });
             });
-    </script>
+    </script>    
+	@yield('seo')
 </body>
 
 
