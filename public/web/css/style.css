@@ -33,8 +33,11 @@ body {
     font-weight: 400;
     font-family: "Lato", sans-serif;
 }
-.invalid-feedback {
-    display: block !important;
+main {
+  background:url('../img/patt.jpg');
+}
+.invalid-feedback{
+  display: block !important;
 }
 a {
     -webkit-transition: 0.4s;
@@ -5132,14 +5135,16 @@ blockquote {
 }
 
 .shop-product-wrap.grid-view .product-item {
-    display: block;
-    -webkit-animation-name: zoomIn;
-    animation-name: zoomIn;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
-    padding: 0;
-    padding-bottom: 20px;
-    box-shadow: 2px 1px 5px 0px #efefef;
+  display: block;
+  -webkit-animation-name: zoomIn;
+          animation-name: zoomIn;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  padding: 5px;
+  padding-bottom: 20px;
+  box-shadow: 2px 1px 5px 0px #b1aeae;
+  background: #fff;
+  border-radius: 10px;
 }
 
 .shop-product-wrap.grid-view .product-list-item {

@@ -67,7 +67,7 @@
                                             <li class="active"><a href="{{route('web.about')}}">About </a></li>
                                             <li><a href="blog-left-sidebar.html">Product <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
-                                                    <li><a href="{{ route('web.product') }}">Our Product</a></li>
+                                                    <li><a href="{{route('web.product.product-list')}}">Our Product</a></li>
                                                 </ul>
                                             </li>
 											<li><a href="blog-left-sidebar.html">Other <i class="fa fa-angle-down"></i></a>
