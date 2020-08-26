@@ -76,6 +76,51 @@ class WebsiteController extends Controller
             abort(404);
         }
         $product_detail = ShoppingProduct::find($id);
-        return view('web.product.product-detail', compact('product_detail'));
+        $related_product = ShoppingProduct::orderBy('created_at', 'DESC')->where('status', 1)->where('section', 1)->paginate(10);
+        return view('web.product.product-detail', compact('product_detail', 'related_product'));
+    }
+
+    public function productData(Request $request)
+    {
+        if($request->ajax()){
+            $id = $request->get('id');
+            if(!empty($id)) {
+                $product_data = ShoppingProduct::find($id);
+                $output = '<div class="row">
+                <div class="col-lg-5">
+                    <div class="product-large-slider">
+                        <div class="pro-large-img img-zoom">
+                            <img src="'.asset('web/img/product/'.$product_data->main_image).'" alt="product-details" />
+                        </div>
+                    </div>
+                   
+                </div>
+                <div class="col-lg-7">
+                    <div class="product-details-des">
+                        <div class="manufacturer-name">
+                            <a href="">SSSDREAMLIFE</a>
+                        </div>
+                        <h3 class="product-name">'.$product_data->name.'</h3>
+                        <div class="price-box">
+                            <span class="price-regular">₹'.number_format($product_data->mrp, 2).'</span>
+                            <span class="price-old"><del>₹'.number_format($product_data->price, 2).'</del></span>
+                        </div>
+                        <h5 class="offer-text"><strong>Hurry up</strong>! offer ends in:</h5>
+                        <div class="product-countdown" data-countdown="2022/02/20"></div>
+                        <p class="pro-desc">'.$product_data->long_desc.'</p>
+                        <div class="like-icon">
+                            <a class="facebook" href="#"><i class="fa fa-facebook"></i>like</a>
+                            <a class="twitter" href="#"><i class="fa fa-twitter"></i>tweet</a>
+                            <a class="pinterest" href="#"><i class="fa fa-pinterest"></i>save</a>
+                            <a class="google" href="#"><i class="fa fa-google-plus"></i>share</a>
+                        </div>
+                    </div>
+                </div>
+            </div>';
+            return $output;
+            }else{
+                return 1;
+            }
+        }
     }
 }

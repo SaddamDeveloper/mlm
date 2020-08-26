@@ -116,7 +116,7 @@
                 <div class="modal-body">
                     <!-- product details inner end -->
                     <div class="product-details-inner">
-                        <div class="row">
+                        {{-- <div class="row">
                             <div class="col-lg-5">
                                 <div class="product-large-slider">
                                     <div class="pro-large-img img-zoom">
@@ -204,7 +204,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div> <!-- product details inner end -->
                 </div>
             </div>
@@ -326,6 +326,43 @@
     <script src="{{asset('web/js/plugins/google-map.js')}}"></script>
     <!-- Main JS -->
     <script src="{{asset('web/js/main.js')}}"></script>
+    <script>
+        $(document).ready(function () {
+            function fetch_product_data(id){
+                $.ajaxSetup({
+	                headers: {
+	                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	                }
+	            });
+                $.ajax({
+                    url: "{{route('web.product.data')}}",
+                    method: "GET",
+                    data: {id:id},
+                    success: function(data){
+                        $('.product-details-inner').html(data);
+                        // if(data == 5){
+                        //     $('#member_data').html("<font color='red'>All lags are full! Try with another Sponsor ID</font>").fadeIn( "slow" );
+                        //     $('#sponsorVal').val(data);
+                        //     $("#loading-image").hide();
+                        // }else if(data == 1){
+                        //     $('#member_data').html("<font color='red'>Invalid Sponsor ID!</font>").fadeIn( "slow" );
+                        //     $("#loading-image").hide();
+                        //     $('#sponsorVal').val(data);
+                        // }else{
+                        //     $('#member_data').html(data);
+                        //     $('#sponsorVal').val("200");
+                        //     $("#loading-image").hide();
+                        // }
+                    }
+                });
+            }
+           
+                $("#quick_view").on("show.bs.modal", function (e) {
+                    var id = $(e.relatedTarget).data('target-id');
+                    fetch_product_data(id);
+                });
+            });
+    </script>
 </body>
 
 

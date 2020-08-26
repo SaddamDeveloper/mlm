@@ -29,42 +29,6 @@
                 </div>
                 <!-- single slider item start -->
                 @endforeach
-
-                {{-- <!-- single slider item start -->
-                <div class="hero-single-slide hero-overlay">
-                    <div class="hero-slider-item bg-img" data-bg="{{asset('web/img/slider/home1-slide3.jpg')}}">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="hero-slider-content slide-2">
-                                        <h2 class="slide-title">Diamonds Jewellery<span>Collection</span></h2>
-                                        <h4 class="slide-desc">Shukra Yogam & Silver Power Silver Saving Schemes.</h4>
-                                        <a href="shop.html" class="btn btn-hero">Read More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- single slider item start -->
-
-                <!-- single slider item start -->
-                <div class="hero-single-slide hero-overlay">
-                    <div class="hero-slider-item bg-img" data-bg="{{asset('web/img/slider/home1-slide1.jpg')}}">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="hero-slider-content slide-3">
-                                        <h2 class="slide-title">Grace Designer<span>Jewellery</span></h2>
-                                        <h4 class="slide-desc">Rings, Occasion Pieces, Pandora & More.</h4>
-                                        <a href="shop.html" class="btn btn-hero">Read More</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- single slider item end --> --}}
             </div>
         </section>
         <!-- hero slider area end -->
@@ -96,7 +60,7 @@
                                         <!-- product item start -->
                                         <div class="product-item">
                                             <figure class="product-thumb">
-                                                <a href="product-details.html">
+                                                <a href="{{ route('web.product.product-detail', ['id' => encrypt($pr->id)]) }}">
                                                     <img class="pri-img" src="{{asset('web/img/product/'.$pr->main_image)}}" alt="product">
                                                     <img class="sec-img" src="{{asset('web/img/product/'.$pr->main_image)}}" alt="product">
                                                 </a>
@@ -104,14 +68,11 @@
                                                     <div class="product-label new">
                                                         <span>new</span>
                                                     </div>
-                                                    <div class="product-label discount">
-                                                        <span>10%</span>
-                                                    </div>
                                                 </div>
                                                 <div class="button-group">
                                                     {{-- <a href="wishlist.html" data-toggle="tooltip" data-placement="left" title="Add to wishlist"><i class="pe-7s-like"></i></a> --}}
                                                     {{-- <a href="compare.html" data-toggle="tooltip" data-placement="left" title="Add to Compare"><i class="pe-7s-refresh-2"></i></a> --}}
-                                                    <a href="#" data-toggle="modal" data-target="#quick_view"><span data-toggle="tooltip" data-placement="left" title="Quick View"><i class="pe-7s-search"></i></span></a>
+                                                    <a href="#" data-toggle="modal" data-target-id="{{ $pr->id }}" data-target="#quick_view"><span data-toggle="tooltip" data-placement="left" title="Quick View"><i class="pe-7s-search"></i></span></a>
                                                 </div>
                                                 {{-- <div class="cart-hover">
                                                     <button class="btn btn-cart">add to cart</button>
@@ -136,7 +97,7 @@
                                                     </li>
                                                 </ul> --}}
                                                 <h6 class="product-name">
-                                                    <a href="product-details.html">{{$pr->name}}</a>
+                                                    <a href="{{ route('web.product.product-detail', ['id' => encrypt($pr->id)]) }}">{{$pr->name}}</a>
                                                 </h6>
                                                 <div class="price-box">
                                                     <span class="price-regular">₹{{number_format($pr->price, 2)}}</span>
@@ -267,4 +228,5 @@
 @endsection
 
 @section('script') 
+
 @endsection

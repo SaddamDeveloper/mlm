@@ -16,7 +16,7 @@
                         <div class="breadcrumb-wrap">
                             <nav aria-label="breadcrumb">
                                 <ul class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html"><i class="fa fa-home"></i></a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('web.index') }}"><i class="fa fa-home"></i></a></li>
                                     <li class="breadcrumb-item active" aria-current="page">{{ $product_detail->name }}</li>
                                 </ul>
                             </nav>
@@ -75,7 +75,7 @@
                                 <div class="col-lg-8">
                                     <div class="product-details-des">
                                         <div class="manufacturer-name">
-                                            <a href="product-details.html">HasTech</a>
+                                            <a href="">SSSDREAMLIFE</a>
                                         </div>
                                         <h3 class="product-name">{{ $product_detail->name }}</h3>
                                         <div class="price-box">
@@ -235,115 +235,28 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="product-carousel-4 slick-row-10 slick-arrow-style">
-                            <!-- product item start -->
-                            <div class="product-item">
-                                <figure class="product-thumb">
-                                    <a href="product-details.html">
-                                        <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                    </a>
-                                    <div class="cart-hover">
-                                        <button class="btn btn-cart">add to cart</button>
-                                    </div>
-                                </figure>
-                                <div class="product-caption text-center">
-                                    <h6 class="product-name">
-                                        <a href="product-details.html">Perfect Diamond Jewelry</a>
-                                    </h6>
-                                    <div class="price-box">
-                                        <span class="price-regular">$60.00</span>
-                                        <span class="price-old"><del>$70.00</del></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- product item end -->
-
-                            <!-- product item start -->
-                            <div class="product-item">
-                                <figure class="product-thumb">
-                                    <a href="product-details.html">
-                                        <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                    </a>
-                                    <div class="cart-hover">
-                                        <button class="btn btn-cart">add to cart</button>
-                                    </div>
-                                </figure>
-                                <div class="product-caption text-center">
-                                    <h6 class="product-name">
-                                        <a href="product-details.html">Perfect Diamond Jewelry</a>
-                                    </h6>
-                                    <div class="price-box">
-                                        <span class="price-regular">$60.00</span>
-                                        <span class="price-old"><del>$70.00</del></span>
+                            @if (isset($related_product) && !empty($related_product))
+                            @foreach ($related_product as $rp)
+                                <!-- product item start -->
+                                <div class="product-item">
+                                    <figure class="product-thumb">
+                                        <a href="{{ route('web.product.product-detail', ['id' => encrypt($rp->id)]) }}">
+                                            <img class="pri-img" src="{{asset('web/img/product/'.$rp->main_image)}}" alt="product">
+                                        </a>
+                                    </figure>
+                                    <div class="product-caption text-center">
+                                        <h6 class="product-name">
+                                            <a href="{{ route('web.product.product-detail', ['id' => encrypt($rp->id)]) }}">{{ $rp->name }}</a>
+                                        </h6>
+                                        <div class="price-box">
+                                            <span class="price-regular">₹{{ number_format($product_detail->mrp, 2) }}</span>
+                                            <span class="price-old"><del>₹{{ number_format($product_detail->mrp, 2) }}</del></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <!-- product item end -->
-
-                            <!-- product item start -->
-                            <div class="product-item">
-                                <figure class="product-thumb">
-                                    <a href="product-details.html">
-                                        <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                    </a>
-                                    <div class="cart-hover">
-                                        <button class="btn btn-cart">add to cart</button>
-                                    </div>
-                                </figure>
-                                <div class="product-caption text-center">
-                                    <h6 class="product-name">
-                                        <a href="product-details.html">Perfect Diamond Jewelry</a>
-                                    </h6>
-                                    <div class="price-box">
-                                        <span class="price-regular">$60.00</span>
-                                        <span class="price-old"><del>$70.00</del></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- product item end -->
-
-                            <!-- product item start -->
-                            <div class="product-item">
-                                <figure class="product-thumb">
-                                    <a href="product-details.html">
-                                        <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                    </a>
-                                    <div class="cart-hover">
-                                        <button class="btn btn-cart">add to cart</button>
-                                    </div>
-                                </figure>
-                                <div class="product-caption text-center">
-                                    <h6 class="product-name">
-                                        <a href="product-details.html">Perfect Diamond Jewelry</a>
-                                    </h6>
-                                    <div class="price-box">
-                                        <span class="price-regular">$60.00</span>
-                                        <span class="price-old"><del>$70.00</del></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- product item end -->
-
-                            <!-- product item start -->
-                            <div class="product-item">
-                                <figure class="product-thumb">
-                                    <a href="product-details.html">
-                                        <img class="pri-img" src="{{asset('web/img/product/product-1.jpg')}}" alt="product">
-                                    </a>
-                                    <div class="cart-hover">
-                                        <button class="btn btn-cart">add to cart</button>
-                                    </div>
-                                </figure>
-                                <div class="product-caption text-center">
-                                    <h6 class="product-name">
-                                        <a href="product-details.html">Perfect Diamond Jewelry</a>
-                                    </h6>
-                                    <div class="price-box">
-                                        <span class="price-regular">$60.00</span>
-                                        <span class="price-old"><del>$70.00</del></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- product item end -->
+                                <!-- product item end -->
+                            @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>
