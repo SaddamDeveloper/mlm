@@ -44,10 +44,10 @@
                                 <form class="form-horizontal" method="POST" action="{{ url('/member/login') }}">
                                     {{ csrf_field() }}
                                     <div class="single-input-item">
-                                        <input type="text" name="username" placeholder="Username" required="">
-                                        @if ($errors->has('username'))
+                                        <input type="text" name="login_id" placeholder="Username" required="">
+                                        @if ($errors->has('login_id'))
                                         <span class="help-block">
-                                            <strong>{{ $errors->first('username') }}</strong>
+                                            <strong>{{ $errors->first('login_id') }}</strong>
                                         </span>
                                         @endif
                                     </div>
