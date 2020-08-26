@@ -103,10 +103,10 @@
                                             </div>
                                             <div class="col-md-6 col-sm-6 col-xs-6 mb-3">
                                                 <label for="section">Where to place</label>
-                                                   <select name="section" id="" class="form-control">
+                                                   <select name="section" class="form-control">
                                                        <option value="" selected disabled>--SELECT PLACE--</option>
-                                                       <option value="1" {{old('section') == '1'?'selected':''}}>Lower Section</option>
-                                                       <option value="2" {{old('section') == '2'?'selected':''}}>Upper Section</option>
+                                                       <option value="1" {{old('section') == '1'?'selected':''}}>Upper Section</option>
+                                                       <option value="2" {{old('section') == '2'?'selected':''}}>Lower Section</option>
                                                    </select>
                                                     @if($errors->has('section'))
                                                         <span class="invalid-feedback" role="alert" style="color:red">

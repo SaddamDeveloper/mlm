@@ -11,4 +11,9 @@ class ShoppingCategory extends Model
     protected $fillable = [
         'name', 'parent_id', 'status',
     ];
+
+    public function product()
+    {
+        return $this->hasMany('App\Model\ShoppingProduct', 'category_id', 'id');
+    }
 }

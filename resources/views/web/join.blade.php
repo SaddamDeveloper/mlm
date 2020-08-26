@@ -15,7 +15,7 @@
                             <nav aria-label="breadcrumb">
                                 <ul class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="index.html"><i class="fa fa-home"></i></a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Join Us</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Register</li>
                                 </ul>
                             </nav>
                         </div>
@@ -39,7 +39,7 @@
                                     <!-- My Account Tab Content Start -->
                                     <div class="col-lg-12 col-md-12">
                                         <div class="section-title text-center">
-                                            <h2 class="title">Join Us</h2>
+                                            <h2 class="title">Register</h2>
                                         </div>
                                         <div class="tab-content" id="myaccountContent">
                                             @if (Session::has('message'))
@@ -400,12 +400,12 @@
                                                                 <div class="col-lg-6">
                                                                     <div class="single-input-item">
                                                                         <label for="last-name" class="">Confirm Password</label>
-                                                                        <input type="password" name="password-confirmation"id="last-name" placeholder="Confirm Password" />
-                                                                        @if($errors->has('password-confirmation'))
-                                                                            <span class="invalid-feedback" role="alert" style="color:red">
-                                                                                <strong>{{ $errors->first('password-confirmation') }}</strong>
-                                                                            </span>
-                                                                        @enderror
+                                                                        <input type="password" name="password_confirmation" placeholder="Confirm Password">
+                                                                        @if($errors->has('password_confirmation'))
+                                                                        <span class="invalid-feedback" role="alert" style="color:red">
+                                                                            <strong>{{ $errors->first('password_confirmation') }}</strong>
+                                                                        </span>
+                                                                        @endif
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -32,28 +32,72 @@
                <div class="row">
                    <div class="col-md-12">
                     <div class="section-title text-center">
-                        <h2 class="title">Monthly Dhamaka Bonanza</h2>
+                        <h2 class="title">{{ $month }} Month Dhamaka Bonanza</h2>
                     </div>
                     <table class="table table-bordered">
                         <thead>
                           <tr>
                             <th scope="col">Sl No.</th>
                             <th scope="col">BV</th>
-                            <th scope="col">REWARDS</th>
-                            <th scope="col">IMAGES</th>
+                            <th scope="col">Rank</th>
                             <th scope="col">NAMES</th>
                           </tr>
                         </thead>
                         <tbody>
-                            @for ($i = 0; $i <= 5; $i++)
-                                <tr>
-                                    <td>{{$i+1}}</td>
-                                    <td>10 BV Pairs</td>
-                                    <td>Casserol (2500 ml)</td>
-                                    <td><img src="../web/img/casserol.png" width="65" alt=""></td>
-                                    <td>Saddam Hussain</td>
-                                </tr>
-                            @endfor
+                            @if(isset($rank_achiever) && !empty($rank_achiever))
+                            @php
+                                $count = 1;
+                            @endphp
+                                @foreach ($rank_achiever as $ra)
+                                @if ($ra->activate_pair >= 24 && $ra->activate_pair < 50)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Silver</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 50 && $ra->activate_pair < 200)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Gold</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 200 && $ra->activate_pair < 500)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Pearl</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 500 && $ra->activate_pair < 1000)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Topaz</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @if ($ra->activate_pair >= 1000 && $ra->activate_pair < 1500)
+                                    <tr>
+                                        <td>{{$count}}</td>
+                                        <td>{{ $ra->activate_pair }}</td>
+                                        <td>Ruby (All India Tour)</td>
+                                        <td>{{ $ra->member->full_name }}</td>
+                                    </tr>
+                                @endif
+                                @php
+                                    $count++;
+                                @endphp
+                                @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5" style="text-align: center">No Data Found</td>
+                            </tr>
+                            @endif
                         </tbody>
                       </table>
                    </div>

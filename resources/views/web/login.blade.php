@@ -35,7 +35,13 @@
                         <div class="col-lg-6 mx-auto">
                             <div class="login-reg-form-wrap">
                                 <h5>Sign In</h5>
-                                <form class="form-horizontal" method="POST" action="{{ route('member.doLogin') }}">
+                                @if (Session::has('message'))
+                                <div class="alert alert-success" >{{ Session::get('message') }}</div>
+                                @endif
+                                @if (Session::has('error'))
+                                    <div class="alert alert-danger">{{ Session::get('error') }}</div>
+                                @endif
+                                <form class="form-horizontal" method="POST" action="{{ url('/member/login') }}">
                                     {{ csrf_field() }}
                                     <div class="single-input-item">
                                         <input type="text" name="username" placeholder="Username" required="">
@@ -48,7 +54,7 @@
                                     <div class="single-input-item">
                                         <input type="password" name="password" placeholder="Enter your Password" required="">
                                         @if ($errors->has('password'))
-                                        <span class="help-block">
+                                        <span class="help-block" style="color: red">
                                             <strong>{{ $errors->first('password') }}</strong>
                                         </span>
                                         @endif
@@ -61,7 +67,6 @@
                                                     <label class="custom-control-label" for="rememberMe">Remember Me</label>
                                                 </div>
                                             </div>
-                                            <a href="#" class="forget-pwd">Forget Password?</a>
                                         </div>
                                     </div>
                                     <div class="single-input-item">

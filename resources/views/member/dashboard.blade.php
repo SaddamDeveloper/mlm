@@ -62,40 +62,36 @@
               </div>
             </div>
           </div>
-          {{-- <div class="row top_tiles">
+          <div class="row top_tiles">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
-                <div class="count">179</div>
-                <h3>Left BV</h3>
-                <p>Username</p>
+                <div class="count">{{ number_format($total_income, 2) }}</div>
+                <h3>Total Income</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
                 <div class="icon"><i class="fa fa-comments-o"></i></div>
-                <div class="count">179</div>
-                <h3>Right BV</h3>
-                <p>Joining Date</p>
+                <div class="count">{{ number_format($available_fund->amount, 2) }}</div>
+                <h3>Available Fund</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
                 <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
-                <div class="count">179</div>
-                <h3>Matching BV</h3>
-                <p>Lorem ipsum psdea itgum rixt.</p>
+                <div class="count">0</div>
+                <h3>Left Active</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
                 <div class="icon"><i class="fa fa-check-square-o"></i></div>
-                <div class="count">179</div>
-                <h3>Matching Income</h3>
-                <p>Lorem ipsum psdea itgum rixt.</p>
+                <div class="count">0</div>
+                <h3>Right Active</h3>
               </div>
             </div>
           </div>
-          <div class="row top_tiles">
+          {{-- <div class="row top_tiles">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
                 <div class="count">179</div>

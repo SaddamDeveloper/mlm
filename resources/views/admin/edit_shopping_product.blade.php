@@ -42,7 +42,9 @@
                                             <label for="category">Category</label>
                                                 <select name="category" class="form-control">
                                                     <option value="" selected>--Select Category--</option>
-                                                    <option value="{{$product->category_id}}" {{$product->category_id ? 'selected' : ''}}>{{$product->category_id}}</option>
+                                                    @foreach ($category as $ct)
+                                                        <option value="{{$product->category_id}}" {{$product->category_id == $ct->id ? 'selected' : ''}}>{{$ct->name}}</option>
+                                                    @endforeach
                                                 </select>
                                                 @if($errors->has('category'))
                                                     <span class="invalid-feedback" role="alert" style="color:red">
@@ -53,6 +55,9 @@
                                             <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="main_image">Main Image</label>
                                             <input type="file" class="form-control" name="main_image">
+                                            <div>
+                                                <img src="{{ asset('web/img/product/thumb/'.$product->main_image) }}" alt="photo" width="100">
+                                            </div>
                                                 @if($errors->has('main_image'))
                                                     <span class="invalid-feedback" role="alert" style="color:red">
                                                         <strong>{{ $errors->first('main_image') }}</strong>
@@ -63,7 +68,7 @@
                                         <div class="form-row mb-10">
                                             <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="mrp">MRP</label>
-                                            <input type="text" class="form-control" name="mrp" value="{{old('mrp')}}"  placeholder="Enter The Product MRP">
+                                            <input type="text" class="form-control" name="mrp" value="{{$product->mrp}}"  placeholder="Enter The Product MRP">
                                                 @if($errors->has('mrp'))
                                                     <span class="invalid-feedback" role="alert" style="color:red">
                                                         <strong>{{ $errors->first('mrp') }}</strong>
@@ -72,7 +77,7 @@
                                             </div>                     
                                             <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="price">Price</label>
-                                            <input type="text" class="form-control" name="price" value="{{old('price')}}" placeholder="Enter the Product Price">
+                                            <input type="text" class="form-control" name="price" value="{{$product->price}}" placeholder="Enter the Product Price">
                                                 @if($errors->has('price'))
                                                     <span class="invalid-feedback" role="alert" style="color:red">
                                                         <strong>{{ $errors->first('price') }}</strong>
@@ -81,7 +86,7 @@
                                             </div>                     
                                             <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="short_desc">Short Description</label>
-                                                <textarea class="form-control" name="short_desc" placeholder="Enter Short Description">{{old('short_desc')}}</textarea>
+                                                <textarea class="form-control" name="short_desc" placeholder="Enter Short Description">{{$product->short_desc}}</textarea>
                                                 @if($errors->has('short_desc'))
                                                     <span class="invalid-feedback" role="alert" style="color:red">
                                                         <strong>{{ $errors->first('short_desc') }}</strong>
@@ -92,7 +97,7 @@
                                         <div class="form-row mb-10">
                                             <div class="col-md-6 col-sm-6 col-xs-6 mb-3">
                                                 <label for="long_desc">Long Description</label>
-                                                    <textarea class="form-control" name="long_desc" placeholder="Enter Long description">{{old('long_desc')}}</textarea>
+                                                    <textarea class="form-control" name="long_desc" placeholder="Enter Long description">{{$product->long_desc}}</textarea>
                                                     @if($errors->has('long_desc'))
                                                         <span class="invalid-feedback" role="alert" style="color:red">
                                                             <strong>{{ $errors->first('long_desc') }}</strong>

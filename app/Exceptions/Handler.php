@@ -75,7 +75,7 @@ class Handler extends ExceptionHandler
                 ];
                 return response()->json($response, 200);              
             default:
-                $login = 'admin.login';
+                $login = 'member.login';
                 break;
         }
         return redirect()->guest(route($login));

@@ -1,7 +1,7 @@
 <div class="col-md-3 left_col">
     <div class="left_col scroll-view">
       <div class="navbar nav_title" style="border: 0;">
-        <a href="{{route('member.dashboard')}}" class="site_title"><i class="fa fa-paw"></i> <span>MLM PROJECT MEMBER</span></a>
+        <a href="{{route('member.dashboard')}}" class="site_title"><i class="fa fa-paw"></i> <span>SSSDREAMLIFE</span></a>
       </div>
 
       <div class="clearfix"></div>
@@ -51,11 +51,11 @@
               </ul>
             </li>
             <li><a href="{{route('member.mem_commission_list_form')}}"><i class="fa fa-percent"></i> Income History</a>
-            <li><a href="{{route('member.my_rewards_list_form')}}"><i class="fa fa-percent"></i> Reward History</a>
+            <li><a href="{{route('member.my_rewards_list_form')}}"><i class="fa fa-trophy" aria-hidden="true"></i> Reward History</a>
             </li>
-            <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-credit-card"></i> Wallet</a></li>
+            <li><a href="{{route('member.mem_wallet_list_form')}}"><i class="fa fa-google-wallet" aria-hidden="true"></i> Wallet</a></li>
             <li><a href="{{route('member.payment_request_form')}}"><i class="fa fa-credit-card"></i> Payment Requests</a></li>
-            <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li>
+            {{-- <li><a href="{{route('member.test.form')}}"><i class="fa fa-credit-card"></i> Testing</a></li> --}}
           </ul>
         </div>
       </div>

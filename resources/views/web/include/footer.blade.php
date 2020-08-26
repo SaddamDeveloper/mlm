@@ -15,12 +15,15 @@
                             <div class="widget-title">
                                 <div class="widget-logo">
                                     <a href="index.html">
-                                        <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="brand logo" width="100">
+                                        @php
+                                            $frontend = App\Frotend::first(); 
+                                        @endphp
+                                        <img src="{{asset('web/img/logo/'.$frontend->logo)}}" alt="brand logo" width="100">
                                     </a>
                                 </div>
                             </div>
                             <div class="widget-body">
-                                <p>SSSDREAM LIFE E- COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone. </p>
+                                <p>{{ $frontend->footer_text }} </p>
                             </div>
                         </div>
                     </div>
@@ -30,9 +33,9 @@
                             <div class="widget-body">
                                 <address class="contact-block">
                                     <ul>
-                                        <li><i class="pe-7s-home"></i> 4710-4890 Breckinridge USA</li>
-                                        <li><i class="pe-7s-mail"></i> <a href="mailto:demo@plazathemes.com">demo@yourdomain.com </a></li>
-                                        <li><i class="pe-7s-call"></i> <a href="tel:(012)800456789987">(012) 800 456 789-987</a></li>
+                                        <li><i class="pe-7s-home"></i> {{ $frontend->footer_address }}</li>
+                                        <li><i class="pe-7s-mail"></i> <a href="mailto:{{ $frontend->email }}">{{ $frontend->email }}</a></li>
+                                        <li><i class="pe-7s-call"></i> <a href="tel:(+91){{ $frontend->mobile }}">(+91) {{ $frontend->mobile }}</a></li>
                                     </ul>
                                 </address>
                             </div>
@@ -56,10 +59,10 @@
                         <div class="widget-item">
                             <h6 class="widget-title">Follow Us</h6>
                             <div class="widget-body social-link">
-                                <a href="#"><i class="fa fa-facebook"></i></a>
-                                <a href="#"><i class="fa fa-twitter"></i></a>
-                                <a href="#"><i class="fa fa-instagram"></i></a>
-                                <a href="#"><i class="fa fa-youtube"></i></a>
+                                <a href="{{ $frontend->fb_id }}"><i class="fa fa-facebook"></i></a>
+                                <a href="{{ $frontend->tw_id }}"><i class="fa fa-twitter"></i></a>
+                                <a href="{{ $frontend->insta_id }}"><i class="fa fa-instagram"></i></a>
+                                <a href="{{ $frontend->yt_id }}"><i class="fa fa-youtube"></i></a>
                             </div>
                         </div>
                     </div>

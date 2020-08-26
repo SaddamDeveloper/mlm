@@ -49,8 +49,11 @@
                         <!-- start logo area -->
                         <div class="col-lg-2">
                             <div class="logo">
+                                @php
+                                    $frontend = App\Frotend::first(); 
+                                @endphp
                                 <a href="{{ route('web.index') }}">
-                                    <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="Brand Logo" width="100">
+                                    <img src="{{asset('web/img/logo/'.$frontend->logo)}}" alt="Brand Logo" width="100">
                                 </a>
                             </div>
                         </div>
@@ -89,7 +92,7 @@
                                             <li><a href="{{route('web.login')}}">Login</a></li>
                                             <li><a href="{{route('web.club')}}">Club</a></li>
                                             <li><a href="{{route('web.reward')}}">Reward</a></li>
-                                            <li><a href="{{route('web.join')}}">Join us</a></li>
+                                            <li><a href="{{route('web.join')}}">Register</a></li>
                                             <li><a href="{{ route('web.contact') }}">Contact</a></li>
                                             <li><a href="{{asset('web/img/plan.pptx')}}">Plan</a></li>
                                             <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>

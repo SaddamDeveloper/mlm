@@ -20,9 +20,9 @@ Route::get('/product', 'Web\WebsiteController@product')->name('web.product');
 Route::get('/rank/achiever', 'Web\WebsiteController@rankAchiever')->name('web.rank_achiever');
 Route::get('/reward/achiever', 'Web\WebsiteController@rewardAchiever')->name('web.reward_achiever');
 Route::get('/contact', 'Web\WebsiteController@contact')->name('web.contact');
-
+Route::get('/thanks/{token}', 'Web\WebsiteController@thanks')->name('web.thanks');
 // =========== join-us ============= 
-Route::get('/join-us', function () {
+Route::get('/register', function () {
     return view('web.join');
 })->name('web.join');
 
