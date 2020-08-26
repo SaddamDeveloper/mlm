@@ -65,7 +65,7 @@ class WebsiteController extends Controller
 
     public function productList()
     {
-        $products = ShoppingProduct::where('section', 1)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(10);
+        $products = ShoppingProduct::where('section', 1)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(8);
         return view('web.product.product-list', compact('products'));
     }
     public function productDetail($id)
