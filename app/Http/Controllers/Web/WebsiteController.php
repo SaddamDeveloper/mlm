@@ -14,7 +14,7 @@ class WebsiteController extends Controller
 {
     public function index()
     {
-        $slider = ShoppingSlider::orderBy('created_at', 'DESC')->get();
+        $slider = ShoppingSlider::where('status', 1)->orderBy('created_at', 'DESC')->get();
         $product = ShoppingProduct::where('section', 1)->orderBy('created_at', 'DESC')->get();
         $product1 = ShoppingProduct::where('section', 2)->orderBy('created_at', 'ASC')->get();
         return view('web.index', compact('slider', 'product', 'product1'));
