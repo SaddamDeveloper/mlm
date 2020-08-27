@@ -40,6 +40,7 @@
                 <li><a href="{{route('admin.shopping_slider')}}">Slider List</a></li>
                 <li><a href="{{route('admin.shopping_product')}}">Product List</a></li>
                 <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
+                <li><a href="{{route('admin.gallery')}}">Gallery List</a></li>
                 <li><a href="{{route('admin.info')}}">Frontend Info</a></li>
               </ul>
             </li>

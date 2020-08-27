@@ -133,6 +133,10 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/info/', 'AdminDashboardController@info')->name('admin.info');
     Route::post('/store/info/', 'AdminDashboardController@storeInfo')->name('admin.store_frontend');
     
+    // Gallery Add
+    Route::get('/gallery/', 'AdminDashboardController@gallery')->name('admin.gallery');
+    Route::post('/store/gallery/', 'AdminDashboardController@storeGallery')->name('admin.store_gallery');
+
     
 });
 

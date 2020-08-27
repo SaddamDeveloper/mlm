@@ -24,6 +24,7 @@ use App\PaymentRequest;
 use App\Frotend;
 use Intervention\Image\Facades\Image;
 use App\AdminReward;
+use App\Gallery;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -1115,6 +1116,27 @@ class AdminDashboardController extends Controller
             return back()->with('message', 'Successfully Added Successfully!');
         }
     }
+    public function gallery()
+    {
+        return view('admin.gallery');
+    }
+    public function storeGallery(Request $request)
+    {
+        $this->validate($request, [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+        $gallery = new Gallery;
+        $image = null;
+        if($request->hasfile('photo')){
+            $image_array = $request->file('photo');
+            $image = $this->galleryImageInsert($image_array, $request, 1);
+        }
+        $gallery->photo = $image;
+        $gallery->name = $request->input('name');
+        if($gallery->save()){
+            return redirect()->back()->with('message','Successfully added');
+        }
+    }
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';
         $image_extension = $image->getClientOriginalExtension();
@@ -1128,4 +1150,19 @@ class AdminDashboardController extends Controller
 
         return $image_name;
     }
+    
+    function galleryImageInsert($image, Request $request, $flag){
+        $destination = base_path().'/public/web/img/gallery/';
+        $image_extension = $image->getClientOriginalExtension();
+        $image_name = md5(date('now').time()).$flag.".".$image_extension;
+        $original_path = $destination.$image_name;
+        Image::make($image)->save($original_path);
+        $thumb_path = base_path().'/public/web/img/gallery/thumb/'.$image_name;
+        Image::make($image)
+        ->resize(300, 400)
+        ->save($thumb_path);
+
+        return $image_name;
+    }
+
 }
