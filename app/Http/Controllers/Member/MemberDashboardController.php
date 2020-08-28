@@ -773,7 +773,6 @@ class MemberDashboardController extends Controller
                     <div class="info">
                         <h5>Name : '.$root->member->full_name.'</h5>
                         <h5>Sponsor ID : '.$root->member->login_id.'</h5>
-                        <h5>Tree ID : '.$root->id.'</h5>
                         <h5>Level : '.$level_checking.'</h5>
                     </div>
                 </a>';
@@ -795,7 +794,6 @@ class MemberDashboardController extends Controller
                                 <div class="info">
                                     <h5>Name : '.$first_level_node->member->full_name.'</h5>
                                     <h5>Sponsor ID : '.$first_level_node->member->login_id.'</h5>
-                                    <h5>Tree ID : '.$first_level_node->id.'</h5>
                                     <h5>Level : '.$level_checking.'</h5>
                                 </div>  
                             </a>';
@@ -808,7 +806,6 @@ class MemberDashboardController extends Controller
                                 <div class="info">
                                     <h5>Name : '.$first_level_node->member->full_name.'</h5>
                                     <h5>Sponsor ID : '.$first_level_node->member->login_id.'</h5>
-                                    <h5>Tree ID : '.$first_level_node->id.'</h5>
                                     <h5>Level : '.$level_checking.'</h5>
                                 </div>  
                             </a>';
@@ -832,7 +829,6 @@ class MemberDashboardController extends Controller
                                                 <div class="info">
                                                     <h5>Name : '.$second_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$second_level_node->member->login_id.'</h5>
-                                                    <h5>Tree ID : '.$second_level_node->id.'</h5>
                                                     <h5>Level : '.$level_checking.'</h5>
                                                 </div>  
                                             </a>';
@@ -845,7 +841,6 @@ class MemberDashboardController extends Controller
                                         <div class="info">
                                             <h5>Name : '.$second_level_node->member->full_name.'</h5>
                                             <h5>Sponsor ID : '.$second_level_node->member->login_id.'</h5>
-                                            <h5>Tree ID : '.$second_level_node->id.'</h5>
                                             <h5>Level : '.$level_checking.'</h5>
                                         </div>  
                                     </a>';
@@ -870,7 +865,6 @@ class MemberDashboardController extends Controller
                                                 <div class="info">
                                                     <h5>Name : '.$third_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$third_level_node->member->login_id.'</h5>
-                                                    <h5>Tree ID : '.$third_level_node->id.'</h5>
                                                     <h5>Level : '.$level_checking.'</h5>
                                                 </div>  
                                             </a>';
@@ -883,7 +877,6 @@ class MemberDashboardController extends Controller
                                                 <div class="info">
                                                     <h5>Name : '.$third_level_node->member->full_name.'</h5>
                                                     <h5>Sponsor ID : '.$third_level_node->member->login_id.'</h5>
-                                                    <h5>Tree ID : '.$third_level_node->id.'</h5>
                                                     <h5>Level : '.$level_checking.'</h5>
                                                 </div>  
                                             </a>';
@@ -907,7 +900,6 @@ class MemberDashboardController extends Controller
                                                         <div class="info">
                                                             <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fourth_level_node->member->login_id.'</h5>
-                                                            <h5>Tree ID : '.$fourth_level_node->id.'</h5>
                                                             <h5>Level : '.$level_checking.'</h5>
                                                         </div>  
                                                     </a>';
@@ -920,7 +912,6 @@ class MemberDashboardController extends Controller
                                                     <div class="info">
                                                         <h5>Name : '.$fourth_level_node->member->full_name.'</h5>
                                                         <h5>Sponsor ID : '.$fourth_level_node->member->login_id.'</h5>
-                                                        <h5>Tree ID : '.$fourth_level_node->id.'</h5>
                                                         <h5>Level : '.$level_checking.'</h5>
                                                     </div>  
                                                 </a>';
@@ -944,7 +935,6 @@ class MemberDashboardController extends Controller
                                                             <div class="info">
                                                             <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fifth_level_node->member->login_id.'</h5>
-                                                            <h5>Tree ID : '.$fifth_level_node->id.'</h5>
                                                             <h5>Level : '.$level_checking.'</h5>
                                                             </div>  
                                                             </a>';
@@ -959,7 +949,6 @@ class MemberDashboardController extends Controller
                                                             <div class="info">
                                                             <h5>Name : '.$fifth_level_node->member->full_name.'</h5>
                                                             <h5>Sponsor ID : '.$fifth_level_node->member->login_id.'</h5>
-                                                            <h5>Tree ID : '.$fifth_level_node->id.'</h5>
                                                             <h5>Level : '.$level_checking.'</h5>
                                                             </div>  
                                                             </a>';
@@ -1088,10 +1077,7 @@ class MemberDashboardController extends Controller
     }
 
     public function memberGetEpinList(){
-        $query = DB::table('funds')
-                ->leftjoin('members', 'funds.alloted_to', '=', 'members.id')
-                ->select('funds.*', 'members.full_name as name')
-                ->where('members.id', Auth::user()->id);
+        $query = FundHistory::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC');
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);

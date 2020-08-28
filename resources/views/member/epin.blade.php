@@ -33,11 +33,11 @@
                             <table id="epin_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>Sl. No1</th>
-                                    <th>Fund</th>
-                                    <th>Available Fund</th>
-                                    <th>Alloted To</th>
-                                    <th>Transfered At</th>
+                                    <th>Sl. No</th>
+                                    <th>Amount</th>
+                                    <th>Comment</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
                                 </tr>
                                 </thead>
                                 <tbody>                       
@@ -61,9 +61,15 @@
             ajax: "{{ route('member.ajax.my_epin_list') }}",
             columns: [
                 {data: 'id', name: 'id',searchable: true},
-                {data: 'fund', name: 'fund',searchable: true},
-                {data: 'available_fund', name: 'available_fund' ,searchable: true},                 
-                {data: 'name', name: 'name' ,searchable: true}, 
+                {data: 'amount', name: 'amount',searchable: true},
+                {data: 'comment', name: 'comment' ,searchable: true},                 
+                {data: 'status', name: 'status', render:function(data, type, row){
+                      if (row.status == '1') {
+                        return "<button class='btn btn-success'>Cr</a>"
+                      }else{
+                        return "<button class='btn btn-warning'>Dr</a>"
+                      }                        
+                    }},
                 {data: 'created_at', name: 'created_at' ,searchable: true},  
             ]
         });
