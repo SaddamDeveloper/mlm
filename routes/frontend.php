@@ -22,6 +22,7 @@ Route::get('/reward/achiever', 'Web\WebsiteController@rewardAchiever')->name('we
 Route::get('/contact', 'Web\WebsiteController@contact')->name('web.contact');
 Route::get('/thanks/{token}', 'Web\WebsiteController@thanks')->name('web.thanks');
 Route::get('/product/data', 'Web\WebsiteController@productData')->name('web.product.data');
+Route::get('/category/filter/{id}', 'Web\WebsiteController@categoryFilter')->name('web.category_filter');
 
 // =========== join-us ============= 
 Route::get('/register', function () {

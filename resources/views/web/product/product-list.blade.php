@@ -17,7 +17,7 @@
                             <nav aria-label="breadcrumb">
                                 <ul class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="index.html"><i class="fa fa-home"></i></a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Catagory Name Here</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Product List {{ (isset($products->category->name)) ? $products->category->name : "" }}</li>
                                 </ul>
                             </nav>
                         </div>
@@ -36,12 +36,14 @@
                         <aside class="sidebar-wrapper">
                             <!-- single sidebar start -->
                             <div class="sidebar-single">
-                                <h5 class="sidebar-title">categories</h5>
+                                <h5 class="sidebar-title">Categories</h5>
                                 <div class="sidebar-body">
                                     <ul class="shop-categories">
-                                        <li><a href="#">Cycle <span>(10)</span></a></li>
-                                        <li><a href="#">Immunity Product <span>(5)</span></a></li>
-                                        <li><a href="#">Cloths <span>(8)</span></a></li>
+                                        @if (isset($categories) && !empty($categories))
+                                            @foreach ($categories as $category)
+                                                <li><a href="{{ route('web.category_filter', ['id' => encrypt($category->id)]) }}"> {{ $category->name }} <span>(10)</span></a></li>
+                                            @endforeach
+                                        @endif
                                     </ul>
                                 </div>
                             </div>
@@ -56,14 +58,14 @@
                             <!-- shop product top wrap start -->
                             <div class="shop-top-bar">
                                 <div class="row align-items-center">
-                                    <div class="col-lg-7 col-md-6 order-2 order-md-1">
+                                    {{-- <div class="col-lg-7 col-md-6 order-2 order-md-1">
                                         <div class="top-bar-left">
                                             <div class="product-amount">                                                
                                                 <h5 class="sidebar-title">Categories</h5>
                                                 <p>Showing 1–16 of 21 results</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-lg-5 col-md-6 order-1 order-md-2">
                                         <div class="top-bar-right">
                                             <div class="product-short">

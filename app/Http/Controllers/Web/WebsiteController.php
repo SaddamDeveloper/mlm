@@ -11,6 +11,7 @@ use App\Rewards;
 use Carbon\Carbon;
 use App\Tree;
 use App\Gallery;
+use App\Model\ShoppingCategory;
 class WebsiteController extends Controller
 {
     public function index()
@@ -66,8 +67,9 @@ class WebsiteController extends Controller
 
     public function productList()
     {
+        $categories = ShoppingCategory::orderBy('created_at', 'DESC')->where('status', 1)->take(5)->get();
         $products = ShoppingProduct::where('section', 1)->where('status', 1)->orderBy('created_at', 'DESC')->paginate(8);
-        return view('web.product.product-list', compact('products'));
+        return view('web.product.product-list', compact('products', 'categories'));
     }
     public function productDetail($id)
     {
@@ -78,6 +80,7 @@ class WebsiteController extends Controller
         }
         $product_detail = ShoppingProduct::find($id);
         $related_product = ShoppingProduct::orderBy('created_at', 'DESC')->where('status', 1)->where('section', 1)->paginate(10);
+
         return view('web.product.product-detail', compact('product_detail', 'related_product'));
     }
 
@@ -124,10 +127,21 @@ class WebsiteController extends Controller
             }
         }
     }
-
+    
     public function image()
     {
         $gallery = Gallery::orderBy('created_at', 'DESC')->paginate(8);
         return view('web.gallery.image', compact('gallery'));
+    }
+
+    public function categoryFilter($id)
+    {
+        try {
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $products = ShoppingProduct::orderBy('created_at', 'DESC')->where('status', 1)->where('category_id', $id)->paginate(10);
+        return view('web.product.product-list', compact('products'));
     }
 }
