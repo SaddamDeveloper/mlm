@@ -9,7 +9,7 @@
         <ul class="nav navbar-nav navbar-right">
           <li class="">
             <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-              <img src="{{Auth::user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::user()->photo)}}" alt="">{{Auth::user()->full_name}}
+              <img src="{{Auth::guard('member')->user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::guard('member')->user()->photo)}}" alt="">{{Auth::guard('member')->user()->full_name}}
               <span class=" fa fa-angle-down"></span>
             </a>
             <ul class="dropdown-menu dropdown-usermenu pull-right">

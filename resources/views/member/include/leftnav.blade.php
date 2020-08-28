@@ -9,11 +9,11 @@
       <!-- menu profile quick info -->
       <div class="profile clearfix">
         <div class="profile_pic">
-          <img src="{{Auth::user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::user()->photo)}}" alt="..." class="img-circle profile_img">
+          <img src="{{Auth::guard('member')->user()->photo == NULL ? asset('admin/production/images/img.jpg') : asset('admin/production/images/'.Auth::guard('member')->user()->photo)}}" alt="..." class="img-circle profile_img">
         </div>
         <div class="profile_info">
           <span>Welcome,</span>
-          <h2>{{Auth::user()->full_name}}</h2>
+          <h2>{{Auth::guard('member')->user()->full_name}}</h2>
         </div>
       </div>
       <!-- /menu profile quick info -->

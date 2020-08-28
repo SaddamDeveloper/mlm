@@ -26,8 +26,8 @@ class MemberActivationController extends Controller
 
     public function memberAddActivation()
     {
-        $member = Member::where('id', Auth::user()->id)->first();
-        $fund = TotalFund::where('user_id', Auth::user()->id)->first();
+        $member = Member::where('id', Auth::guard('member')->user()->id)->first();
+        $fund = TotalFund::where('user_id', Auth::guard('member')->user()->id)->first();
         $package = AdminPackage::orderBy('created_at', 'ASC')->get();
         return view('member.activation', compact('member', 'fund', 'package'));
     }
@@ -50,8 +50,8 @@ class MemberActivationController extends Controller
                             $package = new Package;
                             $package->package_name = $package_name;
                             $package->login_id = $member_id;
-                            $package->added_by = Auth::user()->full_name;
-                            $funds = TotalFund::where('user_id', Auth::user()->id)->first();
+                            $package->added_by = Auth::guard('member')->user()->full_name;
+                            $funds = TotalFund::where('user_id', Auth::guard('member')->user()->id)->first();
                             $total_bv = 0;
                             if($package_name == 1){
                                 $total_bv = 1;
@@ -69,13 +69,13 @@ class MemberActivationController extends Controller
 
                             if($funds->amount >= $p_price->price && $total_bv > 0){
                                 $fund = DB::table('total_funds')
-                                ->where('user_id', Auth::user()->id)
+                                ->where('user_id', Auth::guard('member')->user()->id)
                                 ->update([
                                     'amount' => ($funds->amount - $p_price->price),
                                 ]);
                                 $fund_history = new FundHistory;
                                 $fund_history->amount = $p_price->price;
-                                $fund_history->user_id = Auth::user()->id;
+                                $fund_history->user_id = Auth::guard('member')->user()->id;
                                 $fund_history->comment = "Rs $p_price->price Fund has been debited";
                                 $fund_history->status = "2";
                                 $fund_history->save();
@@ -182,7 +182,7 @@ class MemberActivationController extends Controller
     public function distributorDetails(Request $request)
     {
         if($request->ajax()){
-            $query = Package::orderBy('id','desc')->where('added_by', Auth::user()->full_name);
+            $query = Package::orderBy('id','desc')->where('added_by', Auth::guard('member')->user()->full_name);
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->addColumn('package_name', function($row){
