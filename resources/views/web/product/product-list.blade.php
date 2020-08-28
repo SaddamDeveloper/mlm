@@ -5,8 +5,6 @@
 @endsection
 
 @section('content')
-    
-
     <main>
         <!-- breadcrumb area start -->
         <div class="breadcrumb-area">
@@ -41,7 +39,7 @@
                                     <ul class="shop-categories">
                                         @if (isset($categories) && !empty($categories))
                                             @foreach ($categories as $category)
-                                                <li><a href="{{ route('web.category_filter', ['id' => encrypt($category->id)]) }}"> {{ $category->name }} <span>(10)</span></a></li>
+                                                <li><a href="{{ route('web.category_filter', ['id' => encrypt($category->id)]) }}"> {{ $category->name }}</a></li>
                                             @endforeach
                                         @endif
                                     </ul>

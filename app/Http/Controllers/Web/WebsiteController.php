@@ -144,4 +144,9 @@ class WebsiteController extends Controller
         $products = ShoppingProduct::orderBy('created_at', 'DESC')->where('status', 1)->where('category_id', $id)->paginate(10);
         return view('web.product.product-list', compact('products'));
     }
+
+    public function legalDocs()
+    {
+        return view('web.legal');
+    }
 }

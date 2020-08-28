@@ -75,7 +75,7 @@
                                             </li>
 											<li><a href="blog-left-sidebar.html">Other <i class="fa fa-angle-down"></i></a>
 												<ul class="dropdown">
-													<li><a href="">Legal</a></li>
+													<li><a href="{{route('web.legal')}}">Legal</a></li>
 													<li><a href="">Certification</a></li>
 													<li><a href="">Bank Details</a></li>
 													<li><a href="">Grievance Cell</a></li>
