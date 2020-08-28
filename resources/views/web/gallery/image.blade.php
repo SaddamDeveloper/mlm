@@ -42,34 +42,17 @@
                 <div class="member-area-from-wrap">
                     <div class="demo-gallery">
                         <ul id="lightgallery" class="list-unstyled row">
-                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/1-375.jpg 375, img/1-480.jpg 480, img/1.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Fading Light</h4><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
-                                <div class="img-card">
-                                    <a href="">
-                                        <img class="img-responsive" src="{{asset('web/img/product/product-14.jpg')}}" alt="Thumb-1">
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/2-375.jpg 375, img/2-480.jpg 480, img/2.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
-                                <div class="img-card">
-                                    <a href="">
-                                        <img class="img-responsive" src="{{asset('web/img/product/product-15.jpg')}}" alt="Thumb-2">
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/13-375.jpg 375, img/13-480.jpg 480, img/13.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
-                                <div class="img-card">
-                                    <a href="">
-                                        <img class="img-responsive" src="{{asset('web/img/product/product-16.jpg')}}" alt="Thumb-3">
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/4-375.jpg 375, img/4-480.jpg 480, img/4.jpg 800" data-src="{{asset('web/img/product/product-14.jpg')}}" data-sub-html="<h4>Bowness Bay</h4><p>A beautiful Sunrise this morning taken En-route to Keswick not one as planned but I'm extremely happy I was passing the right place at the right time....</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
-                                <div class="img-card">
-                                    <a href="">
-                                        <img class="img-responsive" src="{{asset('web/img/product/product-17.jpg')}}" alt="Thumb-4">
-                                    </a>
-                                </div>
-                            </li>
+                            @if (isset($gallery) && !empty($gallery))
+                                @foreach ($gallery as $gl)
+                                    <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/1-375.jpg 375, img/1-480.jpg 480, img/1.jpg 800" data-src="{{asset('web/img/gallery/'.$gl->photo)}}" data-sub-html="<h4>Fading Light</h4><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
+                                        <div class="img-card">
+                                            <a href="">
+                                                <img class="img-responsive" src="{{asset('web/img/gallery/'.$gl->photo)}}" alt="Thumb-1">
+                                            </a>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @endif
                         </ul>
                     </div>
                 </div>

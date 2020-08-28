@@ -29,12 +29,8 @@
                                 <div class="well" style="overflow: auto">
                                     <div class="form-row mb-10">
                                         <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
-                                            <label for="name">Gallery Name</label>
-                                            <input type="text" class="form-control" name="name" placeholder="Enter Gallery Name">
-                                        </div>                     
-                                        <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
                                             <label for="photo">Photo</label>
-                                            <input type="file" class="form-control" name="photo[]" multiple>
+                                            <input type="file" class="form-control" name="photo">
                                             @if($errors->has('photo'))
                                                 <span class="invalid-feedback" role="alert" style="color:red">
                                                     <strong>{{ $errors->first('photo') }}</strong>
@@ -49,7 +45,7 @@
                                     {{ Form::close() }}
                             </div>
                             <div class="table-responsive">
-                                <table class="table table-striped jambo_table bulk_action">
+                                <table class="table table-striped jambo_table bulk_action" id="gallery_list">
                                     <thead>
                                         <tr class="headings">                
                                             <th class="column-title">Sl No. </th>
@@ -69,4 +65,21 @@
         </div>
 </div>
 <!-- /page content -->
+@endsection
+@section('script')
+ <script type="text/javascript">
+     $(function () {
+        var table = $('#gallery_list').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.ajax.get_gallery_list') }}",
+            columns: [
+                {data: 'id', name: 'id',searchable: true},
+                {data: 'photo', name: 'photo',searchable: true},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+        });
+        
+    });
+ </script>
 @endsection

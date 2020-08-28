@@ -1132,11 +1132,26 @@ class AdminDashboardController extends Controller
             $image = $this->galleryImageInsert($image_array, $request, 1);
         }
         $gallery->photo = $image;
-        $gallery->name = $request->input('name');
         if($gallery->save()){
             return redirect()->back()->with('message','Successfully added');
         }
     }
+
+    public function galleryList()
+    {
+        $query = Gallery::orderBy('created_at', 'DESC');
+        return datatables()->of($query->get())
+        ->addIndexColumn()
+        ->addColumn('action', function($row){
+            $btn = '
+                <a href="#" class="btn btn-warning btn-sm" target="_blank"><i class="fa fa-pencil"></i></a>              
+            ';
+            return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true);
+    }
+    
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';
         $image_extension = $image->getClientOriginalExtension();

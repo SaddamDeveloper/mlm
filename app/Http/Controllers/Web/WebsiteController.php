@@ -10,6 +10,7 @@ use App\Frotend;
 use App\Rewards;
 use Carbon\Carbon;
 use App\Tree;
+use App\Gallery;
 class WebsiteController extends Controller
 {
     public function index()
@@ -122,5 +123,11 @@ class WebsiteController extends Controller
                 return 1;
             }
         }
+    }
+
+    public function image()
+    {
+        $gallery = Gallery::orderBy('created_at', 'DESC')->paginate(8);
+        return view('web.gallery.image', compact('gallery'));
     }
 }

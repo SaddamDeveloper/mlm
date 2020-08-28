@@ -136,8 +136,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Gallery Add
     Route::get('/gallery/', 'AdminDashboardController@gallery')->name('admin.gallery');
     Route::post('/store/gallery/', 'AdminDashboardController@storeGallery')->name('admin.store_gallery');
-
-    
+    Route::get('/gallery/list/', 'AdminDashboardController@galleryList')->name('admin.ajax.get_gallery_list');
 });
 
 
