@@ -1100,7 +1100,7 @@ class MemberDashboardController extends Controller
         You are successfully registered with SSSDREAM LIFE E-COMMERCE PVT LTD
         Your User ID: $login_id
         Password: $password
-        Website: http://sssdreamlife.net.in/member/login";   
+        Website: http://sssdreamlife.net.in/";   
 
         $username="bibibobi";
         $api_password="9aea6n725bb8uegi3";

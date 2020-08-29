@@ -55,40 +55,46 @@
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->login_id}}
                       </li>
                       <li>
-                        <i class="fa fa-briefcase user-profile-icon"></i> {{$member->sponsorID}}
-                      </li>
-                      <li>
                         <i class="fa fa-envelope-o user-profile-icon"></i> {{$member->email}}
                       </li>
                       <li>
                         <i class="fa fa-mobile user-profile-icon"></i> {{$member->mobile}}
                       </li>
+                      @if(!empty($member->dob))
                       <li>
                         <i class="fa fa-birthday-cake user-profile-icon"></i> {{$member->dob}}
                       </li>
+                      @endif
+                      @if(!empty($member->pan))
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->pan}}
                       </li>
+                      @endif
+                      @if(!empty($member->aadhar))
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->aadhar}}
                       </li>
+                      @endif
+                      @if(!empty($member->address))
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->address}}
                       </li>
+                      @endif
+                      @if(!empty($member->bank))
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->bank}}
                       </li>
+                      @endif
+                      @if(!empty($member->ac_holder_name))
                       <li>
                         <i class="fa fa-user user-profile-icon"></i> {{$member->ac_holder_name}}
                       </li>
+                      @endif
                       <li>
                         <i class="fa fa-briefcase user-profile-icon"></i> {{$member->ifsc}}
                       </li>
                       <li>
                         <i class="fa fa-credit-card user-profile-icon"></i> {{$member->account_no}}
-                      </li>
-                      <li>
-                        <i class="fa fa-briefcase user-profile-icon"></i> SILVER LEVEL
                       </li>
 
                       <li class="m-top-xs">
