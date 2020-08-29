@@ -35,7 +35,7 @@ class MemberDashboardController extends Controller
     }
     public function index()
     {
-        $user_info = Auth::user();
+        $user_info = Auth::guard('member')->user();
         $direct_member = Tree::where('registered_by', $user_info->id)->count();
         $tree = Tree::where('user_id', $user_info->id)->first();
         $total_left = $tree->total_left_count;
@@ -119,7 +119,7 @@ class MemberDashboardController extends Controller
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
                                         $chk_lock->save();
-                                        if(Auth::check()){
+                                        if(Auth::guard('member')->check() == TRUE){
                                             return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                                         }else{
                                             return redirect()->route('web.thanks',['token' =>encrypt($token)]);
@@ -140,7 +140,7 @@ class MemberDashboardController extends Controller
                                         $chk_lock = ManualLock::find(1);
                                         $chk_lock->joining = 1;
                                         $chk_lock->save();
-                                        if(Auth::check()){
+                                        if(Auth::guard('member')->check() == TRUE){
                                             return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                                         }else{
                                             return redirect()->route('web.thanks',['token' =>encrypt($token)]);
@@ -261,15 +261,15 @@ class MemberDashboardController extends Controller
                 ->update([
                     'sponsorID' =>  $generatedID,
                 ]);
-                $this->sendSms($fullName, $mobile, $login_id, $password);
+                // $this->sendSms($fullName, $mobile, $login_id, $password);
                 $sponsor = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                 //Fetch Tree Data Using User ID
                 $sponsor_tree = DB::table('trees')
                     ->where('user_id', $sponsor->id)
                     ->lockForUpdate()->first();
                 
-                if(Auth::check()){
-                    $registerdBY = Auth::user()->id;
+                if(Auth::guard('member')->check()){
+                    $registerdBY = Auth::guard('member')->user()->id;
                 }else {
                     $registerdBY = $sponsor->id;
                 }
@@ -291,7 +291,7 @@ class MemberDashboardController extends Controller
                         //     'user_id' => $member_insert,
                         //     'parent_id' => $sponsor_tree->id,
                         //     'parent_leg' => 'L',
-                        //     'registered_by' => Auth::user()->id,
+                        //     'registered_by' => Auth::guard('member')->user()->id,
                         //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         // ]);
 
@@ -307,7 +307,7 @@ class MemberDashboardController extends Controller
                     if (empty($sponsor_tree->right_id)) {
                         // Direct Referaal
                         $lag = "R";
-                        $insert_id =DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
+                        $insert_id = DB::select("call directJoin(?,?,?,?)",array($sponsor_tree->id,$lag, $member_insert, $registerdBY));
                         $tree_insert = $insert_id[0]->InsertedIds;
                         $status = $insert_id[0]->sts;
                         if($status == FALSE){
@@ -317,7 +317,7 @@ class MemberDashboardController extends Controller
                         // ->insertGetId([
                         //     'user_id' => $member_insert,
                         //     'parent_id' => $sponsor_tree->id,
-                        //     'registered_by' => Auth::user()->id,
+                        //     'registered_by' => Auth::guard('member')->user()->id,
                         //     'parent_leg' => 'R',
                         //     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                         // ]);
@@ -628,7 +628,7 @@ class MemberDashboardController extends Controller
            WHERE find_in_set(parent_id, @iv)
            AND length(@iv := concat(@iv, ',', id))"),
             array(
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::guard('member')->user()->id,
                 )))
             ->addIndexColumn()
             ->addColumn('sponsorID', function($row){
@@ -740,7 +740,7 @@ class MemberDashboardController extends Controller
                 abort(404);
             }
         }else{
-            $user_id = Auth::user()->id;
+            $user_id = Auth::guard('member')->user()->id;
         }
         if (empty($rank)) {
             $rank = 0;
@@ -1035,7 +1035,7 @@ class MemberDashboardController extends Controller
 
     public function memberWalletListForm(){
         $wallet = DB::table('wallets')
-            ->where('user_id', Auth::user()->id)
+            ->where('user_id', Auth::guard('member')->user()->id)
             ->first();
         $amount = $wallet->amount;
         return view('member.wallet', compact('amount'));
@@ -1045,7 +1045,7 @@ class MemberDashboardController extends Controller
         $query = DB::table('commission_histories')
         ->leftjoin('members', 'commission_histories.user_id', '=', 'members.id')
         ->select('commission_histories.*', 'members.full_name as user_name')
-        ->where('members.id', Auth::user()->id);
+        ->where('members.id', Auth::guard('member')->user()->id);
         return datatables()->of($query->get())
             ->addIndexColumn()
             ->addColumn('amount', function($row){
@@ -1065,31 +1065,31 @@ class MemberDashboardController extends Controller
     public function ajaxGetWalletHistory(){
         $query = DB::table('wallet_histories')
             ->orderBy('id','desc')
-            ->where('user_id', Auth::user()->id);
+            ->where('user_id', Auth::guard('member')->user()->id);
         return datatables()->of($query->get())
         ->addIndexColumn()
         ->make(true);
     }
 
     public function memberEpinListForm(){
-        $total_fund = TotalFund::where('user_id', Auth::user()->id)->first();
+        $total_fund = TotalFund::where('user_id', Auth::guard('member')->user()->id)->first();
         return view('member.epin', compact('total_fund'));
     }
 
     public function memberGetEpinList(){
-        $query = FundHistory::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC');
+        $query = FundHistory::where('user_id', Auth::guard('member')->user()->id)->orderBy('created_at', 'DESC');
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);
     }
     
     public function memberFundHistoryForm(){
-        $fund_history = FundHistory::where('user_id', Auth::user()->id)->first();
+        $fund_history = FundHistory::where('user_id', Auth::guard('member')->user()->id)->first();
         return view('member.fund_history', compact('fund_history'));
     }
     public function memberGetFundHistory()
     {
-        $query = DB::table('fund_histories')->where('user_id', Auth::user()->id);
+        $query = DB::table('fund_histories')->where('user_id', Auth::guard('member')->user()->id);
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);
@@ -1161,11 +1161,11 @@ class MemberDashboardController extends Controller
             'fund_transfer'     => 'required'
         ]);
         $fund_transfer_amount = $request->input('fund_transfer');
-        $fetch_wallet = Wallet::where('user_id', Auth::user()->id)->first();
+        $fetch_wallet = Wallet::where('user_id', Auth::guard('member')->user()->id)->first();
         if($fetch_wallet->amount >= $fund_transfer_amount && $fetch_wallet->amount > 0){
               // Wallet Insert
             $wallet_update = DB::table('wallets') 
-                    ->where('user_id', Auth::user()->id)
+                    ->where('user_id', Auth::guard('member')->user()->id)
                     ->update([
                         'amount' => DB::raw("`amount`-".($fund_transfer_amount)),
                     ]);
@@ -1173,7 +1173,7 @@ class MemberDashboardController extends Controller
             $update_wallet_history = DB::table('wallet_histories')
                 ->insertGetId([
                     'wallet_id' =>  $fetch_wallet->id,
-                    'user_id'   => Auth::user()->id,
+                    'user_id'   => Auth::guard('member')->user()->id,
                     'transaction_type'  =>  2,
                     'amount' => $fund_transfer_amount,
                     'total_amount'  => $fetch_wallet->amount,
@@ -1181,12 +1181,12 @@ class MemberDashboardController extends Controller
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
 
-            $fetch_fund = Fund::where('alloted_to', Auth::user()->id)->first();
+            $fetch_fund = Fund::where('alloted_to', Auth::guard('member')->user()->id)->first();
             $update_fund = DB::table('funds')
                 ->insertGetId([
                     'fund' =>  $fund_transfer_amount,
                     'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
-                    'alloted_to'  =>  Auth::user()->id,
+                    'alloted_to'  =>  Auth::guard('member')->user()->id,
                     'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
                     'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
@@ -1197,7 +1197,7 @@ class MemberDashboardController extends Controller
     }
 
     public function profile(){
-        $member = Member::findOrFail(Auth::user()->id);
+        $member = Member::findOrFail(Auth::guard('member')->user()->id);
         return view('member.profile', compact('member'));
     }
     public function changePasswordPage()
@@ -1211,7 +1211,7 @@ class MemberDashboardController extends Controller
             'new-password' => 'required|string|min:6|confirmed',
         ]);
 
-        if (!(Hash::check($request->get('current-password'), Auth::user()->password))) {
+        if (!(Hash::check($request->get('current-password'), Auth::guard('member')->user()->password))) {
             // The passwords matches
             return redirect()->back()->with('error','Your current password does not matches with the password you provided. Please try again.');
         }
@@ -1223,7 +1223,7 @@ class MemberDashboardController extends Controller
 
 
         //Change Password
-        $user = Auth::user();
+        $user = Auth::guard('member')->user();
         $user->password = bcrypt($request->get('new-password'));
         $user->save();
 
@@ -1232,7 +1232,7 @@ class MemberDashboardController extends Controller
     }
     public function accountUpdatePage()
     {
-        $member = Member::findOrFail(Auth::user()->id);
+        $member = Member::findOrFail(Auth::guard('member')->user()->id);
         return view('member.account', compact('member'));
     }
 
@@ -1246,7 +1246,7 @@ class MemberDashboardController extends Controller
             'account_no'    =>  'required',
         ]);
         
-        $member = Member::find(Auth::user()->id);
+        $member = Member::find(Auth::guard('member')->user()->id);
         $member->full_name = $request->input('member_name');
         $member->mobile = $request->input('mobile');
         $member->email = $request->input('email');
@@ -1308,7 +1308,7 @@ class MemberDashboardController extends Controller
             $image = $this->ImageInsert($image_array, $request, 1);
         }
         $fund_request->attachment = $image;
-        $fund_request->added_by = Auth::user()->full_name;
+        $fund_request->added_by = Auth::guard('member')->user()->full_name;
         if($fund_request->save()){
             return redirect()->back()->with('message', 'Successfully Requested!');
         }else{
@@ -1355,7 +1355,7 @@ class MemberDashboardController extends Controller
     }
     public function memberPaymentRequestForm()
     {
-        $wallet_bal = Wallet::where('user_id', Auth::user()->id)->value('amount');
+        $wallet_bal = Wallet::where('user_id', Auth::guard('member')->user()->id)->value('amount');
         return view('member.payment_request', compact('wallet_bal'));
     }
     public function ajaxGetPaymentRequest()
@@ -1368,10 +1368,10 @@ class MemberDashboardController extends Controller
         $this->validate($request, [
             'withdraw' => 'required|numeric'
         ]);
-        $fetch_wallet = Wallet::where('user_id', Auth::user()->id)->first();
+        $fetch_wallet = Wallet::where('user_id', Auth::guard('member')->user()->id)->first();
         if($fetch_wallet->amount > $request->input('withdraw') && $request->input('withdraw') >= 500){
             $wallet_update = DB::table('wallets') 
-            ->where('user_id', Auth::user()->id)
+            ->where('user_id', Auth::guard('member')->user()->id)
             ->update([
                 'amount' => DB::raw("`amount`-".($request->input('withdraw'))),
             ]);
@@ -1379,7 +1379,7 @@ class MemberDashboardController extends Controller
         $update_wallet_history = DB::table('wallet_histories')
           ->insertGetId([
               'wallet_id' =>  $fetch_wallet->id,
-              'user_id'   => Auth::user()->id,
+              'user_id'   => Auth::guard('member')->user()->id,
               'transaction_type'  =>  2,
               'amount' =>$request->input('withdraw'),
               'total_amount'  => $fetch_wallet->amount,
@@ -1390,7 +1390,7 @@ class MemberDashboardController extends Controller
         $payment_requests = DB::table('payment_requests')
               ->insertGetId([
                   'amount' =>  $request->input('withdraw'),
-                  'user_id'  =>  Auth::user()->id,
+                  'user_id'  =>  Auth::guard('member')->user()->id,
                   'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
               ]);
                 return redirect()->back()->with('message', 'Payment Requested Successfully!');
@@ -1477,7 +1477,7 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
                                     $chk_lock = ManualLock::find(1);
                                     $chk_lock->joining = 1;
                                     $chk_lock->save();
-                                    if(Auth::check()){
+                                    if(Auth::guard('member')->check()){
                                         return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                                     }else{
                                         return redirect()->route('web.thanks',['token' =>encrypt($token)]);
@@ -1488,7 +1488,7 @@ public function addNewMemberTest($sponsorID, $leg, $f_name, $l_name, $mobile, $l
                                     $chk_lock = ManualLock::find(1);
                                     $chk_lock->joining = 1;
                                     $chk_lock->save();
-                                    if (Auth::check()) {
+                                    if (Auth::guard('member')->check()) {
                                         return redirect()->route('member.thank_you',['token'=>encrypt($token)]);
                                     }else {
                                         return redirect()->route('web.thanks',['token' =>encrypt($token)]);
