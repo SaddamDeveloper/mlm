@@ -54,7 +54,9 @@
                                 @endforeach
                             @endif
                         </ul>
-                        {{ $gallery->links() }}
+                        <div class="pull-right">
+                            {{ $gallery->links() }}    
+                        </div> 
                     </div>
                 </div>
             </div>

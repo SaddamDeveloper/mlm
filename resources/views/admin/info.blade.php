@@ -26,6 +26,7 @@
                         <div>
                             <div class="x_content">
                                 {{ Form::open(['method' => 'post','route'=>'admin.store_frontend', 'enctype'=>'multipart/form-data']) }}
+                                <input type="hidden" name="id" value="{{ $info->id}}">
                                 <div class="well" style="overflow: auto">
                                     <div class="form-row mb-10">
                                         <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
