@@ -54,6 +54,7 @@
                                 @endforeach
                             @endif
                         </ul>
+                        {{ $gallery->links() }}
                     </div>
                 </div>
             </div>
