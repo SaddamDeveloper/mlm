@@ -57,11 +57,11 @@ class MemberDashboardController extends Controller
     public function addNewMember(Request $request)
     {
         $this->validate($request, [
-            'search_sponsor_id'     => 'required',
-            'f_name'                => 'required',
-            'l_name'                => 'required',
-            'leg'                   => 'required',
-            'mobile'                => 'required|numeric|min:10',
+            // 'search_sponsor_id'     => 'required',
+            // 'f_name'                => 'required',
+            // 'l_name'                => 'required',
+            // 'leg'                   => 'required',
+            // 'mobile'                => 'required|numeric|min:10',
             // 'email'                 => 'unique:members|required|email',
             // 'dob'                   => 'required',
             // 'pan'                   => 'unique:members|required',
@@ -72,8 +72,8 @@ class MemberDashboardController extends Controller
             // 'account_no'            => 'required',
             // 'confirm_account'       => 'required|same:account_no',
             // 'confirm_ifsc'          => 'required|same:ifsc',
-            'login_id'              => 'required|unique:members',
-            'password'              => 'required|confirmed|min:6'
+            // 'login_id'              => 'required|unique:members',
+            // 'password'              => 'required|confirmed|min:6'
         ]);
         $sponsor_member_data = Member::where('login_id', $request->input('search_sponsor_id'))->first();
         if(empty($sponsor_member_data)){
@@ -131,8 +131,6 @@ class MemberDashboardController extends Controller
                                         return redirect()->back()->with("error", "Please try again after sometime!");
                                     }
                                     
-                                    
-                                   
                                 }else if($leg == 2){
                                     $b = $this->memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password);
                                     if ($b) {
@@ -237,24 +235,40 @@ class MemberDashboardController extends Controller
     function memberRegister($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password){
         try {
             DB::transaction(function () use($sponsorID, $leg, $fullName, $email, $mobile, $dob, $pan, $aadhar, $address, $bank, $ifsc, $account_no, $login_id, $password) {
-                // DB::beginTransaction();
-                DB::raw('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
-                $member_registration = new Member;
-                $member_registration->login_id = $login_id;
-                $member_registration->password = Hash::make($password);
-                $member_registration->full_name = $fullName;
-                $member_registration->dob = $dob;
-                $member_registration->email = $email;
-                $member_registration->mobile = $mobile;
-                $member_registration->pan = $pan;
-                $member_registration->aadhar = $aadhar;
-                $member_registration->address = $address;
-                $member_registration->bank_name = $bank;
-                $member_registration->ac_holder_name = $fullName;
-                $member_registration->ifsc = $ifsc;
-                $member_registration->account_no = $account_no;
-                $member_registration->save();
-                $member_insert = $member_registration->id;
+                // DB::raw('SET GLOBAL TRANSACTION ISOLATION LEVEL READ COMMITTED');
+                // $member_registration = new Member;
+                // $member_registration->login_id = $login_id;
+                // $member_registration->password = Hash::make($password);
+                // $member_registration->full_name = $fullName;
+                // $member_registration->dob = $dob;
+                // $member_registration->email = $email;
+                // $member_registration->mobile = $mobile;
+                // $member_registration->pan = $pan;
+                // $member_registration->aadhar = $aadhar;
+                // $member_registration->address = $address;
+                // $member_registration->bank_name = $bank;
+                // $member_registration->ac_holder_name = $fullName;
+                // $member_registration->ifsc = $ifsc;
+                // $member_registration->account_no = $account_no;
+
+                $member_insert = DB::table('members')
+                    ->insertGetId([
+                        'login_id' => $login_id,
+                        'password' => Hash::make($password),
+                        'full_name' => $fullName,
+                        'dob' => $dob,
+                        'email' => $email,
+                        'mobile' => $mobile,
+                        'pan' => $pan,
+                        'aadhar' => $aadhar,
+                        'address' => $address,
+                        'bank_name' => $bank,
+                        'ac_holder_name' => $fullName,
+                        'ifsc' => $ifsc,
+                        'account_no' => $account_no,
+                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                    ]);
+                dd($member_insert);
                 $generatedID = $this->memberIDGeneration($fullName, $member_insert);
                 $member_update = DB::table('members')
                 ->where('id', $member_insert)
@@ -352,6 +366,7 @@ class MemberDashboardController extends Controller
                       'start_node' => $tree_insert,
                     )
                     );
+                    dd($parrents);
                 $this->treePair($parrents, $member_insert);
                
             });
@@ -470,6 +485,7 @@ class MemberDashboardController extends Controller
     }
 
     function treePair($parents, $member_insert){
+        dd($member_insert);
         $child = $member_insert;
         for($i=0; $i < count($parents) ; $i++) {
             $parent = $parents[$i]->lv; 

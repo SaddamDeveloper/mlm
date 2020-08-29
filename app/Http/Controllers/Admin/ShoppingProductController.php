@@ -231,6 +231,7 @@ class ShoppingProductController extends Controller
         $name = $request->input('name');
         $category = $request->input('category');
         $image = null;
+        
         if($request->hasfile('main_image'))
         {
             $this->validate($request, [
@@ -285,7 +286,6 @@ class ShoppingProductController extends Controller
         $shopping_product = ShoppingProduct::find($id);
         $shopping_product->name = $name;
         $shopping_product->category_id = $category;
-        $shopping_product->main_image = $image;
         $shopping_product->mrp = $mrp;
         $shopping_product->price = $price;
         $shopping_product->short_desc = $short_desc;
