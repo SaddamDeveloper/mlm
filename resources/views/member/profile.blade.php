@@ -97,10 +97,6 @@
                         <i class="fa fa-credit-card user-profile-icon"></i> {{$member->account_no}}
                       </li>
 
-                      <li class="m-top-xs">
-                        <i class="fa fa-external-link user-profile-icon"></i>
-                        <a href="http://www.kimlabs.com/profile/" target="_blank">refferal</a>
-                      </li>
                     </ul>
 
                       <a href="{{route('member.account_update')}}" class="btn btn-success"><i class="fa fa-edit m-right-xs"></i>Account Update</a>
