@@ -1003,7 +1003,7 @@ class MemberDashboardController extends Controller
     }
 
     public function levelCheck($id){
-        $total_pair = Tree::where('user_id', $id)->value('total_pair');
+        $total_pair = Tree::where('user_id', $id)->value('activate_pair');
         if($total_pair >= 24 && $total_pair <= 50){
             return "SILVER";
         }elseif ($total_pair >=50 && $total_pair <=200) {
