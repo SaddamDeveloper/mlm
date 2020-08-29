@@ -261,7 +261,7 @@ class MemberDashboardController extends Controller
                 ->update([
                     'sponsorID' =>  $generatedID,
                 ]);
-                // $this->sendSms($fullName, $mobile, $login_id, $password);
+                $this->sendSms($fullName, $mobile, $login_id, $password);
                 $sponsor = Member::where('sponsorID', $sponsorID)->lockForUpdate()->first();
                 //Fetch Tree Data Using User ID
                 $sponsor_tree = DB::table('trees')
