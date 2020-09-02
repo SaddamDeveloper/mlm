@@ -244,23 +244,6 @@ class MemberDashboardController extends Controller
                 $member_registration->account_no = $account_no;
                 $member_registration->save();
                 $member_insert = $member_registration->id;
-                // $member_insert = DB::table('members')
-                //     ->insertGetId([
-                //         'login_id' => $login_id,
-                //         'password' => Hash::make($password),
-                //         'full_name' => $fullName,
-                //         'dob' => $dob,
-                //         'email' => $email,
-                //         'mobile' => $mobile,
-                //         'pan' => $pan,
-                //         'aadhar' => $aadhar,
-                //         'address' => $address,
-                //         'bank_name' => $bank,
-                //         'ac_holder_name' => $fullName,
-                //         'ifsc' => $ifsc,
-                //         'account_no' => $account_no,
-                //         'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                //     ]);
                 $generatedID = $this->memberIDGeneration($fullName, $member_insert);
                 $member_update = DB::table('members')
                 ->where('id', $member_insert)

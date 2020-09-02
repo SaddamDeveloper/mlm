@@ -106,8 +106,8 @@ class WebsiteController extends Controller
                         </div>
                         <h3 class="product-name">'.$product_data->name.'</h3>
                         <div class="price-box">
-                            <span class="price-regular">₹'.number_format($product_data->mrp, 2).'</span>
-                            <span class="price-old"><del>₹'.number_format($product_data->price, 2).'</del></span>
+                            <span class="price-regular">₹'.number_format($product_data->price, 2).'</span>
+                            <span class="price-old"><del>₹'.number_format($product_data->mrp, 2).'</del></span>
                         </div>
                         <h5 class="offer-text"><strong>Hurry up</strong>! offer ends in:</h5>
                         <div class="product-countdown" data-countdown="2022/02/20"></div>

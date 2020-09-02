@@ -339,6 +339,7 @@
                     url: "{{route('web.product.data')}}",
                     method: "GET",
                     data: {id:id},
+                    beforeSend: function(data)
                     success: function(data){
                         $('.product-details-inner').html(data);
                         // if(data == 5){

@@ -131,11 +131,11 @@
                                 <!-- banner single slide start -->
                                 <div class="banner-slide-item">
                                     <figure class="banner-statistics">
-                                        <a href="#">
+                                        <a href="{{ route('web.product.product-detail', ['id' => encrypt($p1->id)]) }}">
                                             <img src="{{asset('web/img/product/'.$p1->main_image)}}" alt="product banner">
                                         </a>
                                         <div class="banner-content banner-content_style2">
-                                            <h5 class="banner-text3"><a href="#">{{ $p1->name }}</a></h5>
+                                            <h5 class="banner-text3"><a href="{{ route('web.product.product-detail', ['id' => encrypt($p1->id)]) }}">{{ $p1->name }}</a></h5>
                                         </div>
                                     </figure>
                                 </div>

@@ -869,9 +869,10 @@ class AdminDashboardController extends Controller
 
     public function memberUpdate(Request $request)
     {
+        $id = $request->input('id');
         $this->validate($request, [
             'f_name'                => 'required',
-            'email'                 => 'required|email',
+            'email'                 => 'required|email|unique:members,email,'.$id,
             'mobile'                => 'required|numeric|min:10',
             'pan'                   => 'required',
             'aadhar'                => 'required',
@@ -879,7 +880,6 @@ class AdminDashboardController extends Controller
             'account_no'            => 'required',
         ]);
         
-        $id = $request->input('id');
         $full_name = $request->input('f_name');
         $email = $request->input('email');
         $mobile = $request->input('mobile');
