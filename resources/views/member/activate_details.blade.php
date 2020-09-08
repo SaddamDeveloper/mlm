@@ -28,7 +28,8 @@
                                 <tr>
                                     <th>Sl. No</th>
                                     <th>Package Name</th>
-                                    <th>Alloted To</th>
+                                    <th>Alloted UserID</th>
+                                    <th>Alloted Name</th>
                                     <th>Added By</th>
                                     <th>Created At</th>
                                 </tr>
@@ -56,6 +57,7 @@
                 {data: 'id', name: 'id',searchable: true},
                 {data: 'package_name', name: 'package_name',searchable: true},
                 {data: 'login_id', name: 'login_id' ,searchable: true}, 
+                {data: 'name', name: 'name' ,searchable: true}, 
                 {data: 'added_by', name: 'added_by' ,searchable: true},                 
                 {data: 'created_at', name: 'created_at' ,searchable: true},                 
                 // {data: 'action', name: 'action', orderable: false, searchable: false},

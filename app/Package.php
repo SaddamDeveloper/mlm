@@ -14,4 +14,9 @@ class Package extends Model
     {
         return $this->belongsTo('App\Member', 'user_id', 'id');
     }
+
+    public function adminPackage()
+    {
+        return $this->belongsTo('App\AdminPackage', 'package_name', 'id');
+    }
 }

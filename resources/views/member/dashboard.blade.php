@@ -8,26 +8,28 @@
           <div class="row top_tiles">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
+                <div class="icon"><i class="fa fa-user"></i></div>
                 <div class="count">{{$user_info->login_id}}</div>
                 <h3>{{$user_info->full_name}}</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
+                <div class="icon"><i class="fa fa-calendar"></i></div>
                 <div class="count">{{$user_info->created_at->format('d/m/Y')}}</div>
                 <h3>Joining Date</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
-                <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
+                <div class="icon"><i class="fa fa-street-view"></i></div>
                 <div class="count">{{$direct_member}}</div>
                 <h3>Direct Member</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
-                <div class="icon"><i class="fa fa-check-square-o"></i></div>
+                <div class="icon"><i class="fa fa-arrow-left"></i></div>
                 <div class="count">{{$total_left}}</div>
                 <h3>Total Left</h3>
               </div>
@@ -36,13 +38,14 @@
           <div class="row top_tiles">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
+                <div class="icon"><i class="fa fa-arrow-right"></i></div>
                 <div class="count">{{$total_right}}</div>
                 <h3>Total Right</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
-                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                <div class="icon"><i class="fa fa-sitemap"></i></div>
                 <div class="count">{{$left_active}}</div>
                 <h3>Left BV</h3>
               </div>
@@ -65,13 +68,14 @@
           <div class="row top_tiles">
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
+                <div class="icon"><i class="fa fa-rupee"></i></div>
                 <div class="count">{{ number_format($total_income, 2) }}</div>
                 <h3>Total Income</h3>
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="tile-stats">
-                <div class="icon"><i class="fa fa-comments-o"></i></div>
+                <div class="icon"><i class="fa fa-dollar"></i></div>
                 <div class="count">
                   @if (!empty($available_fund->amount))
                   {{ number_format($available_fund->amount, 2) }}

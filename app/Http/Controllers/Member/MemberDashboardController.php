@@ -734,6 +734,7 @@ class MemberDashboardController extends Controller
         $html=null;
 
         $root = Tree::where('user_id', $user_id)->first();
+        // dd($root->member->package->adminPackage->package);
         $html .= '
         <div class="row">
         <div class="col-md-4">
