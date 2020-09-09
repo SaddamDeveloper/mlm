@@ -872,12 +872,12 @@ class AdminDashboardController extends Controller
         $id = $request->input('id');
         $this->validate($request, [
             'f_name'                => 'required',
-            'email'                 => 'required|email|unique:members,email,'.$id,
+            'email'                 => 'email',
             'mobile'                => 'required|numeric|min:10',
-            'pan'                   => 'required',
-            'aadhar'                => 'required',
-            'ifsc'                  => 'required',
-            'account_no'            => 'required',
+            // 'pan'                   => 'required',
+            // 'aadhar'                => 'required',
+            // 'ifsc'                  => 'required',
+            // 'account_no'            => 'required',
         ]);
         
         $full_name = $request->input('f_name');

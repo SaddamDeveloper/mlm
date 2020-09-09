@@ -54,7 +54,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('member.ajax.distributor_details') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'package_name', name: 'package_name',searchable: true},
                 {data: 'login_id', name: 'login_id' ,searchable: true}, 
                 {data: 'name', name: 'name' ,searchable: true}, 
