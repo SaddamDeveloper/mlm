@@ -61,6 +61,8 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/downline/member/{id}', 'AdminDashboardController@memberDownline')->name('admin.member_downline');
     Route::get('/member/tree/{rank?}/{user_id?}', 'AdminDashboardController@memberTree')->name('admin.member.tree');
     Route::get('/downline/member/list/{id}', 'AdminDashboardController@memberDownlineList')->name('admin.ajax.downline_list');
+    Route::get('/change/member/password/{id}', 'AdminDashboardController@changeMemberPassword')->name('admin.member.change_password');
+    Route::post('/update/member/password', 'AdminDashboardController@updateMemberPassword')->name('admin.update_member_password');
 
 
     // Commision
@@ -137,6 +139,11 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/gallery/', 'AdminDashboardController@gallery')->name('admin.gallery');
     Route::post('/store/gallery/', 'AdminDashboardController@storeGallery')->name('admin.store_gallery');
     Route::get('/gallery/list/', 'AdminDashboardController@galleryList')->name('admin.ajax.get_gallery_list');
+
+    // Legal Add
+    Route::get('/legal/docs', 'AdminDashboardController@legal')->name('admin.legal');
+    Route::post('/store/legal/', 'AdminDashboardController@storeLegal')->name('admin.store_legal');
+    Route::get('/legal/list/', 'AdminDashboardController@legalList')->name('admin.ajax.get_legal_list');
 });
 
 

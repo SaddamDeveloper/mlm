@@ -26,6 +26,7 @@ use Intervention\Image\Facades\Image;
 use App\AdminReward;
 use App\Gallery;
 use File;
+use Hash;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -330,6 +331,7 @@ class AdminDashboardController extends Controller
             <a href="'.route('admin.member_edit', ['id' => encrypt($row->id)]).'" class="btn btn-warning btn-sm" target="_blank"><i class="fa fa-pencil"></i></a>              
             <a href="'.route('admin.member_downline', ['id' => encrypt($row->id)]).'" class="btn btn-success btn-sm" target="_blank"><i class="fa fa-code-fork"></i></a>              
             <a href="'.route('admin.member.tree', ['rank' => 0, 'user_id' => encrypt($row->id)]).'" class="btn btn-info btn-sm" target="_blank"><i class="fa fa-tree"></i></a>              
+            <a href="'.route('admin.member.change_password', ['id' => encrypt($row->id)]).'" class="btn btn-warning btn-sm" target="_blank"><i class="fa fa-lock"></i></a>              
             ';
 
             if($row->status == '1'){
@@ -1191,7 +1193,53 @@ class AdminDashboardController extends Controller
         ->rawColumns(['action'])
         ->make(true);
     }
+    public function legal()
+    {
+        return view('admin.legal');
+    }
+    public function storeLegal(Request $request)
+    {
+        $this->validate($request, [
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+        $legal = new Legal;
+        $image = null;
+        if($request->hasfile('photo')){
+            $image_array = $request->file('photo');
+            $image = $this->galleryImageInsert($image_array, $request, 1);
+        }
+        $legal->photo = $image;
+        if($legal->save()){
+            return redirect()->back()->with('message','Successfully added');
+        }
+    }
     
+    public function changeMemberPassword($id)
+    {
+        try {
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $member = Member::find($id);
+        return view('admin.change_member_password', compact('member'));
+    }
+    public function updateMemberPassword(Request $request)
+    {
+        $this->validate($request, [
+            'password'   => 'required|min:6|required_with:confirm-password|same:confirm-password',
+            'confirm-password' => 'min:6'
+        ]);
+
+        $member = Member::where('id', $request->input('id'))
+                ->update(array('password' => Hash::make($request->input('password'))));
+        if($member){
+            return redirect()->back()->with('message','Password Changed'); 
+        }else{
+            return redirect()->back()->with('error', 'Something went wrong');
+        }
+    }
+
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';
         $image_extension = $image->getClientOriginalExtension();

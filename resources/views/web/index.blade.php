@@ -141,7 +141,7 @@
                                 </div>
                                 <!-- banner single slide start -->
                             @endforeach
-                            <!-- banner single slide start --> --}}
+                            <!-- banner single slide start --> 
                         </div>
                     </div>
                 </div>

@@ -161,8 +161,14 @@
 
                     <!-- mobile menu start -->
                     <div class="mobile-navigation">
-
-                        <!-- mobile menu navigation start -->
+                        {{-- <li><a href="{{route('web.login')}}">Login</a></li>
+                        <li><a href="{{route('web.club')}}">Club</a></li>
+                        <li><a href="{{route('web.reward')}}">Reward</a></li>
+                        <li><a href="{{route('web.join')}}">Register</a></li>
+                        <li><a href="{{ route('web.contact') }}">Contact</a></li>
+                        <li><a href="{{asset('web/img/plan.pptx')}}">Plan</a></li>
+                        <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
+                        <!-- mobile menu navigation start --> --}}
                         <nav>
                             <ul class="mobile-menu">
                                 <li class="menu-item-has-children"><a href="{{ route('web.index') }}">Home</a>
@@ -171,10 +177,12 @@
                                 </li>
                                 <li class="menu-item-has-children "><a href="{{ route('web.product') }}">Product</a>
                                 </li>
-                                <li class="menu-item-has-children "><a href="{{ route('web.login') }}">Login</a>
+                                <li class="menu-item-has-children "><a href="{{ route('web.club') }}">Club</a>
+                                </li>
+                                <li class="menu-item-has-children "><a href="{{ route('web.club') }}">Plan</a>
+                                <li class="menu-item-has-children "><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a>
                                 </li>
                                 <li><a href="{{ route('web.plan') }}">Plan</a></li>
-                                <li><a href="{{ route('web.reward') }}">Reward</a></li>
                             </ul>
                         </nav>
                         <!-- mobile menu navigation end -->
@@ -183,18 +191,6 @@
 
                     <div class="mobile-settings">
                         <ul class="nav">
-                            <li>
-                                <div class="dropdown mobile-top-dropdown">
-                                    <a href="#" class="dropdown-toggle" id="currency" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Currency
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="currency">
-                                        <a class="dropdown-item" href="#">$ USD</a>
-                                        <a class="dropdown-item" href="#">$ EURO</a>
-                                    </div>
-                                </div>
-                            </li>
                             <li>
                                 <div class="dropdown mobile-top-dropdown">
                                     <a href="#" class="dropdown-toggle" id="myaccount" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -213,12 +209,15 @@
                     <!-- offcanvas widget area start -->
                     <div class="offcanvas-widget-area">
                         <div class="off-canvas-contact-widget">
+                            @php
+                                $frontend = App\Frotend::first();
+                            @endphp
                             <ul>
                                 <li><i class="fa fa-mobile"></i>
-                                    <a href="#">0123456789</a>
+                                    <a href="#">{{ $frontend->mobile }}</a>
                                 </li>
                                 <li><i class="fa fa-envelope-o"></i>
-                                    <a href="#">info@yourdomain.com</a>
+                                    <a href="#">{{ $frontend->email }}</a>
                                 </li>
                             </ul>
                         </div>
