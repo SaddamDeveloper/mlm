@@ -44,7 +44,6 @@
                                 </div>
                                     {{ Form::close() }}
                             </div>
-                            <div class="table-responsive">
                                 <table class="table table-striped jambo_table bulk_action" id="legal_list">
                                     <thead>
                                         <tr class="headings">                
@@ -58,7 +57,6 @@
                                         
                                     </tbody>
                                 </table>
-                              </div>
                         </div>
                     </div>
                 </div>
@@ -69,12 +67,13 @@
 @section('script')
  <script type="text/javascript">
      $(function () {
+        var i = 1;
         var table = $('#legal_list').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.ajax.get_legal_list') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                { "render": function(data, type, full, meta) {return i++;}},
                 {data: 'photo', name: 'photo',searchable: true},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]

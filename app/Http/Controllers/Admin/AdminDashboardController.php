@@ -27,6 +27,8 @@ use App\AdminReward;
 use App\Gallery;
 use File;
 use Hash;
+use App\Models\Legal;
+use App\Models\Plan;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -1213,7 +1215,57 @@ class AdminDashboardController extends Controller
             return redirect()->back()->with('message','Successfully added');
         }
     }
-    
+    public function legalList(){
+        return datatables()->of(Legal::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->addColumn('photo', function($row){
+            if($row->photo){
+                $photos = '<img src="'.asset("web/img/gallery/thumb/".$row->photo).'" width="100"/>';
+            }
+            return $photos;
+        })
+        ->addColumn('action', function($row){
+            if($row->status == '1'){
+                $action = '<a href="'.route('admin.legal_action', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning">Disable</a>';
+            }else{
+                $action = '<a href="'.route('admin.legal_action', ['id' => encrypt($row->id), 'status'=> 1]).'" class="btn btn-primary">Enable</a>';
+            }
+            $action .= '<a  href="'.route('admin.legal_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger">Delete</a>';
+            return $action;
+        })
+        ->rawColumns(['action', 'photo'])
+        ->make(true);
+    }
+    public function legalAction($id, $status){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $legal = Legal::find($id);
+        $legal->status = $status;
+        if($legal->save()){
+            return redirect()->back()->with('message','Status Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
+        }
+    }
+    public function legalDelete($id){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $legal = Legal::find($id);
+        $delete = Legal::where('id', $id)->delete();
+        if($delete){
+            File::delete(public_path().'/web/img/gallery/'.$legal->photo);
+            File::delete(public_path().'/web/img/gallery/thumb/'.$legal->photo);
+            return redirect()->back()->with('message','Legal Deleted Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went wrong!');
+        }
+    }
     public function changeMemberPassword($id)
     {
         try {
@@ -1240,6 +1292,31 @@ class AdminDashboardController extends Controller
         }
     }
 
+    public function plan(){
+        return view('admin.plan');
+    }
+
+    public function storePlan(Request $request)
+    {
+        $this->validate($request, [
+            'plan' => 'required|mimes:doc,docx,xls,xlsx,ppt,pptx,pdf,zip|max:500000'
+        ]);
+        $plan = new Plan;
+        $plan = null;
+        if($request->hasfile('plan')){
+            $plan = $request->file('plan');
+            $destination = base_path().'/public/web/plan/';
+            $image_extension = $plan->getClientOriginalExtension();
+            $image_name = md5(date('now').time()).".".$image_extension;
+            $original_path = $destination.$image_name;
+            $plan->move("web/plan/", $image_name);
+        }
+        $plan->docs = $image_name;
+        if($plan->save()){
+            return redirect()->back()->with('message','Successfully added');
+        }
+    }
+    // **************************************************************************Manual Function************************************
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';
         $image_extension = $image->getClientOriginalExtension();

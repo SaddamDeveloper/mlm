@@ -42,6 +42,7 @@
                 <li><a href="{{route('admin.shopping_category')}}">Category List</a></li>
                 <li><a href="{{route('admin.gallery')}}">Gallery List</a></li>
                 <li><a href="{{route('admin.legal')}}">Legal Docs List</a></li>
+                <li><a href="{{route('admin.plan')}}">Plan List</a></li>
                 <li><a href="{{route('admin.info')}}">Frontend Info</a></li>
               </ul>
             </li>

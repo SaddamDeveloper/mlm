@@ -144,6 +144,13 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/legal/docs', 'AdminDashboardController@legal')->name('admin.legal');
     Route::post('/store/legal/', 'AdminDashboardController@storeLegal')->name('admin.store_legal');
     Route::get('/legal/list/', 'AdminDashboardController@legalList')->name('admin.ajax.get_legal_list');
+    Route::get('/legal/action/{id}/{status}', 'AdminDashboardController@legalAction')->name('admin.legal_action');
+    Route::get('/legal/delete/{id}', 'AdminDashboardController@legalDelete')->name('admin.legal_delete');
+    
+    // Plan
+    Route::get('/plan', 'AdminDashboardController@plan')->name('admin.plan');
+    Route::post('/store/plan/', 'AdminDashboardController@storePlan')->name('admin.store_plan');
+    
 });
 
 

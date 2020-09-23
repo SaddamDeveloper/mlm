@@ -24,6 +24,7 @@ Route::get('/thanks/{token}', 'Web\WebsiteController@thanks')->name('web.thanks'
 Route::get('/product/data', 'Web\WebsiteController@productData')->name('web.product.data');
 Route::get('/category/filter/{id}', 'Web\WebsiteController@categoryFilter')->name('web.category_filter');
 Route::get('/legal/docs', 'Web\WebsiteController@legalDocs')->name('web.legal');
+Route::get('/video/plan', 'Web\WebsiteController@videoPlan')->name('web.video_plan');
 
 // =========== join-us ============= 
 Route::get('/register', function () {

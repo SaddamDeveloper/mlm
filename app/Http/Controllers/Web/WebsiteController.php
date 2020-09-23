@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Tree;
 use App\Gallery;
 use App\Model\ShoppingCategory;
+use App\Models\Legal;
 class WebsiteController extends Controller
 {
     public function index()
@@ -29,6 +30,11 @@ class WebsiteController extends Controller
     {
         return view('web.plan');
     }
+    public function videoPlan()
+    {
+        return view('web.video_plan');
+    }
+
     public function reward()
     {
         $reward_achiever = Rewards::orderBy('created_at', 'DESC')->paginate(10);
@@ -147,6 +153,7 @@ class WebsiteController extends Controller
 
     public function legalDocs()
     {
-        return view('web.legal');
+        $legal = Legal::orderBy('created_at', 'DESC')->paginate(8);
+        return view('web.legal', compact('legal'));
     }
 }

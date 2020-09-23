@@ -68,12 +68,12 @@
                                         <ul>
                                             <li class="active"><a href="{{route('web.index')}}">Home </a></li>
                                             <li class="active"><a href="{{route('web.about')}}">About </a></li>
-                                            <li><a href="blog-left-sidebar.html">Product <i class="fa fa-angle-down"></i></a>
+                                            <li><a href="#">Product <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
                                                     <li><a href="{{route('web.product.product-list')}}">Our Product</a></li>
                                                 </ul>
                                             </li>
-											<li><a href="blog-left-sidebar.html">Other <i class="fa fa-angle-down"></i></a>
+											<li><a href="#">Other <i class="fa fa-angle-down"></i></a>
 												<ul class="dropdown">
 													<li><a href="{{route('web.legal')}}">Legal</a></li>
 													<li><a href="">Certification</a></li>
@@ -82,7 +82,7 @@
 													<li><a href="#" target="_blank">Grievance Redressal Policy</a></li>
 												</ul>
                                             </li>
-                                            <li><a href="blog-left-sidebar.html">Gallery <i class="fa fa-angle-down"></i></a>
+                                            <li><a href="#">Gallery <i class="fa fa-angle-down"></i></a>
                                                 <ul class="dropdown">
                                                     <li><a href="{{route('web.gallery.image')}}">Image Gallery</a></li>
                                                     <li><a href="{{route('web.gallery.video')}}">Video Gallery</a></li>
@@ -94,6 +94,7 @@
                                             <li><a href="{{route('web.join')}}">Register</a></li>
                                             <li><a href="{{ route('web.contact') }}">Contact</a></li>
                                             <li><a href="{{asset('web/img/plan.pptx')}}">Plan</a></li>
+                                            <li><a href="{{ route('web.video_plan')}} ">Video Plan</a></li>
                                             <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
                                             {{-- <li><a href="{{ route('web.reward_achiever') }}">Reward Achiever</a></li> --}}
                                         </ul>
