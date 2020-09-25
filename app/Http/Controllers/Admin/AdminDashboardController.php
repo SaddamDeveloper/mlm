@@ -29,6 +29,8 @@ use File;
 use Hash;
 use App\Models\Legal;
 use App\Models\Plan;
+use App\Models\VideoGallery;
+use App\Models\VideoPlan;
 class AdminDashboardController extends Controller
 {
     public function index()
@@ -1186,14 +1188,126 @@ class AdminDashboardController extends Controller
         $query = Gallery::orderBy('created_at', 'DESC');
         return datatables()->of($query->get())
         ->addIndexColumn()
+        ->addColumn('photo', function($row){
+            if($row->photo){
+                $photos = '<img src="'.asset("web/img/gallery/thumb/".$row->photo).'" width="100"/>';
+            }
+            return $photos;
+        })
         ->addColumn('action', function($row){
-            $btn = '
-                <a href="#" class="btn btn-warning btn-sm" target="_blank"><i class="fa fa-pencil"></i></a>              
-            ';
+            if($row->status == 1){
+                $btn = '<a href="'.route('admin.gallery_status', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning btn-sm"><i class="fa fa-power-off"></i></a>';
+            }else{
+                $btn = '<a href="'.route('admin.gallery_status', ['id' => encrypt($row->id), 'status'=> 1]).'" class="btn btn-primary btn-sm"><i class="fa fa-check"></i></a>';
+            }
+            $btn .= '<a href="'.route('admin.gallery_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></a>';
             return $btn;
         })
-        ->rawColumns(['action'])
+        ->rawColumns(['action', 'photo'])
         ->make(true);
+    }
+    public function galleryDelete($id){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $gallery = Gallery::find($id);
+        $delete = Gallery::where('id', $id)->delete();
+        if($delete){
+            File::delete(public_path().'/web/img/gallery/'.$gallery->photo);
+            File::delete(public_path().'/web/img/gallery/thumb/'.$gallery->photo);
+            return redirect()->back()->with('message','Gallery Deleted Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went wrong!');
+        }
+    }
+    public function galleryStatus($id, $status){
+        try {
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            return redirect()->back();
+        }
+        $gallery = Gallery::find($id);
+        $gallery->status = $status;
+        if($gallery->save()){
+            return redirect()->back()->with('message','Status Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
+        }
+    }
+
+    public function videoGallery(){
+        return view('admin.video_gallery');
+    }
+    public function storeVideoGallery(Request $request){
+        $this->validate($request, [
+            'youtube_id' => 'required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+        $video_gallery = new VideoGallery;
+        $image = null;
+        if($request->hasfile('photo')){
+            $image_array = $request->file('photo');
+            $image = $this->galleryImageInsert($image_array, $request, 1);
+        }
+        $video_gallery->photo = $image;
+        $video_gallery->youtube_id = $request->input('youtube_id');
+        if($video_gallery->save()){
+            return redirect()->back()->with('message','Successfully added');
+        }
+    }
+    public function videoGalleryList(){
+        return datatables()->of(VideoGallery::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->addColumn('photo', function($row){
+            if($row->photo){
+                $photos = '<a href="https://youtube.com/watch?v='.$row->youtube_id.'" target="_blank"><img src="'.asset("web/img/gallery/thumb/".$row->photo).'" width="100"/>';
+            }
+            return $photos;
+        })
+       
+        ->addColumn('action', function($row){
+            if($row->status == '1'){
+                $action = '<a href="'.route('admin.video_gallery_status', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning">Disable</a>';
+            }else{
+                $action = '<a href="'.route('admin.video_gallery_status', ['id' => encrypt($row->id), 'status'=> 1]).'" class="btn btn-primary">Enable</a>';
+            }
+            $action .= '<a  href="'.route('admin.video_gallery_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger">Delete</a>';
+            return $action;
+        })
+        ->rawColumns(['action', 'photo'])
+        ->make(true);
+    }
+    public function videoGalleryStatus($id, $status){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $videoGallery = VideoGallery::find($id);
+        $videoGallery->status = $status;
+        if($videoGallery->save()){
+            return redirect()->back()->with('message','Status Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
+        }
+    }
+    public function videoGalleryDelete($id){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $videoGallery = VideoGallery::find($id);
+        $delete = VideoGallery::where('id', $id)->delete();
+        if($delete){
+            File::delete(public_path().'/web/img/gallery/'.$videoGallery->photo);
+            File::delete(public_path().'/web/img/gallery/thumb/'.$videoGallery->photo);
+            return redirect()->back()->with('message','Video Gallery Deleted Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went wrong!');
+        }
     }
     public function legal()
     {
@@ -1202,7 +1316,9 @@ class AdminDashboardController extends Controller
     public function storeLegal(Request $request)
     {
         $this->validate($request, [
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'name' => 'required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'document' => 'required|mimes:pdf|max:10000'
         ]);
         $legal = new Legal;
         $image = null;
@@ -1210,7 +1326,15 @@ class AdminDashboardController extends Controller
             $image_array = $request->file('photo');
             $image = $this->galleryImageInsert($image_array, $request, 1);
         }
+        if($request->hasFile('document')){
+            $file = $request->file('document');
+            $filename = time() . '.' . $request->file('document')->extension();
+            $filePath = public_path() . '/web/documents/';
+            $file->move($filePath, $filename);
+        }
+        $legal->name = $request->name;
         $legal->photo = $image;
+        $legal->documents = $filename;
         if($legal->save()){
             return redirect()->back()->with('message','Successfully added');
         }
@@ -1224,6 +1348,12 @@ class AdminDashboardController extends Controller
             }
             return $photos;
         })
+        ->addColumn('document', function($row){
+            if($row->documents){
+                $document = '<a href="'.asset("web/documents/".$row->documents).'">Document</a>';
+            }
+            return $document;
+        })
         ->addColumn('action', function($row){
             if($row->status == '1'){
                 $action = '<a href="'.route('admin.legal_action', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning">Disable</a>';
@@ -1233,7 +1363,7 @@ class AdminDashboardController extends Controller
             $action .= '<a  href="'.route('admin.legal_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger">Delete</a>';
             return $action;
         })
-        ->rawColumns(['action', 'photo'])
+        ->rawColumns(['action', 'photo', 'document'])
         ->make(true);
     }
     public function legalAction($id, $status){
@@ -1261,6 +1391,7 @@ class AdminDashboardController extends Controller
         if($delete){
             File::delete(public_path().'/web/img/gallery/'.$legal->photo);
             File::delete(public_path().'/web/img/gallery/thumb/'.$legal->photo);
+            File::delete(public_path().'/web/documents/'.$legal->documents);
             return redirect()->back()->with('message','Legal Deleted Successfully!');
         }else{
             return redirect()->back()->with('error','Something Went wrong!');
@@ -1302,20 +1433,147 @@ class AdminDashboardController extends Controller
             'plan' => 'required|mimes:doc,docx,xls,xlsx,ppt,pptx,pdf,zip|max:500000'
         ]);
         $plan = new Plan;
-        $plan = null;
         if($request->hasfile('plan')){
-            $plan = $request->file('plan');
-            $destination = base_path().'/public/web/plan/';
-            $image_extension = $plan->getClientOriginalExtension();
-            $image_name = md5(date('now').time()).".".$image_extension;
-            $original_path = $destination.$image_name;
-            $plan->move("web/plan/", $image_name);
+            $file = $request->file('plan');
+            $filename = time() . '.' . $request->file('plan')->extension();
+            $filePath = public_path() . '/web/plan/';
+            $file->move($filePath, $filename);
         }
-        $plan->docs = $image_name;
+        $plan->docs = $filename;
         if($plan->save()){
             return redirect()->back()->with('message','Successfully added');
         }
     }
+    public function planList(){
+        return datatables()->of(Plan::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->addColumn('document', function($row){
+            if($row->docs){
+                $document = '<a href="'.asset("web/plan/".$row->docs).'">Plan</a>';
+            }
+            return $document;
+        })
+        ->addColumn('action', function($row){
+            if($row->status == '1'){
+                $action = '<a href="'.route('admin.plan_status', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning">Disable</a>';
+            }else{
+                $action = '<a href="'.route('admin.plan_status', ['id' => encrypt($row->id), 'status'=> 1]).'" class="btn btn-primary">Enable</a>';
+            }
+            $action .= '<a  href="'.route('admin.legal_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger">Delete</a>';
+            return $action;
+        })
+        ->rawColumns(['action', 'document'])
+        ->make(true);
+    }
+    public function planStatus($id, $status){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $plan = Plan::find($id);
+        $plan->status = $status;
+        if($plan->save()){
+            return redirect()->back()->with('message','Status Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
+        }
+    }
+    public function planDelete($id){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $plan = Plan::find($id);
+        $delete = Plan::where('id', $id)->delete();
+        if($delete){
+            File::delete(public_path().'/web/plan/'.$plan->docs);
+            return redirect()->back()->with('message','Plan Deleted Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went wrong!');
+        }
+    }
+
+    public function videoPlan()
+    {
+        return view('admin.video_plan');
+    }
+
+    public function storeVideoPlan(Request $request)
+    {
+        $this->validate($request, [
+            'youtube_id' => 'required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+        ]);
+        $video_plan = new VideoPlan;
+        $image = null;
+        if($request->hasfile('photo')){
+            $image_array = $request->file('photo');
+            $image = $this->galleryImageInsert($image_array, $request, 1);
+        }
+        $video_plan->photo = $image;
+        $video_plan->youtube_id = $request->input('youtube_id');
+        if($video_plan->save()){
+            return redirect()->back()->with('message','Successfully added');
+        }
+
+    }
+
+    public function videoPlanList()
+    {
+        return datatables()->of(VideoPlan::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
+        ->addColumn('photo', function($row){
+            if($row->photo){
+                $photos = '<a href="https://youtube.com/watch?v='.$row->youtube_id.'" target="_blank"><img src="'.asset("web/img/gallery/thumb/".$row->photo).'" width="100"/></a>';
+            }
+            return $photos;
+        })
+       
+        ->addColumn('action', function($row){
+            if($row->status == '1'){
+                $action = '<a href="'.route('admin.video_plan_status', ['id' => encrypt($row->id), 'status'=> 2]).'" class="btn btn-warning">Disable</a>';
+            }else{
+                $action = '<a href="'.route('admin.video_plan_status', ['id' => encrypt($row->id), 'status'=> 1]).'" class="btn btn-primary">Enable</a>';
+            }
+            $action .= '<a  href="'.route('admin.video_plan_delete', ['id' => encrypt($row->id)]).'" class="btn btn-danger">Delete</a>';
+            return $action;
+        })
+        ->rawColumns(['action', 'photo'])
+        ->make(true);
+    }
+    public function videoPlanStatus($id, $status){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $videoPlan = VideoPlan::find($id);
+        $videoPlan->status = $status;
+        if($videoPlan->save()){
+            return redirect()->back()->with('message','Status Updated Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went Wrong!');
+        }
+    }
+    public function videoPlanDelete($id){
+        try{
+            $id = decrypt($id);
+        }catch(DecryptException $e) {
+            abort(404);
+        }
+        $videoPlan = VideoPlan::find($id);
+        $delete = VideoPlan::where('id', $id)->delete();
+        if($delete){
+            File::delete(public_path().'/web/img/gallery/'.$videoPlan->photo);
+            File::delete(public_path().'/web/img/gallery/thumb/'.$videoPlan->photo);
+            return redirect()->back()->with('message','Video Plan Deleted Successfully!');
+        }else{
+            return redirect()->back()->with('error','Something Went wrong!');
+        }
+    }
+    
     // **************************************************************************Manual Function************************************
     function imageInsert($image, Request $request, $flag){
         $destination = base_path().'/public/web/img/logo/';

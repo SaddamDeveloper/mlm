@@ -46,7 +46,9 @@
                             @foreach($legal as $lg)
                             <li class="col-xs-6 col-sm-4 col-md-3" data-responsive="img/1-375.jpg 375, img/1-480.jpg 480, img/1.jpg 800" data-src="{{asset('web/img/gallery/thumb/'.$lg->photo)}}" data-sub-html="<h4>Fading Light</h4><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>" data-pinterest-text="Pin it1" data-tweet-text="share on twitter 1">
                                 <div class="img-card">
-                                    <img class="img-responsive" src="{{asset('web/img/gallery/'.$lg->photo)}}" alt="Thumb-1" style="cursor: pointer">
+                                    <a href="{{asset('web/documents/'.$lg->documents)}}">
+                                        <img class="img-responsive" src="{{asset('web/img/gallery/'.$lg->photo)}}" alt="Thumb-1" style="cursor: pointer">
+                                    </a>
                                 </div>
                             </li>
                             @endforeach

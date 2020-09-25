@@ -13,6 +13,8 @@ use App\Tree;
 use App\Gallery;
 use App\Model\ShoppingCategory;
 use App\Models\Legal;
+use App\Models\VideoGallery;
+use App\Models\VideoPlan;
 class WebsiteController extends Controller
 {
     public function index()
@@ -32,7 +34,8 @@ class WebsiteController extends Controller
     }
     public function videoPlan()
     {
-        return view('web.video_plan');
+        $video_plan = VideoPlan::orderBy('created_at', 'DESC')->paginate(8);
+        return view('web.video_plan', compact('video_plan'));
     }
 
     public function reward()
@@ -155,5 +158,10 @@ class WebsiteController extends Controller
     {
         $legal = Legal::orderBy('created_at', 'DESC')->paginate(8);
         return view('web.legal', compact('legal'));
+    }
+    
+    public function video() {
+        $video_gallery = VideoGallery::orderBy('created_at', 'DESC')->paginate(8);
+        return view('web.gallery.video', compact('video_gallery'));
     }
 }

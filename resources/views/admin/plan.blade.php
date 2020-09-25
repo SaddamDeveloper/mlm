@@ -41,9 +41,40 @@
                                     </div>
                                 {{ Form::close() }}
                             </div>
+                            <table class="table table-striped jambo_table bulk_action" id="plan_list">
+                                <thead>
+                                    <tr class="headings">                
+                                        <th class="column-title">Sl No. </th>
+                                        <th class="column-title">Document</th>
+                                        <th class="column-title">Action</th>
+                                    </tr>
+                                </thead>
+                
+                                <tbody>
+                                    
+                                </tbody>
+                            </table>   
                     </div>
                 </div>
         </div>
 </div>
 <!-- /page content -->
+@endsection
+@section('script')
+ <script type="text/javascript">
+     $(function () {
+        var i = 1;
+        var table = $('#plan_list').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: "{{ route('admin.ajax.get_plan_list') }}",
+            columns: [
+                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'document', name: 'document',searchable: true},
+                {data: 'action', name: 'action', orderable: false, searchable: false},
+            ]
+        });
+        
+    });
+ </script>
 @endsection

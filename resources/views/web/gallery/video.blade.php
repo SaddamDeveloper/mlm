@@ -39,24 +39,25 @@
                         <!-- section title start -->
                     </div>
                 </div>
-                <div class="member-area-from-wrap">
-                    <div class="demo-gallery">
-                        <div id="video-gallery" class="row">
-                            <a href="https://www.youtube.com/watch?v=3DYiYQvky2k" >
-                                <img src="{{asset('web/img/product/product-15.jpg')}}" />
-                            </a>
-                            <a href="https://www.youtube.com/watch?v=3DYiYQvky2k" >
-                                <img src="{{asset('web/img/product/product-16.jpg')}}" />
-                            </a>
-                            <a href="https://www.youtube.com/watch?v=3DYiYQvky2k" >
-                                <img src="{{asset('web/img/product/product-17.jpg')}}" />
-                            </a>
-                            <a href="https://www.youtube.com/watch?v=3DYiYQvky2k" >
-                                <img src="{{asset('web/img/product/product-14.jpg')}}" />
-                            </a>
+                @if(isset($video_gallery) && !empty($video_gallery))
+                    <div class="member-area-from-wrap">
+                        <div class="demo-gallery">
+                            <div id="video-gallery" class="row">
+                                @foreach ($video_gallery as $vg)
+                                    <a href="https://www.youtube.com/watch?v={{ $vg->youtube_id }}" >
+                                        <img src="{{asset('web/img/gallery/'.$vg->photo)}}" />
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
-                </div>
+                    {{ $video_gallery->links() }} 
+                @else
+                    <div class="member-area-from-wrap">
+                        NO VIDEO
+                    </div>
+                @endif
+
             </div>
         </div>
         <!-- login register wrapper end -->

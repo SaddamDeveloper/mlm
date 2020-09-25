@@ -93,7 +93,10 @@
                                             <li><a href="{{route('web.reward')}}">Reward</a></li>
                                             <li><a href="{{route('web.join')}}">Register</a></li>
                                             <li><a href="{{ route('web.contact') }}">Contact</a></li>
-                                            <li><a href="{{asset('web/img/plan.pptx')}}">Plan</a></li>
+                                            @php
+                                                $plan = App\Models\Plan::first();
+                                            @endphp
+                                            <li><a href="{{asset('web/plan/'.$plan->docs)}}">Plan</a></li>
                                             <li><a href="{{ route('web.video_plan')}} ">Video Plan</a></li>
                                             <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
                                             {{-- <li><a href="{{ route('web.reward_achiever') }}">Reward Achiever</a></li> --}}
@@ -180,7 +183,10 @@
                                 </li>
                                 <li class="menu-item-has-children "><a href="{{ route('web.club') }}">Club</a>
                                 </li>
-                                <li class="menu-item-has-children "><a href="{{ route('web.club') }}">Plan</a>
+                                @php
+                                    $plan = App\Models\Plan::first();
+                                @endphp
+                                <li class="menu-item-has-children "><a href="{{asset('web/plan/'.$plan->docs)}}">Plan</a></li>
                                 <li class="menu-item-has-children "><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a>
                                 </li>
                                 <li><a href="{{ route('web.plan') }}">Plan</a></li>

@@ -139,7 +139,16 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/gallery/', 'AdminDashboardController@gallery')->name('admin.gallery');
     Route::post('/store/gallery/', 'AdminDashboardController@storeGallery')->name('admin.store_gallery');
     Route::get('/gallery/list/', 'AdminDashboardController@galleryList')->name('admin.ajax.get_gallery_list');
-
+    Route::get('/gallery/action/{id}/{status}', 'AdminDashboardController@galleryStatus')->name('admin.gallery_status');
+    Route::get('/gallery/delete/{id}', 'AdminDashboardController@galleryDelete')->name('admin.gallery_delete');
+    
+    //Video Gallery Add
+    Route::get('/video/gallery/', 'AdminDashboardController@videoGallery')->name('admin.video_gallery');
+    Route::post('/store/video/gallery/', 'AdminDashboardController@storeVideoGallery')->name('admin.store_video_gallery');
+    Route::get('/video/gallery/list/', 'AdminDashboardController@videoGalleryList')->name('admin.ajax.get_video_gallery_list');
+    Route::get('/video/gallery/status/{id}/{status}', 'AdminDashboardController@videoGalleryStatus')->name('admin.video_gallery_status');
+    Route::get('/video/gallery/delete/{id}', 'AdminDashboardController@videoGalleryDelete')->name('admin.video_gallery_delete');
+    
     // Legal Add
     Route::get('/legal/docs', 'AdminDashboardController@legal')->name('admin.legal');
     Route::post('/store/legal/', 'AdminDashboardController@storeLegal')->name('admin.store_legal');
@@ -150,7 +159,16 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Plan
     Route::get('/plan', 'AdminDashboardController@plan')->name('admin.plan');
     Route::post('/store/plan/', 'AdminDashboardController@storePlan')->name('admin.store_plan');
-    
+    Route::get('/get/plan/list', 'AdminDashboardController@planList')->name('admin.ajax.get_plan_list');
+    Route::get('/plan/action/{id}/{status}', 'AdminDashboardController@planStatus')->name('admin.plan_status');
+    Route::get('/plan/delete/{id}', 'AdminDashboardController@planDelete')->name('admin.plan_delete');
+    // Video Plan
+    Route::get('/video/plan', 'AdminDashboardController@videoPlan')->name('admin.video.plan');
+    Route::post('/store/video/plan/', 'AdminDashboardController@storeVideoPlan')->name('admin.store_video_plan');
+    Route::get('/get/video/plan/list', 'AdminDashboardController@videoPlanList')->name('admin.ajax.get_video_plan_list');
+    Route::get('/video/plan/action/{id}/{status}', 'AdminDashboardController@videoPlanStatus')->name('admin.video_plan_status');
+    Route::get('/video/plan/delete/{id}', 'AdminDashboardController@videoPlanDelete')->name('admin.video_plan_delete');
+
 });
 
 

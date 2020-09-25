@@ -15,25 +15,42 @@
                             <div class="clearfix"></div>
                         </div>
                     <div>
-                         @if (Session::has('message'))
-                            <div class="alert alert-success" >{{ Session::get('message') }}</div>
-                         @endif
-                         @if (Session::has('error'))
-                            <div class="alert alert-danger">{{ Session::get('error') }}</div>
-                         @endif
-    
+                        @if (Session::has('message'))
+                        <div class="alert alert-success" >{{ Session::get('message') }}</div>
+                        @endif
+                        @if (Session::has('error'))
+                        <div class="alert alert-danger">{{ Session::get('error') }}</div>
+                        @endif
                     </div>
                         <div>
                             <div class="x_content">
                                 {{ Form::open(['method' => 'post','route'=>'admin.store_legal', 'enctype'=>'multipart/form-data']) }}
                                 <div class="well" style="overflow: auto">
                                     <div class="form-row mb-10">
-                                        <div class="col-md-6 col-sm-12 col-xs-12 mb-3">
+                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                            <label for="name">Name</label>
+                                            <input type="text" class="form-control" name="name" placeholder="Enter Doc Name">
+                                            @if($errors->has('name'))
+                                                <span class="invalid-feedback" role="alert" style="color:red">
+                                                    <strong>{{ $errors->first('name') }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>                     
+                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
                                             <label for="photo">Photo</label>
                                             <input type="file" class="form-control" name="photo">
                                             @if($errors->has('photo'))
                                                 <span class="invalid-feedback" role="alert" style="color:red">
                                                     <strong>{{ $errors->first('photo') }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>                     
+                                        <div class="col-md-4 col-sm-12 col-xs-12 mb-3">
+                                            <label for="document">Document</label>
+                                            <input type="file" class="form-control" name="document">
+                                            @if($errors->has('document'))
+                                                <span class="invalid-feedback" role="alert" style="color:red">
+                                                    <strong>{{ $errors->first('document') }}</strong>
                                                 </span>
                                             @enderror
                                         </div>                     
@@ -48,7 +65,9 @@
                                     <thead>
                                         <tr class="headings">                
                                             <th class="column-title">Sl No. </th>
+                                            <th class="column-title">Name </th>
                                             <th class="column-title">Photo</th>
+                                            <th class="column-title">Document</th>
                                             <th class="column-title">Action</th>
                                         </tr>
                                     </thead>
@@ -74,7 +93,9 @@
             ajax: "{{ route('admin.ajax.get_legal_list') }}",
             columns: [
                 { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'name', name: 'name',searchable: true},
                 {data: 'photo', name: 'photo',searchable: true},
+                {data: 'document', name: 'document',searchable: true},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
