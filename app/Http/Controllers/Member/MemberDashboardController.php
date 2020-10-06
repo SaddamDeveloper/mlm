@@ -1124,6 +1124,45 @@ class MemberDashboardController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  // RETURN THE CONTENTS OF THE CALL
         $return_val = curl_exec($ch);
     }
+    function paymentRequestMsg($name, $amount){
+        $sms = "$name has requested a payment amount rs $amount. Please see the admin dashboard for the details. Thank you";   
+        $mobile = '7086918960';
+        $username="bibibobi";
+        $api_password="9aea6n725bb8uegi3";
+        $sender="BBBOBI";
+        $domain="http://sms.webinfotech.co";
+        $priority="11";// 11-Enterprise, 12- Scrub
+        $method="GET";
+        $message=$sms;
+
+        $username=urlencode($username);
+        $api_password=urlencode($api_password);
+        $sender=urlencode($sender);
+        $message=urlencode($message);
+
+        $sms = urlencode($sms);
+
+        $parameters="username=$username&api_password=$api_password&sender=$sender&to=$mobile&message=$message&priority=$priority";
+        $url="$domain/pushsms.php?".$parameters;
+        $ch = curl_init($url);
+
+        if($method=="POST")
+        {
+            curl_setopt($ch, CURLOPT_POST,1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS,$parameters);
+        }
+        else
+        {
+            $get_url=$url."?".$parameters;
+
+            curl_setopt($ch, CURLOPT_POST,0);
+            curl_setopt($ch, CURLOPT_URL, $get_url);
+        }
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION,1); 
+        curl_setopt($ch, CURLOPT_HEADER,0);  // DO NOT RETURN HTTP HEADERS 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);  // RETURN THE CONTENTS OF THE CALL
+        $return_val = curl_exec($ch);
+    }
 
     public function refreshMember($id)
     {
@@ -1379,7 +1418,10 @@ class MemberDashboardController extends Controller
                   'user_id'  =>  Auth::guard('member')->user()->id,
                   'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
               ]);
-                return redirect()->back()->with('message', 'Payment Requested Successfully!');
+        if($payment_requests){
+            $this->paymentRequestMsg(Auth::guard('member')->user()->full_name, $request->input('withdraw'));
+        }
+            return redirect()->back()->with('message', 'Payment Requested Successfully!');
         }else{
             return redirect()->back()->with('error', 'Insufficient Balance to withdraw!');
         }
