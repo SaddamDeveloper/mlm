@@ -1566,8 +1566,13 @@ class AdminDashboardController extends Controller
         $videoPlan = VideoPlan::find($id);
         $delete = VideoPlan::where('id', $id)->delete();
         if($delete){
-            File::delete(public_path().'/web/img/gallery/'.$videoPlan->photo);
-            File::delete(public_path().'/web/img/gallery/thumb/'.$videoPlan->photo);
+            if(File::exists(public_path().'/web/img/gallery/'.$videoPlan->photo)){
+                File::delete(public_path().'/web/img/gallery/'.$videoPlan->photo);
+            }
+
+            if(File::exists(public_path().'/web/img/gallery/thumb/'.$videoPlan->photo)){
+                File::delete(public_path().'/web/img/gallery/thumb/'.$videoPlan->photo);
+            }
             return redirect()->back()->with('message','Video Plan Deleted Successfully!');
         }else{
             return redirect()->back()->with('error','Something Went wrong!');
