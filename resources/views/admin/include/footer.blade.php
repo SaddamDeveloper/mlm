@@ -1,7 +1,7 @@
         <!-- footer content -->
         <footer>
             <div class="pull-right">
-              Powered By <a href="https://webinfotech.co.in">Web Infotech</a>
+            Powered By <a href="{{route('web.index')}}" target="_blank">SSSDREAM LIFE</a>
             </div>
             <div class="clearfix"></div>
           </footer>

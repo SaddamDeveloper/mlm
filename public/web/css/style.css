@@ -138,7 +138,7 @@ img {
 }
 
 .bg-img {
-    background-size: contain;
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
@@ -1872,7 +1872,7 @@ textarea:focus {
 
 .mobile-navigation {
     overflow: hidden;
-    max-height: 250px;
+    /* max-height: 250px; */
 }
 
 .mobile-navigation nav {
@@ -1889,7 +1889,7 @@ textarea:focus {
 
 @media only screen and (max-width: 479.98px) {
     .mobile-menu {
-        margin-top: 15px;
+        margin-top: 0;
     }
 }
 
@@ -2461,7 +2461,7 @@ textarea:focus {
 02. Slider area
 --------------------------*/
 .hero-slider-item {
-    height: 450px;
+    height: 500px;
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;

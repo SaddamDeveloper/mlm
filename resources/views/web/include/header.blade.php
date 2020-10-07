@@ -154,15 +154,7 @@
                 </div>
 
                 <div class="off-canvas-inner">
-                    <!-- search box start -->
-                    <div class="search-box-offcanvas">
-                        <form>
-                            <input type="text" placeholder="Search Here...">
-                            <button class="search-btn"><i class="pe-7s-search"></i></button>
-                        </form>
-                    </div>
-                    <!-- search box end -->
-
+                    
                     <!-- mobile menu start -->
                     <div class="mobile-navigation">
                         {{-- <li><a href="{{route('web.login')}}">Login</a></li>
@@ -175,21 +167,34 @@
                         <!-- mobile menu navigation start --> --}}
                         <nav>
                             <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><a href="{{ route('web.index') }}">Home</a>
+                                
+                                <li><a href="{{ route('web.index') }}">Home</a></li>
+                                <li><a href="{{route('web.about')}}">About</a></li>
+                                <li class="menu-item-has-children"><a>Other</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{route('web.legal')}}">Legal</a></li>
+                                        <li><a href="">Certification</a></li>
+                                        <li><a href="">Bank Details</a></li>
+                                        <li><a href="">Grievance Cell</a></li>
+                                        <li><a href="#" target="_blank">Grievance Redressal Policy</a></li>
+                                    </ul>
                                 </li>
-                                <li class="menu-item-has-children"><a href="{{route('web.about')}}">About</a>
+                                <li><a href="{{ route('web.product') }}">Product</a></li>
+                                <li class="menu-item-has-children"><a>Gallery</a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{route('web.gallery.image')}}">Image Gallery</a></li>
+                                        <li><a href="{{route('web.gallery.video')}}">Video Gallery</a></li>
+                                    </ul>
                                 </li>
-                                <li class="menu-item-has-children "><a href="{{ route('web.product') }}">Product</a>
-                                </li>
-                                <li class="menu-item-has-children "><a href="{{ route('web.club') }}">Club</a>
-                                </li>
+                                <li><a href="{{route('web.reward')}}">Reward</a></li>
+                                <li><a href="{{ route('web.contact') }}">Contact</a></li>
+                                <li><a href="{{ route('web.club') }}">Club</a></li>
                                 @php
                                     $plan = App\Models\Plan::first();
                                 @endphp
-                                <li class="menu-item-has-children "><a href="{{asset('web/plan/'.$plan->docs)}}">Plan</a></li>
-                                <li class="menu-item-has-children "><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a>
-                                </li>
-                                <li><a href="{{ route('web.plan') }}">Plan</a></li>
+                                <li><a href="{{asset('web/plan/'.$plan->docs)}}">Plan</a></li>
+                                <li><a href="{{ route('web.video_plan')}} ">Video Plan</a></li>
+                                <li><a href="{{ route('web.rank_achiever') }}">Rank Achiever</a></li>
                             </ul>
                         </nav>
                         <!-- mobile menu navigation end -->
