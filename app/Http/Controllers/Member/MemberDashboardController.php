@@ -1125,8 +1125,8 @@ class MemberDashboardController extends Controller
         $return_val = curl_exec($ch);
     }
     function paymentRequestMsg($name, $amount){
-        $sms = "$name has requested a payment amount rs $amount. Please see the admin dashboard for the details. Thank you";   
-        $mobile = '7086918960';
+        $sms = "$name has requested a fund amount RS $amount. Please see the admin dashboard for the details. Thank you";   
+        $mobile = '8486935380'; //7086918960
         $username="bibibobi";
         $api_password="9aea6n725bb8uegi3";
         $sender="BBBOBI";
@@ -1335,6 +1335,7 @@ class MemberDashboardController extends Controller
         $fund_request->attachment = $image;
         $fund_request->added_by = Auth::guard('member')->user()->full_name;
         if($fund_request->save()){
+            $this->paymentRequestMsg(Auth::guard('member')->user()->full_name, $request->input('fund'));
             return redirect()->back()->with('message', 'Successfully Requested!');
         }else{
             return redirect()->back()->with('error', 'Something Went Wrong Please Try Again');
@@ -1401,7 +1402,7 @@ class MemberDashboardController extends Controller
                 'amount' => DB::raw("`amount`-".($request->input('withdraw'))),
             ]);
 
-        $update_wallet_history = DB::table('wallet_histories')
+            $update_wallet_history = DB::table('wallet_histories')
           ->insertGetId([
               'wallet_id' =>  $fetch_wallet->id,
               'user_id'   => Auth::guard('member')->user()->id,
@@ -1412,16 +1413,15 @@ class MemberDashboardController extends Controller
               'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
           ]);
         
-        $payment_requests = DB::table('payment_requests')
+            $payment_requests = DB::table('payment_requests')
               ->insertGetId([
                   'amount' =>  $request->input('withdraw'),
                   'user_id'  =>  Auth::guard('member')->user()->id,
                   'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
               ]);
-        if($payment_requests){
-            $this->paymentRequestMsg(Auth::guard('member')->user()->full_name, $request->input('withdraw'));
-        }
-            return redirect()->back()->with('message', 'Payment Requested Successfully!');
+            if($payment_requests){
+                return redirect()->back()->with('message', 'Payment Requested Successfully!');
+            }
         }else{
             return redirect()->back()->with('error', 'Insufficient Balance to withdraw!');
         }
