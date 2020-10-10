@@ -1058,12 +1058,12 @@ class MemberDashboardController extends Controller
     }
 
     public function memberEpinListForm(){
-        $total_fund = TotalFund::where('user_id', Auth::guard('member')->user()->id)->first();
+        $total_fund = Fund::where('alloted_to', Auth::guard('member')->user()->id)->first();
         return view('member.epin', compact('total_fund'));
     }
 
     public function memberGetEpinList(){
-        $query = FundHistory::where('user_id', Auth::guard('member')->user()->id)->orderBy('created_at', 'DESC');
+        $query = FundHistory::where('user_id', Auth::guard('member')->user()->id)->orderBy('id', 'DESC');
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->make(true);
@@ -1187,35 +1187,70 @@ class MemberDashboardController extends Controller
         ]);
         $fund_transfer_amount = $request->input('fund_transfer');
         $fetch_wallet = Wallet::where('user_id', Auth::guard('member')->user()->id)->first();
+        $member_id = Auth::guard('member')->user()->id;
         if($fetch_wallet->amount >= $fund_transfer_amount && $fetch_wallet->amount > 0){
-              // Wallet Insert
-            $wallet_update = DB::table('wallets') 
+            try {
+                DB::transaction(function () use($fund_transfer_amount, $member_id, $fetch_wallet) {
+                    // Wallet Insert
+                    $wallet_update = DB::table('wallets') 
                     ->where('user_id', Auth::guard('member')->user()->id)
                     ->update([
                         'amount' => DB::raw("`amount`-".($fund_transfer_amount)),
-                    ]);
-
-            $update_wallet_history = DB::table('wallet_histories')
-                ->insertGetId([
-                    'wallet_id' =>  $fetch_wallet->id,
-                    'user_id'   => Auth::guard('member')->user()->id,
-                    'transaction_type'  =>  2,
-                    'amount' => $fund_transfer_amount,
-                    'total_amount'  => $fetch_wallet->amount,
-                    'comment'   => $fund_transfer_amount.' Rs is debited from you wallet for transfering the fund! ',
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-
-            $fetch_fund = Fund::where('alloted_to', Auth::guard('member')->user()->id)->first();
-            $update_fund = DB::table('funds')
-                ->insertGetId([
-                    'fund' =>  $fund_transfer_amount,
-                    'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
-                    'alloted_to'  =>  Auth::guard('member')->user()->id,
-                    'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
-                    'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                $update_wallet_history = DB::table('wallet_histories')
+                    ->insertGetId([
+                        'wallet_id' =>  $fetch_wallet->id,
+                        'user_id'   => Auth::guard('member')->user()->id,
+                        'transaction_type'  =>  2,
+                        'amount' => $fund_transfer_amount,
+                        'total_amount'  => $fetch_wallet->amount,
+                        'comment'   => $fund_transfer_amount.' Rs is debited from your wallet for transfering the fund! ',
+                        'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
                 ]);
-                return redirect()->back()->with('message', 'Fund Transfered Successfully!');
+                $fetch_fund = Fund::where('alloted_to', Auth::guard('member')->user()->id)->first();
+                if(!empty($fetch_fund)){
+                    $update_fund = DB::table('funds')
+                        ->where('alloted_to', Auth::guard('member')->user()->id)
+                        ->update([
+                            'fund' =>  $fund_transfer_amount,
+                            'available_fund'   => ($fetch_fund->available_fund + $fund_transfer_amount) ,
+                            'alloted_to'  =>  Auth::guard('member')->user()->id,
+                            'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                            'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+
+                        $fund_history = DB::table('fund_histories')
+                        ->insertGetId([
+                            'amount' => $fund_transfer_amount,
+                            'user_id'   => Auth::guard('member')->user()->id,
+                            'comment'   => 'Rs. ' . $fund_transfer_amount. ' is transfered in your fund from wallet',
+                            'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                        ]);
+
+                        return redirect()->back()->with('message', 'Fund Transfered Successfully!');
+                    }else{
+                        $update_fund = DB::table('funds')
+                            ->insertGetId([
+                                'fund' =>  $fund_transfer_amount,
+                                'available_fund'   => ($fund_transfer_amount) ,
+                                'alloted_to'  =>  Auth::guard('member')->user()->id,
+                                'alloted_date' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString(),
+                                'created_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                            ]);
+
+                            $fund_history = DB::table('fund_histories')
+                            ->insertGetId([
+                                'amount' => $fund_transfer_amount,
+                                'user_id'   => Auth::guard('member')->user()->id,
+                                'comment'   => 'Rs. ' . $fund_transfer_amount. ' is transfered in your fund from wallet',
+                                'updated_at' => Carbon::now()->setTimezone('Asia/Kolkata')->toDateTimeString()
+                            ]);
+                        }
+                    });
+                    return redirect()->back()->with('message', 'Fund Transfered Successfully!');
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Something went Wrong! Try after sometime!');
+            }
         }else{
             return redirect()->back()->with('error', 'Insufficent Wallet Balane');
         }

@@ -38,7 +38,7 @@
                                             </span>
                                         @enderror
                                         <div id="myDiv">
-                                            <img id="loading-image" src="{{asset('admin/production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                            <img id="loading-image" src="{{asset('images/ajax-loader.gif')}}" style="display:none;"/>
                                         </div>
                                         <div id="member_data"></div><br>
                                     </div> 
@@ -317,7 +317,7 @@
                                             </span>
                                         @enderror
                                         <button class="btn btn-success" id="check_login">Check Availability</button>
-                                        <img id="loading-image-login" src="{{asset('member/production/images/ajax-loader.gif')}}" style="display:none;"/>
+                                        <img id="loading-image-login" src="{{asset('images/ajax-loader.gif')}}" style="display:none;"/>
                                         <div id="login_name_show"></div><br>
                                     </div>
                                     <div class="col-md-4 col-sm-12 col-xs-12 mb-3">

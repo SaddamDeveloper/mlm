@@ -16,7 +16,7 @@
                                     @if(empty($total_fund))
                                             0.0
                                     @else
-                                        {{number_format($total_fund->amount, 2)}}</h3></div>
+                                        {{number_format($total_fund->available_fund, 2)}}</h3></div>
                                     @endif
                             <div class="clearfix"></div>
                         </div>
