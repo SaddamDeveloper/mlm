@@ -169,6 +169,9 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     Route::get('/video/plan/action/{id}/{status}', 'AdminDashboardController@videoPlanStatus')->name('admin.video_plan_status');
     Route::get('/video/plan/delete/{id}', 'AdminDashboardController@videoPlanDelete')->name('admin.video_plan_delete');
 
+    // Activation Details
+    Route::get('/activation/details', 'AdminDashboardController@activationDetails')->name('admin.activation_details');
+    Route::get('/distributor/details', 'AdminDashboardController@distributorDetails')->name('admin.ajax.distributor_details');
 });
 
 

@@ -29,12 +29,10 @@ use App\ImportantNotice;
 use App\PaymentRequest;
 class MemberDashboardController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(){
         $this->middleware('auth:member')->except(['addNewMember', 'searchSponsorID', 'loginIDCheck']);
     }
-    public function index()
-    {
+    public function index(){
         $user_info = Auth::guard('member')->user();
         $direct_member = Tree::where('registered_by', $user_info->id)->count();
         $tree = Tree::where('user_id', $user_info->id)->first();
@@ -209,8 +207,7 @@ class MemberDashboardController extends Controller
         }
     }
 
-    public function loginIDCheck(Request $request)
-    {
+    public function loginIDCheck(Request $request){
         if($request->ajax()){
             $login_id = $request->get('query');
             if(!empty($login_id)) {
@@ -1290,8 +1287,7 @@ class MemberDashboardController extends Controller
         return view('member.account', compact('member'));
     }
 
-    public function updateMember(Request $request)
-    {   
+    public function updateMember(Request $request){   
         $this->validate($request, [
             'member_name'   => 'required',
             'mobile'        => 'required',
@@ -1338,8 +1334,7 @@ class MemberDashboardController extends Controller
             return redirect()->back()->with('error', 'Something Went Wrong!');
         }
     }
-    public function memberRequestForm()
-    {
+    public function memberRequestForm(){
         return view('member.fund_request');
     }
     public function memberRequest(Request $request)

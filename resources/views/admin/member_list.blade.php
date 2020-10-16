@@ -37,8 +37,9 @@
                                       <th>User ID</th>
                                       <th>Name</th>
                                       <th>Mobile</th>
-                                      <th>Left</th>
-                                      <th>Right</th>
+                                      <th>Left BV</th>
+                                      <th>Right BV</th>
+                                      <th>Total BV</th>
                                       <th>Status</th>
                                       <th>Action</th>
                                     </tr>
@@ -67,8 +68,9 @@
                     {data: 'login_id', name: 'login_id',searchable: true},
                     {data: 'full_name', name: 'full_name',searchable: true},
                     {data: 'mobile', name: 'mobile',searchable: true},
-                    {data: 'left', name: 'left',searchable: true},
-                    {data: 'right', name: 'right',searchable: true},
+                    {data: 'left_bv', name: 'left_bv',searchable: true},
+                    {data: 'right_bv', name: 'right_bv',searchable: true},
+                    {data: 'total_bv', name: 'total_bv',searchable: true},
                     {data: 'status', name: 'status', render:function(data, type, row){
                       if (row.status == '1') {
                         return "<button class='btn btn-info'>Active</a>"
