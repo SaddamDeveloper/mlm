@@ -172,6 +172,12 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Activation Details
     Route::get('/activation/details', 'AdminDashboardController@activationDetails')->name('admin.activation_details');
     Route::get('/distributor/details', 'AdminDashboardController@distributorDetails')->name('admin.ajax.distributor_details');
+
+    // Wallet Payeble List
+    Route::group(['namespace' => 'Wallet', 'prefix' => 'payable'], function () {
+        Route::get('wallet', 'WalletController@index')->name('admin.payable.wallet');
+        // Route::get('list', 'WalletController@payableList')->name('admin.ajax.payable_members');
+    });
 });
 
 

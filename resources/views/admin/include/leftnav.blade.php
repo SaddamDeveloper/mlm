@@ -32,6 +32,7 @@
                 <li><a href="{{route('admin.mem_member_list')}}">Member List</a></li>
                 <li><a href="{{route('admin.mem_commission_history')}}">Commision History</a></li>
                 <li><a href="{{route('admin.mem_wallet')}}">Member Wallet List</a></li>
+                <li><a href="{{route('admin.payable.wallet')}}">Member Payable List</a></li>
                 <li><a href="{{route('admin.activation_details')}}">Member Activation Details</a></li>
               </ul>
             </li>

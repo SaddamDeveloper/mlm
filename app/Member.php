@@ -28,4 +28,9 @@ class Member extends Authenticatable
         {
             return $this->hasOne('App\Package', 'id');
         }
+
+        public function wallet()
+        {
+            return $this->hasOne('App\Wallet');
+        }
 }
