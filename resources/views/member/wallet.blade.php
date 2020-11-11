@@ -73,13 +73,12 @@
 @section('script')
      <script type="text/javascript">
           $(function () {
-            var i = 1;
             var table = $('#wallet_history').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('member.ajax.my_wallet_history') }}",
                 columns: [
-                    { "render": function(data, type, full, meta) {return i++;}},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'amount', name: 'amount',searchable: true},
                     {data: 'total_amount', name: 'total_amount',searchable: true},
                     {data: 'comment', name: 'comment',searchable: true},

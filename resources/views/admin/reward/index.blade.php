@@ -21,11 +21,10 @@
                                 <thead>
                                 <tr>
                                     <th>Sl. No</th>
-                                    <th>UserID</th>
                                     <th>Name</th>
-                                    <th>Rank</th>
+                                    <th>Comment</th>
                                     <th>BV</th>
-                                    <th>Added By</th>
+                                    <th>Prize</th>
                                     <th>Created At</th>
                                 </tr>
                                 </thead>
@@ -47,16 +46,14 @@
             processing: true,
             serverSide: true,
             iDisplayLength: 50,
-            ajax: "{{ route('admin.ajax.distributor_details') }}",
+            ajax: "{{ route('admin.ajax.reward_list') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'package_name', name: 'package_name',searchable: true},
-                {data: 'login_id', name: 'login_id' ,searchable: true}, 
-                {data: 'name', name: 'name' ,searchable: true}, 
-                {data: 'bv', name: 'bv' ,searchable: true}, 
-                {data: 'added_by', name: 'added_by' ,searchable: true},                 
+                {data: 'name', name: 'name',searchable: true},
+                {data: 'comment', name: 'comment' ,searchable: true}, 
+                {data: 'target_bv', name: 'target_bv' ,searchable: true}, 
+                {data: 'prize', name: 'prize' ,searchable: true}, 
                 {data: 'created_at', name: 'created_at' ,searchable: true},                 
-                // {data: 'action', name: 'action', orderable: false, searchable: false},
             ]
         });
         

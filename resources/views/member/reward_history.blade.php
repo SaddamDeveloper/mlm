@@ -26,7 +26,7 @@
                             <table id="epin_list" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
                                 <thead>
                                 <tr>
-                                    <th>Sl. No1</th>
+                                    <th>Sl. No</th>
                                     <th>Comment</th>
                                     <th>Status</th>
                                     <th>Created At</th>
@@ -52,7 +52,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('member.ajax.my_rewards_list') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'comment', name: 'comment',searchable: true},
                 {data: 'status', name: 'status', render:function(data, type, row){
                       if (row.status == '1') {

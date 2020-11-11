@@ -53,7 +53,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('member.ajax.fund_history') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'amount', name: 'amount',searchable: true},
                 {data: 'status', name: 'status', render:function(data, type, row){
                       if (row.status == '1') {

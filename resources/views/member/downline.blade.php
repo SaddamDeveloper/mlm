@@ -64,7 +64,7 @@
                 iDisplayLength: 10,
                 ajax: "{{ route('member.ajax.my_downline_list') }}",
                 columns: [
-                    {data: 'id', name: 'id',searchable: true},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'sponsorID', name: 'sponsorID',searchable: true},
                     {data: 'member_name', name: 'member_name' ,searchable: true}, 
                     {data: 'left_member', name: 'left_member' ,searchable: true}, 

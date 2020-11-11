@@ -180,6 +180,7 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Member Reward List
     Route::group(['namespace' => 'Reward', 'prefix' => 'member'], function () {
         Route::get('reward/list', 'RewardController@index')->name('admin.reward.list');
+        Route::get('reward/get/list', 'RewardController@list')->name('admin.ajax.reward_list');
     });
 });
 

@@ -58,14 +58,13 @@
 @section('script')
      <script type="text/javascript">
          $(function () {
-            var i = 1;
             var table = $('#commission_list').DataTable({
                 processing: true,
                 serverSide: true,
                 iDisplayLength: "50",
                 ajax: "{{ route('admin.ajax.commission_list') }}",
                 columns: [
-                    { "render": function(data, type, full, meta) {return i++;}},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'login_id', name: 'login_id',searchable: true},
                     {data: 'user_name', name: 'user_name',searchable: true},
                     {data: 'amount', name: 'amount',searchable: true},

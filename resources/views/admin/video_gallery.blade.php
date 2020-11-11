@@ -74,13 +74,12 @@
 @section('script')
  <script type="text/javascript">
      $(function () {
-        var i = 1;
         var table = $('#gallery_list').DataTable({
             processing: true,
             serverSide: true,
             ajax: "{{ route('admin.ajax.get_video_gallery_list') }}",
             columns: [
-                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'photo', name: 'photo',searchable: true},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]

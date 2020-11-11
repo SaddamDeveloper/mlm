@@ -63,7 +63,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('admin.shopping_product_list') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'name', name: 'name',searchable: true},
                 {data: 'category_name', name: 'category_name' ,searchable: true}, 
                 {data: 'main_image', name: 'main_image' ,searchable: true}, 

@@ -70,14 +70,13 @@
 @section('script')
   <script type="text/javascript">
       $(function () {
-        var i = 1;
         var table = $('#commission_list').DataTable({
             processing: true,
             serverSide: true,
             iDisplayLength: "50",
             ajax: "{{ route('admin.ajax.commission_list') }}",
             columns: [
-                { "render": function(data, type, full, meta) {return i++;}},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'amount', name: 'amount',searchable: true},
                 {data: 'total_amount', name: 'total_amount',searchable: true},
                 {data: 'comment', name: 'comment',searchable: true},

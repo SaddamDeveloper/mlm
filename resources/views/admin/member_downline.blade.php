@@ -59,7 +59,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('admin.ajax.downline_list', ['id' => encrypt($fetch_member_data->id)]) }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'parent', name: 'parent',searchable: true},
                 {data: 'member_name', name: 'member_name' ,searchable: true}, 
                 {data: 'left_member', name: 'left_member' ,searchable: true}, 

@@ -64,7 +64,7 @@
                 serverSide: true,
                 ajax: "{{ route('admin.ajax.get_member_list') }}",
                 columns: [
-                    {data: 'id', name: 'id',searchable: true},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'login_id', name: 'login_id',searchable: true},
                     {data: 'full_name', name: 'full_name',searchable: true},
                     {data: 'mobile', name: 'mobile',searchable: true},

@@ -53,13 +53,12 @@
 @section('script')
      <script type="text/javascript">
          $(function () {
-            var i = 1;
             var table = $('#payment_requests').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('admin.ajax.payment_request_list') }}",
                 columns: [
-                    { "render": function(data, type, full, meta) {return i++;}},
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'amount', name: 'amount',searchable: true},
                     {data: 'name', name: 'name',searchable: true},             
                     {data: 'created_at', name: 'created_at',searchable: true},

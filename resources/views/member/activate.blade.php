@@ -51,7 +51,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('member.ajax.fund') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'fund', name: 'fund',searchable: true},
                 {data: 'action', name: 'action', orderable: false, searchable: false},
             ]

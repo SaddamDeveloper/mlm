@@ -27,6 +27,8 @@ use File;
 use App\FundRequest;
 use App\ImportantNotice;
 use App\PaymentRequest;
+use Illuminate\Contracts\Encryption\DecryptException;
+
 class MemberDashboardController extends Controller
 {
     public function __construct(){
@@ -1369,6 +1371,7 @@ class MemberDashboardController extends Controller
     public function fundRequestList()
     {
         return datatables()->of(FundRequest::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
         ->make(true);
     }
     function imageInsert($image, Request $request, $flag){
@@ -1402,6 +1405,7 @@ class MemberDashboardController extends Controller
     public function memberGetRewardList()
     {
         return datatables()->of(Rewards::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
         ->make(true);
     }
     public function memberPaymentRequestForm()
@@ -1412,6 +1416,7 @@ class MemberDashboardController extends Controller
     public function ajaxGetPaymentRequest()
     {
         return datatables()->of(PaymentRequest::orderBy('created_at', 'DESC')->get())
+        ->addIndexColumn()
         ->make(true);
     }
     public function paymentRequest(Request $request)

@@ -97,7 +97,7 @@
             iDisplayLength: 50,
             ajax: "{{ route('member.ajax.fund_request_list') }}",
             columns: [
-                {data: 'id', name: 'id',searchable: true},
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                 {data: 'fund', name: 'fund',searchable: true},
                 {data: 'utr', name: 'utr',searchable: true},
                 {data: 'comment', name: 'comment',searchable: true},
