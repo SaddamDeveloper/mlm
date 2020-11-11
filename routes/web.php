@@ -176,7 +176,10 @@ Route::group(['middleware'=>'auth:admin','prefix'=>'admin','namespace'=>'Admin']
     // Wallet Payeble List
     Route::group(['namespace' => 'Wallet', 'prefix' => 'payable'], function () {
         Route::get('wallet', 'WalletController@index')->name('admin.payable.wallet');
-        // Route::get('list', 'WalletController@payableList')->name('admin.ajax.payable_members');
+    });
+    // Member Reward List
+    Route::group(['namespace' => 'Reward', 'prefix' => 'member'], function () {
+        Route::get('reward/list', 'RewardController@index')->name('admin.reward.list');
     });
 });
 
@@ -261,4 +264,6 @@ Route::group(['prefix'=>'member','namespace'=>'Member'],function(){
 
     // Member Notice
     Route::get('/member/notice/{id}', 'MemberDashboardController@getNotice')->name('member.notice');
+
+    Route::post('/seen', 'MemberDashboardController@seen')->name('member.ajax.seen');
 });

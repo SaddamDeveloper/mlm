@@ -7,7 +7,7 @@
                 <div class="col-md-12" style="margin-top:50px;">
                     <div class="x_panel">
                         <div class="x_title">
-                            <h2>Activate Distributor Details</h2>
+                            <h2>Reward List</h2>
                             <div class="clearfix"></div>
                         </div>
                         @if (Session::has('message'))
@@ -21,9 +21,9 @@
                                 <thead>
                                 <tr>
                                     <th>Sl. No</th>
-                                    <th>Package Name</th>
-                                    <th>Alloted UserID</th>
-                                    <th>Alloted Name</th>
+                                    <th>UserID</th>
+                                    <th>Name</th>
+                                    <th>Rank</th>
                                     <th>BV</th>
                                     <th>Added By</th>
                                     <th>Created At</th>

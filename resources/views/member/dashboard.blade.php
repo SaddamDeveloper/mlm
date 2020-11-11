@@ -1,7 +1,35 @@
-
 @extends('member.template.member_master')
-
 @section('content')
+@if (!empty($congrats) && $congrats->seen == 1)
+    <div class="ribbon">
+        <div class="medallion"></div>
+
+        <div class="ribbon-1">
+            <span class="inner">
+                <span class="fadeLeft">You Won</span>
+            </span>
+        </div>
+
+        <div class="ribbon-2">
+            <span class="inner">
+                <span class="fadeRight">{{ $congrats->prize }}</span>
+            </span>
+        </div>
+
+        <div class="ribbon-3">
+            <span class="inner">
+                <span class="fadeLeft"></span>
+            </span>
+        </div>
+
+        <div class="ball fadeIn">
+            <span class="ball-text">
+                <strong>&#9786;</strong>
+                Congratulations!
+            </span>
+        </div>
+    </div>
+@endif
         <!-- page content -->
         <div class="right_col" role="main">
           <!-- top tiles -->
@@ -11,6 +39,7 @@
                 <div class="icon"><i class="fa fa-user"></i></div>
                 <div class="count">{{$user_info->login_id}}</div>
                 <h3>{{$user_info->full_name}}</h3>
+                <input type="hidden" name="reward_id" id="reward_id" value="{{ $congrats->id }}">
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -150,7 +179,40 @@
 
           <br />
         </div>
-        <!-- /page content -->
 @endsection
 
+@section('script')
+    <script>
+      $(document).ready(function() {
+        setTimeout(function() {
+          $('.ribbon').addClass('active');
+        }, 500);
 
+        var id = $("#reward_id").val();
+        console.log(id);
+        function callForAjax(){}
+            $.ajaxSetup({
+               headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+               }
+           });
+           $.ajax({
+               beforeSend: callForAjax,
+               type: "POST",
+               url: "{{ route('member.ajax.seen') }}",
+               data: {
+                "_token": "{{ csrf_token() }}",
+                   id: id,
+                   status: '2'
+               },
+               success: function(msg) {
+                if(msg == 1){
+                    setTimeout( function(){
+                            $('.ribbon').fadeOut(3000);
+                        } , 4000);
+                    }
+                }
+           });
+      });
+    </script>
+@endsection

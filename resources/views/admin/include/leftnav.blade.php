@@ -34,6 +34,7 @@
                 <li><a href="{{route('admin.mem_wallet')}}">Member Wallet List</a></li>
                 <li><a href="{{route('admin.payable.wallet')}}">Member Payable List</a></li>
                 <li><a href="{{route('admin.activation_details')}}">Member Activation Details</a></li>
+                <li><a href="{{route('admin.reward.list')}}">Member Reward List</a></li>
               </ul>
             </li>
             
@@ -73,6 +74,5 @@
         </div>
       </div>
       <!-- /sidebar menu -->
-
     </div>
   </div>

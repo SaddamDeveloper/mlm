@@ -9,15 +9,12 @@
                             <h2>Payable Member</h2>
                             <div class="clearfix"></div>
                         </div>
-                    <div>
-                         @if (Session::has('message'))
+                        @if (Session::has('message'))
                             <div class="alert alert-success" >{{ Session::get('message') }}</div>
-                         @endif
-                         @if (Session::has('error'))
+                        @endif
+                        @if (Session::has('error'))
                             <div class="alert alert-danger">{{ Session::get('error') }}</div>
-                         @endif
-    
-                    </div>
+                        @endif
                         <div class="x_content">
                             <table id="package" class="table table-striped jambo_table bulk_action" cellspacing="0" width="100%">
                                 <thead>

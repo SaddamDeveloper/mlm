@@ -1036,7 +1036,7 @@ class AdminDashboardController extends Controller
             return datatables()->of($query->get())
             ->addIndexColumn()
             ->addColumn('name', function($row){
-                $member = Member::where('id', $row->id)->first();
+                $member = Member::where('id', $row->user_id)->first();
                 return $member->full_name;
             })
             ->addColumn('action', function($row){

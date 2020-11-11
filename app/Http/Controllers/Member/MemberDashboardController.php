@@ -44,7 +44,8 @@ class MemberDashboardController extends Controller
         $notice = ImportantNotice::where('status', 1)->orderBy('created_at', 'DESC')->limit(10)->get();
         $total_income = CommissionHistory::where('user_id', $user_info->id)->sum('amount');
         $available_fund = TotalFund::where('user_id', $user_info->id)->first();
-        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching', 'notice', 'total_income', 'available_fund'));
+        $congrats = Rewards::where('user_id', $user_info->id)->orderBy('created_at', 'DESC')->first();
+        return view('member.dashboard', compact('user_info', 'direct_member', 'total_left', 'total_right', 'left_active', 'right_active', 'pair_matching', 'notice', 'total_income', 'available_fund', 'congrats'));
     }
 
     public function addNewMemberForm()
@@ -1449,6 +1450,12 @@ class MemberDashboardController extends Controller
         }else{
             return redirect()->back()->with('error', 'Insufficient Balance to withdraw!');
         }
+    }
+    public function seen(Request $request){
+        $rewards = Rewards::find($request->input('id'));
+        $rewards->seen = $request->input('status');
+        $rewards->save();
+        return 1;
     }
 // *************************************************************************************************TEST*****************************************************
 public function memberTestForm()
