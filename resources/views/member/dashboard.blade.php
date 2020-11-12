@@ -3,13 +3,12 @@
 @if (!empty($congrats) && $congrats->seen == 1)
     <div class="ribbon">
         <div class="medallion"></div>
-
         <div class="ribbon-1">
             <span class="inner">
                 <span class="fadeLeft">You Won</span>
             </span>
         </div>
-
+                <input type="hidden" name="reward_id" id="reward_id" value="{{ $congrats->id }}">
         <div class="ribbon-2">
             <span class="inner">
                 <span class="fadeRight">{{ $congrats->prize }}</span>
@@ -39,7 +38,6 @@
                 <div class="icon"><i class="fa fa-user"></i></div>
                 <div class="count">{{$user_info->login_id}}</div>
                 <h3>{{$user_info->full_name}}</h3>
-                <input type="hidden" name="reward_id" id="reward_id" value="{{ $congrats->id }}">
               </div>
             </div>
             <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
