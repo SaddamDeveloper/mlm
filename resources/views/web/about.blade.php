@@ -34,7 +34,7 @@
                         <div class="col-md-9 mx-auto">
                             <h3>About Us</h3>
                            <p>
-                            SSSDREAM LIFE E-  COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone.
+                            GLOBALDREAM LIFE E-COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone.
                             Our success is mainly based on cordial relationships among distributors, partners, customers and staff members.
                             For this our efficient and expert professionals are to be credited as their efforts have shown up in our products and gained the company a reputation in the global markets.
                             
