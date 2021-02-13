@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="images/favicon.ico" type="image/ico" />
 
-    <title>MLM PROJECT MEMBER</title>
+    <title>GLOBALDREAM LIFE MEMBER</title>
     @yield('link')
     <!-- Bootstrap -->
     <link href="{{asset('member/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">

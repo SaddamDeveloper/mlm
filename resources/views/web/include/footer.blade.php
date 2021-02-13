@@ -67,29 +67,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="row align-items-center mt-20">
-                    <div class="col-md-6">
-                        <div class="newsletter-wrapper">
-                            <h6 class="widget-title-text">Signup for newsletter</h6>
-                            <form class="newsletter-inner" id="mc-form">
-                                <input type="email" class="news-field" id="mc-email" autocomplete="off" placeholder="Enter your email address">
-                                <button class="news-btn" id="mc-submit">Subscribe</button>
-                            </form>
-                            <!-- mailchimp-alerts Start -->
-                            <div class="mailchimp-alerts">
-                                <div class="mailchimp-submitting"></div><!-- mailchimp-submitting end -->
-                                <div class="mailchimp-success"></div><!-- mailchimp-success end -->
-                                <div class="mailchimp-error"></div><!-- mailchimp-error end -->
-                            </div>
-                            <!-- mailchimp-alerts end -->
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="footer-payment">
-                            <img src="{{asset('web/img/payment.png')}}" alt="payment method">
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
         <div class="footer-bottom">

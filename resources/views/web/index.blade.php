@@ -42,7 +42,7 @@
                     <div class="col-12">
                         <!-- section title start -->
                         <div class="section-title text-center">
-                            <h2 class="title">our products</h2>
+                            <h2 class="title">Our Products</h2>
                             <p class="sub-title">Best Products ever</p>
                         </div>
                         <!-- section title start -->
@@ -82,20 +82,6 @@
                                                 <div class="product-identity">
                                                     {{-- <p class="manufacturer-name"><a href="product-details.html">Gold</a></p> --}}
                                                 </div>
-                                                {{-- <ul class="color-categories">
-                                                    <li>
-                                                        <a class="c-lightblue" href="#" title="LightSteelblue"></a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="c-darktan" href="#" title="Darktan"></a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="c-grey" href="#" title="Grey"></a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="c-brown" href="#" title="Brown"></a>
-                                                    </li>
-                                                </ul> --}}
                                                 <h6 class="product-name">
                                                     <a href="{{ route('web.product.product-detail', ['id' => encrypt($pr->id)]) }}">{{$pr->name}}</a>
                                                 </h6>
@@ -162,7 +148,7 @@
                         <div class="about-content">
                             <h2 class="about-title">About Us</h2>
                             <h5 class="about-sub-title">
-                                SSSDREAM LIFE E- COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone. 
+                                GLOBALDREAM LIFE E- COMMERCE PVT LTD is a India based leading company believes in natural health of people with a commitment to enrich the lives of everyone. 
                             </h5>
                             <p>Our success is mainly based on cordial relationships among distributors, partners, customers and staff members. For this our efficient and expert professionals are to be credited as their efforts have shown up in our products and gained the company a reputation in the global markets.</p>
                         </div>
@@ -171,59 +157,6 @@
             </div>
         </section>
         <!-- about us area end -->
-
-        {{-- <!-- service policy area start -->
-        <div class="service-policy section-padding">
-            <div class="container">
-                <div class="row mtn-30">
-                    <div class="col-sm-6 col-lg-3">
-                        <div class="policy-item">
-                            <div class="policy-icon">
-                                <i class="pe-7s-plane"></i>
-                            </div>
-                            <div class="policy-content">
-                                <h6>Free Shipping</h6>
-                                <p>Free shipping all order</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
-                        <div class="policy-item">
-                            <div class="policy-icon">
-                                <i class="pe-7s-help2"></i>
-                            </div>
-                            <div class="policy-content">
-                                <h6>Support 24/7</h6>
-                                <p>Support 24 hours a day</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
-                        <div class="policy-item">
-                            <div class="policy-icon">
-                                <i class="pe-7s-back"></i>
-                            </div>
-                            <div class="policy-content">
-                                <h6>Money Return</h6>
-                                <p>30 days for free return</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-lg-3">
-                        <div class="policy-item">
-                            <div class="policy-icon">
-                                <i class="pe-7s-credit"></i>
-                            </div>
-                            <div class="policy-content">
-                                <h6>100% Payment Secure</h6>
-                                <p>We ensure secure payment</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- service policy area end --> --}}
     </main>
 @endsection
 

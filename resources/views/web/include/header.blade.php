@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>SSSDREAM Life</title>
+    <title>GLOBALDREAM LIFE</title>
     <meta name="robots" content="noindex, follow" />
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -125,7 +125,7 @@
                         <div class="mobile-main-header">
                             <div class="mobile-logo">
                                 <a href="{{ route('web.index') }}">
-                                    <img src="{{asset('web/img/logo/logo.jpeg')}}" alt="Brand Logo">
+                                    <img src="{{asset('web/img/logo/'.$frontend->logo)}}" alt="Brand Logo">
                                 </a>
                             </div>
                             <div class="mobile-menu-toggler">
