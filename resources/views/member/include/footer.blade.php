@@ -1,7 +1,7 @@
         <!-- footer content -->
         <footer>
             <div class="pull-right">
-              Powered By <a href="{{route('web.index')}}" target="_blank">SSSDREAM LIFE</a>
+              Powered By <a href="{{route('web.index')}}" target="_blank">{{ config('app.name') }}</a>
             </div>
             <div class="clearfix"></div>
           </footer>
